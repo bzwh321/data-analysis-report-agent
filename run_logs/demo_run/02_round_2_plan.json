@@ -1,0 +1,45 @@
+{
+  "round": 2,
+  "analytical_step": "decomposition",
+  "question": "利润率-2.19pp由哪个品类驱动？各品类降幅与规模是否匹配？",
+  "query_spec": {
+    "metrics": [
+      "sales_amount",
+      "profit_rate"
+    ],
+    "group_by": [
+      "category",
+      "year"
+    ],
+    "filters": {},
+    "date_range": {
+      "start": "2023-01",
+      "end": "2024-12"
+    }
+  },
+  "expected_output": {
+    "format": "table",
+    "required_fields": [
+      "category",
+      "sales_2023",
+      "sales_2024",
+      "profit_rate_2023",
+      "profit_rate_2024",
+      "profit_pp_change"
+    ],
+    "unit_sales": "万元",
+    "unit_rate": "百分比"
+  },
+  "acceptance_criteria": {
+    "min_rows": 3,
+    "profit_rate_range": [
+      0,
+      100
+    ],
+    "all_required_fields": true
+  },
+  "stop_condition": {
+    "if_impact_below_pct": 3,
+    "reason": "品类降幅<3pp时停止该品类下钻"
+  }
+}

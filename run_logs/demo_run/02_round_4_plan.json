@@ -1,0 +1,47 @@
+{
+  "round": 4,
+  "analytical_step": "risk_mining",
+  "question": "技术品类总量平稳，高利润子品类（复印机17.8%）是否被低利润子品类持续侵蚀？",
+  "query_spec": {
+    "metrics": [
+      "sales_amount",
+      "profit_rate",
+      "share_pct"
+    ],
+    "group_by": [
+      "sub_category",
+      "quarter"
+    ],
+    "filters": {
+      "category": "技术"
+    },
+    "date_range": {
+      "start": "2023-01",
+      "end": "2024-12"
+    }
+  },
+  "expected_output": {
+    "format": "table",
+    "required_fields": [
+      "sub_category",
+      "share_q1_2023",
+      "share_q4_2024",
+      "profit_rate",
+      "trend_direction"
+    ],
+    "unit_sales": "万元",
+    "unit_rate": "百分比"
+  },
+  "acceptance_criteria": {
+    "min_rows": 4,
+    "profit_rate_range": [
+      0,
+      100
+    ],
+    "all_required_fields": true
+  },
+  "stop_condition": {
+    "if_impact_below_pct": 3,
+    "reason": "若份额漂移<3pp则不构成结构风险"
+  }
+}

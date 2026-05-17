@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 环境
+.env
+.venv/
+venv/
+env/
+
+# 运行日志（demo_run 保留，其余忽略）
+run_logs/*/
+!run_logs/demo_run/
+!run_logs/.gitkeep
+
+# 报告输出
+output/
+*.html
+!examples/*.html
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# macOS
+.DS_Store
+
+# API Key（绝对不提交）
+*.key
+secrets.json

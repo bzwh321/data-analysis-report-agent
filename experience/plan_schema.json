@@ -1,0 +1,38 @@
+{
+  "_comment": "大脑Agent每次提问必须输出此格式，Harness强校验",
+  "required_fields": [
+    "round",
+    "analytical_step",
+    "question",
+    "query_spec",
+    "expected_output",
+    "acceptance_criteria",
+    "stop_condition"
+  ],
+  "analytical_step_enum": [
+    "trend_analysis",
+    "decomposition",
+    "attribution",
+    "risk_mining"
+  ],
+  "query_spec_required": [
+    "metrics",
+    "group_by",
+    "date_range"
+  ],
+  "expected_output_required": [
+    "format",
+    "required_fields",
+    "unit_sales",
+    "unit_rate"
+  ],
+  "acceptance_criteria_required": [
+    "min_rows",
+    "profit_rate_range",
+    "all_required_fields"
+  ],
+  "stop_condition_required": [
+    "if_impact_below_pct",
+    "reason"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "loaded_files": [
+    "thresholds.json",
+    "priority_rules.md",
+    "good_summaries.md"
+  ],
+  "active_thresholds": {
+    "profit_rate_critical": 10.0,
+    "overlap_stop": 0.8,
+    "min_impact": 3.0
+  },
+  "run_id": "demo_run",
+  "timestamp": "2025-01-15T09:00:00"
+}

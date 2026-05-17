@@ -1,0 +1,10 @@
+{
+  "round": 5,
+  "has_insight": false,
+  "overlap_score": 0.44,
+  "impact_pct": 1.8,
+  "insight_text": "配件SKU级拆解未发现显著异常，最大单SKU影响0.8%。",
+  "decision": "stop",
+  "stop_reason": "impact_pct(1.8%) < MIN_IMPACT_PCT(3%) → 停止下钻，边际收益消失",
+  "harness_check": "轮次上限5 / 本轮impact<MIN_IMPACT_PCT → 强制收拢"
+}

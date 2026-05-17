@@ -1,0 +1,43 @@
+{
+  "round": 5,
+  "analytical_step": "attribution",
+  "question": "配件类内部是否有特定SKU驱动增速？",
+  "query_spec": {
+    "metrics": [
+      "sales_amount"
+    ],
+    "group_by": [
+      "sku",
+      "quarter"
+    ],
+    "filters": {
+      "sub_category": "配件"
+    },
+    "date_range": {
+      "start": "2024-01",
+      "end": "2024-12"
+    }
+  },
+  "expected_output": {
+    "format": "table",
+    "required_fields": [
+      "sku",
+      "sales_2024",
+      "yoy"
+    ],
+    "unit_sales": "万元",
+    "unit_rate": "百分比"
+  },
+  "acceptance_criteria": {
+    "min_rows": 1,
+    "profit_rate_range": [
+      0,
+      100
+    ],
+    "all_required_fields": true
+  },
+  "stop_condition": {
+    "if_impact_below_pct": 3,
+    "reason": "配件占技术品类13%，SKU级影响<3%则停止"
+  }
+}

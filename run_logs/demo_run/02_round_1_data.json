@@ -1,0 +1,17 @@
+{
+  "year": [
+    "2023",
+    "2024"
+  ],
+  "sales_amount": [
+    432,
+    557
+  ],
+  "profit_rate": [
+    14.66,
+    12.47
+  ],
+  "yoy_sales": "+28.9%",
+  "yoy_profit_pp": "-2.19pp",
+  "harness": "PASS"
+}

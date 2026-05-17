@@ -1,0 +1,43 @@
+{
+  "round": 1,
+  "analytical_step": "trend_analysis",
+  "question": "核心指标的整体趋势如何？增长质量是否健康？",
+  "query_spec": {
+    "metrics": [
+      "sales_amount",
+      "profit_rate"
+    ],
+    "group_by": [
+      "year"
+    ],
+    "filters": {},
+    "date_range": {
+      "start": "2023-01",
+      "end": "2024-12"
+    }
+  },
+  "expected_output": {
+    "format": "table",
+    "required_fields": [
+      "year",
+      "sales_amount",
+      "profit_rate",
+      "yoy_sales",
+      "yoy_profit_pp"
+    ],
+    "unit_sales": "万元",
+    "unit_rate": "百分比"
+  },
+  "acceptance_criteria": {
+    "min_rows": 2,
+    "profit_rate_range": [
+      0,
+      100
+    ],
+    "all_required_fields": true
+  },
+  "stop_condition": {
+    "if_impact_below_pct": 3,
+    "reason": "整体趋势影响=100%，不会触发"
+  }
+}

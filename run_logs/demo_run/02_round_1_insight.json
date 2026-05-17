@@ -1,0 +1,9 @@
+{
+  "round": 1,
+  "has_insight": true,
+  "overlap_score": 0.0,
+  "impact_pct": 100,
+  "insight_text": "2024年销售额+28.9%，利润率同步从14.66%降至12.47%（-2.19pp）。销售增速是利润增速(+9.8%)的2.9倍，两者方向相反，说明增量来自低利润产品或价格让步。需拆解品类维度确认驱动因素。",
+  "decision": "continue",
+  "next_question": "Q2"
+}

@@ -1,0 +1,24 @@
+{
+  "core_metrics": [
+    "sales_amount",
+    "profit_rate",
+    "yoy_growth"
+  ],
+  "analysis_sequence": [
+    "trend_analysis",
+    "decomposition",
+    "attribution",
+    "risk_mining"
+  ],
+  "experience_rules_activated": [
+    "profit_rate_critical_low=10%",
+    "event_vs_structural",
+    "slow_drift_warning"
+  ],
+  "initial_question_queue": [
+    "Q1: 核心指标整体趋势如何？增长质量是否健康？",
+    "Q2: 利润率下行由哪个品类驱动？",
+    "Q3: 主要下行品类：是结构性还是事件性？",
+    "Q4: 平稳指标内是否有隐藏的结构漂移？"
+  ]
+}
