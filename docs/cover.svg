@@ -1,0 +1,79 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="640" fill="#0D1117"/>
+
+  <!-- 顶部强调线 -->
+  <rect width="1280" height="3" fill="#3B82F6"/>
+
+  <!-- 左侧内容区 -->
+  <!-- 项目标签 -->
+  <rect x="64" y="88" width="180" height="30" rx="15" fill="#3B82F620"/>
+  <text x="154" y="108" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#3B82F6" text-anchor="middle" letter-spacing="1">数据分析 · Agent</text>
+
+  <!-- 主标题 -->
+  <text x="64" y="210" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="60" font-weight="700" fill="#F0F6FC">数据分析报告</text>
+  <text x="64" y="282" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="60" font-weight="700" fill="#3B82F6">Agent</text>
+
+  <!-- 副标题 -->
+  <text x="64" y="340" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#8B949E">假设驱动 · 迭代分析 · 自动生成 HTML 报告</text>
+
+  <!-- 分割线 -->
+  <line x1="64" y1="380" x2="580" y2="380" stroke="#21262D" stroke-width="1"/>
+
+  <!-- 底部技术标签 -->
+  <rect x="64" y="400" width="90" height="28" rx="6" fill="#161B22" stroke="#30363D" stroke-width="1"/>
+  <text x="109" y="418" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#8B949E" text-anchor="middle">Claude API</text>
+
+  <rect x="166" y="400" width="72" height="28" rx="6" fill="#161B22" stroke="#30363D" stroke-width="1"/>
+  <text x="202" y="418" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#8B949E" text-anchor="middle">Python</text>
+
+  <rect x="250" y="400" width="80" height="28" rx="6" fill="#161B22" stroke="#30363D" stroke-width="1"/>
+  <text x="290" y="418" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#8B949E" text-anchor="middle">ECharts</text>
+
+  <!-- 右侧流程图 -->
+  <!-- 连接线背景轨道 -->
+  <line x1="700" y1="320" x2="1200" y2="320" stroke="#21262D" stroke-width="2" stroke-dasharray="6 4"/>
+
+  <!-- Node 1: 用户问题 -->
+  <circle cx="730" cy="200" r="52" fill="#161B22" stroke="#3B82F6" stroke-width="2"/>
+  <text x="730" y="194" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#F0F6FC" text-anchor="middle">用户</text>
+  <text x="730" y="214" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#F0F6FC" text-anchor="middle">问题</text>
+  <text x="730" y="280" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#8B949E" text-anchor="middle">输入</text>
+
+  <!-- 箭头 1→2 -->
+  <line x1="784" y1="200" x2="840" y2="200" stroke="#3B82F6" stroke-width="1.5"/>
+  <polygon points="840,196 850,200 840,204" fill="#3B82F6"/>
+
+  <!-- Node 2: 大脑设计 -->
+  <circle cx="900" cy="200" r="52" fill="#161B22" stroke="#3B82F6" stroke-width="2"/>
+  <text x="900" y="194" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#F0F6FC" text-anchor="middle">框架</text>
+  <text x="900" y="214" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#F0F6FC" text-anchor="middle">设计</text>
+  <text x="900" y="280" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#8B949E" text-anchor="middle">大脑 Phase 1</text>
+
+  <!-- 箭头 2→3 -->
+  <line x1="954" y1="200" x2="1010" y2="200" stroke="#3B82F6" stroke-width="1.5"/>
+  <polygon points="1010,196 1020,200 1010,204" fill="#3B82F6"/>
+
+  <!-- Node 3: 迭代分析（突出，更大） -->
+  <circle cx="1090" cy="200" r="64" fill="#3B82F610" stroke="#3B82F6" stroke-width="2.5"/>
+  <text x="1090" y="188" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#3B82F6" text-anchor="middle" font-weight="600">迭代</text>
+  <text x="1090" y="208" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#3B82F6" text-anchor="middle" font-weight="600">分析</text>
+  <text x="1090" y="228" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#3B82F6" text-anchor="middle">×5轮</text>
+  <text x="1090" y="296" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#8B949E" text-anchor="middle">假设→取数→洞察</text>
+
+  <!-- 自环箭头表示迭代 -->
+  <path d="M 1130 148 Q 1180 100 1130 148" stroke="#3B82F6" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+  <!-- 箭头 3→4 -->
+  <line x1="1090" y1="266" x2="1090" y2="360" stroke="#3B82F6" stroke-width="1.5"/>
+  <polygon points="1086,360 1090,372 1094,360" fill="#3B82F6"/>
+
+  <!-- Node 4: HTML报告 -->
+  <rect x="1014" y="376" width="152" height="80" rx="10" fill="#161B22" stroke="#3B82F6" stroke-width="2"/>
+  <text x="1090" y="408" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#F0F6FC" text-anchor="middle" font-weight="600">HTML 报告</text>
+  <text x="1090" y="432" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#3B82F6" text-anchor="middle">ECharts · 可视化</text>
+  <text x="1090" y="490" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#8B949E" text-anchor="middle">最终交付</text>
+
+  <!-- 底部版权 -->
+  <text x="64" y="590" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#484F58">github.com/bzwh321/data-analysis-report-agent</text>
+</svg>
