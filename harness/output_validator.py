@@ -1,5 +1,5 @@
 """
-output_validator.py — Phase 3 最终输出硬校验（第5层专属）
+output_validator.py — final report structure validator
 
 校验项：
 1. 结论可追溯性：每条 finding 必须有 data_source 字段
@@ -17,7 +17,7 @@ FORBIDDEN_LABELS = ['数据事实', '运营逻辑', '组织归因', '业务结�
 
 def validate_final_output(final: dict) -> tuple[bool, list[str]]:
     """
-    校验 Phase 3 最终输出。
+    校验最终报告结构。
     警告级别错误也会返回，调用方自行决定是否中止。
 
     Returns:
@@ -83,3 +83,21 @@ def validate_final_output(final: dict) -> tuple[bool, list[str]]:
     # 合并 errors + warnings（errors 排前）
     all_messages = errors + warnings
     return len(errors) == 0, all_messages
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+    import sys
+    from pathlib import Path
+
+    parser = argparse.ArgumentParser(description="Validate a final report JSON file.")
+    parser.add_argument("final_json", help="Path to a final report JSON file.")
+    args = parser.parse_args()
+
+    final = json.loads(Path(args.final_json).read_text(encoding="utf-8"))
+    ok, messages = validate_final_output(final)
+    print("PASS" if ok else "FAIL")
+    for message in messages:
+        print(f"- {message}")
+    sys.exit(0 if ok else 1)

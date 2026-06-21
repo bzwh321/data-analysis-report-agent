@@ -1,0 +1,16 @@
+case_id: retail-profitability
+display_name: 零售品类利润率分析
+description: 用于演示电商/零售销售数据中的品类利润率下滑、事件性促销冲击和子品类结构漂移归因。
+semantic_layer: semantic_layer.yaml
+experience_dir: experience
+data_input: user_or_host_provided
+default_question: 分析2024年各品类利润率走势，找出年度下滑的根因并给出行动建议
+default_context:
+  company: 示例零售公司
+  date_range:
+    start: "2024-01"
+    end: "2024-12"
+  categories:
+    - 家具
+    - 技术
+    - 办公用品

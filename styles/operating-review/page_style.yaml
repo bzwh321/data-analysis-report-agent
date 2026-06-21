@@ -1,0 +1,69 @@
+style_id: operating-review
+display_name: 经营复盘月报
+design_intent: 用可重复运营例会页面展示状态、异常、原因和下一周期动作，强调跟踪而非叙事。
+reference_pattern:
+  inspiration:
+    - consulting operating review appendix pages
+    - management meeting status trackers
+  visual_principle: 信息可扫描，但不做花哨 dashboard；状态、原因、动作严格分层。
+page:
+  format: operating_review_tracker
+  max_width: 1160px
+  density: medium_high
+  background: "#F8F8F5"
+  content_background: "#FFFFFF"
+palette:
+  primary: "#243B35"
+  secondary: "#0F7A5A"
+  accent: "#9A6B1F"
+  negative: "#A23B32"
+  positive: "#168055"
+  neutral_900: "#2B3133"
+  neutral_600: "#596366"
+  neutral_300: "#CDD4D0"
+  neutral_100: "#F1F3EF"
+typography:
+  font_family: "Arial, Helvetica, Microsoft YaHei, sans-serif"
+  h1: {size: 29, weight: 700, line_height: 1.2}
+  h2: {size: 18, weight: 700, line_height: 1.3}
+  body: {size: 14, weight: 400, line_height: 1.58}
+  status: {size: 11, weight: 700, line_height: 1.0}
+layout:
+  header: period_title_with_owner_and_status
+  first_screen:
+    - kpi_status_strip
+    - exception_queue
+    - action_tracker_preview
+  body_grid: tracker_rows
+  sections:
+    - period_overview
+    - kpi_status
+    - exceptions_causes
+    - action_tracker
+    - unresolved_data_gaps
+components:
+  status_chip:
+    states: [on_track, watch, exception, no_data]
+    shape: small_square_label
+  kpi_strip:
+    style: ruled_status_cells
+    includes: [metric, current, vs_target, status]
+  exception_table:
+    columns: [issue, threshold, cause, evidence, priority]
+  action_tracker:
+    columns: [action, target, due_date, dependency, owner_role, risk]
+charts:
+  preferred: [sparkline, variance_bar, status_table, exception_rank]
+  chart_background: "#FFFFFF"
+  annotation_style: direct_status_labels
+tables:
+  style: ruled_operating_tracker
+  sticky_status_column: true
+do:
+  - Make KPI status scannable in under one minute.
+  - Keep actions trackable with owner role, deadline, dependency, and next check.
+  - Separate status, cause, and action; do not mix them in one paragraph.
+avoid:
+  - Long consulting narratives or recommendation essays.
+  - Decorative cards, gradients, large icons, or unnecessary chart chrome.
+  - Actions without a target, time window, dependency, or owner role.

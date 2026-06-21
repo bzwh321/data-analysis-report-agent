@@ -1,0 +1,102 @@
+semantic_layer_id: retail-profitability
+version: "0.1"
+purpose: 记录零售利润率案例的表头、业务含义、口径、粒度和可分析边界；仅在指定该 case 时加载。
+
+grain:
+  default: month_category
+  supported:
+    - name: month_category
+      keys: [month, category]
+      meaning: 每月、每个一级品类的一行经营表现。
+    - name: month_subcategory
+      keys: [month, category, subcategory]
+      meaning: 每月、一级品类下每个子品类的一行结构表现。
+
+fields:
+  month:
+    role: dimension
+    business_name: 月份
+    meaning: 经营月份，用于识别季节性和事件性冲击。
+    examples: ["1月", "2024-01"]
+  category:
+    role: dimension
+    business_name: 一级品类
+    meaning: 家具、技术、办公用品等经营大类，是利润率拆解的第一层维度。
+    examples: ["家具", "技术", "办公用品"]
+  subcategory:
+    role: dimension
+    business_name: 子品类
+    meaning: 一级品类下的商品结构维度，用于判断高利润子品类是否被低利润子品类替代。
+    examples: ["复印机", "设备", "电话"]
+  profit_rate_2024:
+    role: metric
+    business_name: 2024年利润率
+    unit: pct
+    meaning: 当前分析期利润率，数值为百分比而非小数。
+    quality_rule: 合理范围通常在 -100 到 100 之间。
+  profit_rate_2023:
+    role: metric
+    business_name: 2023年利润率
+    unit: pct
+    meaning: 对照期利润率，和 profit_rate_2024 比较得到同比变化。
+  pp_change:
+    role: metric
+    business_name: 利润率百分点变化
+    unit: pp
+    meaning: profit_rate_2024 - profit_rate_2023，负值表示利润率下滑。
+  yoy_growth_gmv:
+    role: metric
+    business_name: GMV同比增速
+    unit: pct
+    meaning: 销售规模同比增长，用于判断增长是否以利润率牺牲换来。
+  profit_rate_annual:
+    role: metric
+    business_name: 年度平均利润率
+    unit: pct
+    meaning: 全年利润率均值。
+  profit_rate_q3:
+    role: metric
+    business_name: Q3平均利润率
+    unit: pct
+    meaning: 促销季利润率，用于判断事件性冲击。
+  profit_rate_non_q3:
+    role: metric
+    business_name: 非Q3平均利润率
+    unit: pct
+    meaning: 剔除促销季后的常态利润率。
+  q3_contribution_pct:
+    role: metric
+    business_name: Q3对年度异常的贡献
+    unit: pct
+    meaning: 年度利润率异常中由Q3解释的比例。
+  share_q1_2023:
+    role: metric
+    business_name: 2023Q1份额
+    unit: pct
+    meaning: 子品类在基准期的结构占比。
+  share_q4_2024:
+    role: metric
+    business_name: 2024Q4份额
+    unit: pct
+    meaning: 子品类在当前末期的结构占比。
+  share_change_pp:
+    role: metric
+    business_name: 份额百分点变化
+    unit: pp
+    meaning: 子品类份额变化，用于识别结构漂移。
+  trend:
+    role: attribute
+    business_name: 趋势方向
+    meaning: 子品类份额或指标的方向标签。
+
+business_terms:
+  利润率: 利润 / 销售额，以百分比表达。
+  结构漂移: 总量指标稳定时，内部高低利润子品类占比发生持续变化。
+  事件性冲击: 指标异常集中在少数月份或活动窗口，剔除后常态指标恢复。
+  促销ROI: 促销带来的增量收益与折扣、补贴、成本投入之间的关系。
+
+analysis_boundaries:
+  - 当前案例数据能判断品类、月份、子品类结构，不足以直接判断组织责任。
+  - 若只能定位到促销季，不要推断审批流程、人员激励或具体部门原因。
+  - 若只能看到子品类份额变化，不要直接断言是市场竞争还是内部销售行为导致。
+

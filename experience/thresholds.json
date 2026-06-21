@@ -1,27 +1,8 @@
 {
-  "_comment": "业务阈值规则：低于/高于阈值时大脑Agent必须将该结论列为最高优先级",
-  "profit_rate": {
-    "critical_low": 10.0,
-    "desc": "利润率<10% = 立即干预，禁止继续扩量",
-    "warning_low": 13.0,
-    "desc_w": "利润率<13% = 需在本季度内评估定价",
-    "healthy_min": 15.0,
-    "desc_h": "利润率≥15% = 结构健康"
-  },
-  "yoy_growth": {
-    "strong": 25.0,
-    "desc": "同比>25% = 强增长",
-    "weak": 5.0,
-    "desc_w": "同比<5% = 增长乏力，需单独分析",
-    "decline": 0.0,
-    "desc_d": "同比<0% = 立即归因"
-  },
-  "profit_rate_drop": {
-    "structural": 2.0,
-    "desc": "利润率下滑>2pp = 判定为结构性变化，需归因",
-    "event_driven": 5.0,
-    "desc_e": "单月利润率下滑>5pp = 优先检查是否有促销事件"
-  },
+  "_comment": "通用阈值只记录跨案例可复用的分析控制规则；具体业务指标阈值放入 cases/<case_id>/experience/thresholds.json。",
   "impact_min_pct": 3.0,
-  "desc": "维度下钻发现的影响<3% = 停止该分支"
+  "impact_min_pct_desc": "维度下钻发现的影响小于该比例时，默认停止该分支。",
+  "overlap_threshold": 0.8,
+  "overlap_threshold_desc": "新洞察与已有洞察高度重复时，默认收敛而不是继续扩展。",
+  "case_specific_rule": "禁止在根 experience 写利润率、GMV、SKU、品类等具体业务阈值。"
 }

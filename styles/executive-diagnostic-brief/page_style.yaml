@@ -1,0 +1,68 @@
+style_id: executive-diagnostic-brief
+display_name: 高管诊断简报
+design_intent: 用答案优先的一页式 severity brief 帮管理层快速判断影响、主因、动作和证据边界。
+reference_pattern:
+  inspiration:
+    - McKinsey executive summary page hierarchy
+    - BCG executive perspective summary rows
+  visual_principle: 先结论和影响，后证据；数字要大，但页面不能像 KPI 卡片模板。
+page:
+  format: executive_severity_brief
+  max_width: 1120px
+  density: compact
+  background: "#F7F8F8"
+  content_background: "#FFFFFF"
+palette:
+  primary: "#102A43"
+  secondary: "#005F9E"
+  accent: "#B42318"
+  positive: "#157F3B"
+  warning: "#9A5B22"
+  neutral_900: "#1F2933"
+  neutral_600: "#52606D"
+  neutral_200: "#D9E2EC"
+  neutral_100: "#F0F3F5"
+typography:
+  font_family: "Arial, Helvetica, Microsoft YaHei, sans-serif"
+  h1: {size: 31, weight: 700, line_height: 1.16}
+  h2: {size: 18, weight: 700, line_height: 1.32}
+  body: {size: 14, weight: 400, line_height: 1.6}
+  metric: {size: 38, weight: 700, line_height: 1.0}
+layout:
+  header: answer_first_with_severity
+  first_screen:
+    - main_conclusion
+    - impact_numbers
+    - primary_driver_exhibit
+    - immediate_actions
+  body_grid: impact_driver_action
+  sections:
+    - severity_snapshot
+    - driver_exhibit
+    - management_actions
+    - evidence_boundary
+components:
+  metric_row:
+    style: inline_numbers_with_thin_rules
+    max_items: 3
+  severity_flag:
+    states: [normal, watch, material]
+    color_only_for_exception: true
+  action_table:
+    columns: [decision, owner_role, next_check, evidence_needed]
+charts:
+  preferred: [waterfall, ranked_bar, compact_line]
+  chart_background: "#FFFFFF"
+  grid_lines: minimal
+  label_style: direct_labels
+tables:
+  style: dense_thin_rule_table
+  emphasize_columns: [decision, next_check]
+do:
+  - Put one management conclusion above the fold.
+  - Keep to three metrics and three actions unless the user asks for more.
+  - Use red only for material negative exceptions.
+avoid:
+  - Decorative hero sections, gradients, large icons, or generic rounded KPI cards.
+  - Long methodology paragraphs in the main view.
+  - Multiple competing status colors.

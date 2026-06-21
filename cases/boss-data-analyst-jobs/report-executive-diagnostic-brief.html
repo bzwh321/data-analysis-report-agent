@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>上海数据分析师岗位样例｜高管诊断简报</title>
+  <style>
+    :root {
+      --bg:#F7F8F8;
+      --paper:#FFFFFF;
+      --ink:#102A43;
+      --ink-2:#1F2933;
+      --text:#52606D;
+      --muted:#7B8794;
+      --rule:#D9E2EC;
+      --soft:#F0F3F5;
+      --soft-blue:#EAF4FB;
+      --blue:#005F9E;
+      --blue-2:#0B6FAE;
+      --red:#B42318;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:14px/1.62 Arial, Helvetica, "Microsoft YaHei", sans-serif;
+    }
+
+    .page {
+      width:min(1120px, calc(100% - 48px));
+      margin:0 auto;
+      padding:32px 0 56px;
+    }
+
+    .sheet {
+      background:var(--paper);
+      border:1px solid var(--rule);
+      padding:30px 34px 36px;
+    }
+
+    .severity-header {
+      display:flex;
+      justify-content:space-between;
+      gap:24px;
+      padding-bottom:16px;
+      border-bottom:3px solid var(--ink);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .severity-header strong {
+      color:var(--blue);
+      font-weight:700;
+    }
+
+    h1 {
+      margin:24px 0 12px;
+      max-width:900px;
+      font-size:31px;
+      line-height:1.16;
+      font-weight:700;
+      letter-spacing:0;
+    }
+
+    h2 {
+      margin:0 0 12px;
+      font-size:18px;
+      line-height:1.32;
+      font-weight:700;
+      letter-spacing:0;
+    }
+
+    h3 {
+      margin:0 0 8px;
+      font-size:15px;
+      line-height:1.35;
+      font-weight:700;
+      letter-spacing:0;
+    }
+
+    p { margin:0 0 10px; color:var(--text); }
+
+    .one-line {
+      margin:0 0 22px;
+      max-width:940px;
+      color:var(--ink-2);
+      font-size:18px;
+      line-height:1.58;
+    }
+
+    .one-line b { color:var(--blue); }
+
+    .first-screen {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 340px;
+      gap:30px;
+      padding:20px 0 24px;
+      border-top:1px solid var(--rule);
+      border-bottom:1px solid var(--rule);
+    }
+
+    .brief-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px 22px;
+    }
+
+    .brief-item {
+      border-top:1px solid var(--rule);
+      padding-top:11px;
+    }
+
+    .brief-item b {
+      display:block;
+      margin-bottom:4px;
+      color:var(--ink);
+    }
+
+    .brief-item span {
+      color:var(--text);
+    }
+
+    .decision-box {
+      border-left:4px solid var(--blue);
+      background:var(--soft);
+      padding:16px 18px;
+    }
+
+    .decision-box b {
+      display:block;
+      margin-bottom:7px;
+      color:var(--ink);
+    }
+
+    .decision-box span { color:var(--text); }
+
+    .metrics {
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      margin:0 0 26px;
+      border-bottom:1px solid var(--rule);
+    }
+
+    .metric {
+      min-height:118px;
+      padding:22px 22px 18px 0;
+      border-right:1px solid var(--rule);
+    }
+
+    .metric + .metric { padding-left:22px; }
+    .metric:last-child { border-right:0; }
+
+    .metric .label {
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .metric strong {
+      display:block;
+      margin:8px 0 7px;
+      color:var(--ink);
+      font-size:38px;
+      line-height:1;
+      font-weight:700;
+    }
+
+    .metric span {
+      display:block;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.48;
+    }
+
+    .executive-summary {
+      padding:0 0 22px;
+      border-bottom:1px solid var(--rule);
+    }
+
+    .summary-list {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px 28px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .summary-list li {
+      border-top:1px solid var(--rule);
+      padding-top:11px;
+      color:var(--text);
+    }
+
+    .summary-list b {
+      color:var(--ink);
+    }
+
+    .diagnostic-band {
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      margin:28px 0;
+      border-top:2px solid var(--ink);
+      border-bottom:1px solid var(--rule);
+      background:#FBFCFD;
+    }
+
+    .band-cell {
+      padding:16px 16px 15px;
+      border-right:1px solid var(--rule);
+    }
+
+    .band-cell:last-child { border-right:0; }
+
+    .band-cell .tag {
+      display:block;
+      margin-bottom:6px;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .band-cell strong {
+      display:block;
+      color:var(--ink);
+      font-size:16px;
+      line-height:1.32;
+    }
+
+    .band-cell span {
+      display:block;
+      margin-top:6px;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .band-cell.risk {
+      border-top:3px solid var(--red);
+    }
+
+    .band-cell.risk .tag,
+    .band-cell.risk strong {
+      color:var(--red);
+    }
+
+    .section {
+      padding:30px 0 0;
+    }
+
+    .section + .section {
+      margin-top:30px;
+      border-top:1px solid var(--rule);
+    }
+
+    .lead {
+      max-width:900px;
+      color:var(--ink-2);
+      font-size:15px;
+    }
+
+    .evidence-grid {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 300px;
+      gap:30px;
+      align-items:start;
+      margin-top:18px;
+    }
+
+    figure {
+      margin:0;
+      padding-top:12px;
+      border-top:1px solid var(--ink);
+    }
+
+    .figure-label {
+      margin:0 0 8px;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    img {
+      display:block;
+      width:100%;
+      height:auto;
+      border:1px solid #E5EAF0;
+      background:#FFFFFF;
+    }
+
+    figcaption {
+      margin-top:8px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+
+    th,
+    td {
+      padding:10px 8px;
+      border-bottom:1px solid var(--rule);
+      text-align:left;
+      vertical-align:top;
+    }
+
+    th {
+      border-top:1px solid var(--ink);
+      color:var(--ink);
+      font-weight:700;
+    }
+
+    td {
+      color:var(--text);
+    }
+
+    .narrow-table th,
+    .narrow-table td {
+      padding-left:0;
+    }
+
+    .callout {
+      margin-top:14px;
+      padding:13px 15px;
+      border-left:3px solid var(--blue);
+      background:var(--soft-blue);
+      color:var(--text);
+      font-size:13px;
+    }
+
+    .callout b { color:var(--ink); }
+
+    .action-table {
+      margin-top:16px;
+    }
+
+    .action-table th:nth-child(1),
+    .action-table td:nth-child(1) {
+      width:24%;
+      color:var(--ink);
+      font-weight:700;
+    }
+
+    .risk-zone {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:16px;
+    }
+
+    .risk-panel {
+      border-top:3px solid var(--red);
+      background:#FFF;
+      padding:14px 0 0;
+    }
+
+    .risk-panel h3 {
+      color:var(--red);
+    }
+
+    .risk-panel ul,
+    .questions ul,
+    .notes ul {
+      margin:8px 0 0;
+      padding-left:18px;
+      color:var(--text);
+    }
+
+    .risk-panel li,
+    .questions li,
+    .notes li {
+      margin:5px 0;
+    }
+
+    .questions {
+      margin-top:16px;
+      border-top:1px solid var(--ink);
+      padding-top:12px;
+    }
+
+    .notes {
+      margin-top:34px;
+      padding:18px 20px;
+      background:var(--soft);
+      color:var(--text);
+      font-size:12px;
+    }
+
+    .notes h2 {
+      margin-bottom:8px;
+    }
+
+    .notes p {
+      font-size:12px;
+    }
+
+    @media (max-width:900px) {
+      .page { width:min(100% - 32px, 1120px); padding-top:20px; }
+      .sheet { padding:24px 20px 30px; }
+      .severity-header,
+      .first-screen,
+      .summary-list,
+      .diagnostic-band,
+      .evidence-grid,
+      .risk-zone,
+      .brief-grid,
+      .metrics { display:block; }
+      .severity-header span + span { display:block; margin-top:6px; }
+      h1 { font-size:26px; }
+      .one-line { font-size:16px; }
+      .decision-box { margin-top:18px; }
+      .metric {
+        min-height:auto;
+        border-right:0;
+        border-bottom:1px solid var(--rule);
+        padding:18px 0 !important;
+      }
+      .band-cell {
+        border-right:0;
+        border-bottom:1px solid var(--rule);
+      }
+      figure,
+      .questions,
+      .risk-panel { margin-top:16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <article class="sheet">
+      <div class="severity-header">
+        <span>高管诊断简报 | BOSS 上海数据分析师岗位样例 | 2026-06-21</span>
+        <span><strong>诊断等级：结构性集中</strong></span>
+      </div>
+
+      <h1>上海数据分析师岗位样例：需求集中在 1-5 年，薪资随经验明显抬升</h1>
+      <p class="one-line"><b>一句话结论：</b>这 300 条样例更像“中级数据分析师岗位池”，而不是零基础泛岗位市场；职位画像、课程设计和求职定位都应先围绕 1-5 年经验、SQL/Python/统计基础和业务分析交付能力展开。</p>
+
+      <section class="first-screen" aria-label="首屏诊断">
+        <div class="brief-grid">
+          <div class="brief-item">
+            <b>发生了什么</b>
+            <span>1-3 年岗位 83 条、3-5 年岗位 115 条，二者合计占 66.0%，构成本次样例的主要需求层。</span>
+          </div>
+          <div class="brief-item">
+            <b>为什么重要</b>
+            <span>可解析薪资样本的月薪中位估计均值为 20.5K，经验段越高薪资均值越高，说明岗位定价在奖励独立分析交付能力。</span>
+          </div>
+          <div class="brief-item">
+            <b>主要驱动因素</b>
+            <span>经验集中、技能标签集中和互联网/软件/电商/大数据公司类型共同指向技术与业务结合型需求。</span>
+          </div>
+          <div class="brief-item">
+            <b>需要的决策</b>
+            <span>是否将后续岗位画像、培训重点和求职策略的默认目标从“入门岗位”调整为“中级可交付岗位”。</span>
+          </div>
+        </div>
+        <div class="decision-box">
+          <b>建议管理判断</b>
+          <span>先把 1-3 年、3-5 年和 5-10 年拆成三套画像；不要把未分层的平均薪资和技能标签直接写成“上海数据分析师市场结论”。</span>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="关键数字">
+        <div class="metric">
+          <div class="label">经验集中度</div>
+          <strong>66.0%</strong>
+          <span>1-3 年与 3-5 年岗位合计占比，N=300。</span>
+        </div>
+        <div class="metric">
+          <div class="label">薪资中枢</div>
+          <strong>20.5K</strong>
+          <span>可解析岗位的月薪中位估计均值，N=266。</span>
+        </div>
+        <div class="metric">
+          <div class="label">薪资可用样本</div>
+          <strong>266/300</strong>
+          <span>34 条薪资文本未进入 K/月估算。</span>
+        </div>
+      </section>
+
+      <section class="executive-summary">
+        <h2>执行摘要</h2>
+        <ul class="summary-list">
+          <li><b>岗位需求不是均匀分布。</b>3-5 年岗位 115 条，是已知经验段中的最大组；1-3 年岗位 83 条，说明样例主体集中在能独立做分析但未进入资深专家层的经验带。</li>
+          <li><b>薪资梯度支持“经验溢价”判断。</b>1-3 年月薪均值 16.4K，3-5 年 21.7K，5-10 年 27.4K；3-5 年较 1-3 年高 5.3K，5-10 年较 3-5 年再高 5.7K。</li>
+          <li><b>技能信号集中在数据提取、分析建模基础和统计背景。</b>SQL 135 次、数据分析/挖掘 126 次、Python 115 次、数学/统计 101 次，是最清晰的岗位文本信号。</li>
+          <li><b>公司类型显示需求主要来自数字化业务场景。</b>互联网 75 条领先，其后为计算机软件 31 条、电子商务 21 条、大数据 20 条；但公司类型只能解释样例结构，不能推断企业战略或真实招聘预算。</li>
+        </ul>
+      </section>
+
+      <section class="diagnostic-band" aria-label="诊断带">
+        <div class="band-cell">
+          <span class="tag">需求侧</span>
+          <strong>中级经验段是主战场</strong>
+          <span>1-5 年合计 198 条，优先决定岗位画像和学习路径。</span>
+        </div>
+        <div class="band-cell">
+          <span class="tag">价格侧</span>
+          <strong>薪资随经验阶梯上移</strong>
+          <span>从 16.4K 到 27.4K，经验段之间存在可见定价差。</span>
+        </div>
+        <div class="band-cell">
+          <span class="tag">能力侧</span>
+          <strong>SQL、Python、统计仍是底层信号</strong>
+          <span>标签频次说明岗位描述偏好，不等同于真实技术栈。</span>
+        </div>
+        <div class="band-cell risk">
+          <span class="tag">阻塞项</span>
+          <strong>岗位族尚未拆开</strong>
+          <span>经营分析、产品分析、风控分析、BI 等方向未区分，影响下一步建议精度。</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>经验结构：1-5 年岗位构成样例需求主体</h2>
+        <p class="lead"><b>事实：</b>3-5 年岗位 115 条、1-3 年岗位 83 条、5-10 年岗位 38 条。已知经验段显示，招聘方更常在中级经验带释放需求；这会直接影响报告、课程或求职建议的默认读者画像。</p>
+        <div class="evidence-grid">
+          <figure>
+            <p class="figure-label">证据图 1</p>
+            <h3>经验要求分布</h3>
+            <img src="report_assets/experience_mix.png" alt="上海数据分析师岗位样例的经验要求分布">
+            <figcaption>单位：岗位条数。样例总量 N=300；经验字段中的实习出勤文本不得解释为工作年限。</figcaption>
+          </figure>
+          <div>
+            <table class="narrow-table">
+              <thead>
+                <tr><th>经验段</th><th>岗位条数</th><th>管理含义</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1-3 年</td><td>83</td><td>适合作为初中级岗位画像，不应被写成零基础岗位。</td></tr>
+                <tr><td>3-5 年</td><td>115</td><td>样例最大经验段，应作为主画像和薪资判断核心。</td></tr>
+                <tr><td>5-10 年</td><td>38</td><td>数量较少，但薪资明显抬升，代表更高独立负责度。</td></tr>
+              </tbody>
+            </table>
+            <div class="callout"><b>所以：</b>后续输出应按经验段拆分画像。若只给一个统一“数据分析师画像”，会把中级岗位要求误写成全样例平均要求。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>薪资梯度：经验每上一个台阶，月薪估计均值同步上移</h2>
+        <p class="lead"><b>事实：</b>266 条薪资文本可解析为 K/月口径；可解析样本的月薪中位估计均值为 20.5K。分经验段看，1-3 年为 16.4K，3-5 年为 21.7K，5-10 年为 27.4K。</p>
+        <div class="evidence-grid">
+          <figure>
+            <p class="figure-label">证据图 2</p>
+            <h3>不同经验段的月薪中位估计均值</h3>
+            <img src="report_assets/salary_by_experience.png" alt="不同经验段的月薪中位估计均值">
+            <figcaption>单位：K/月。仅统计可解析薪资文本；发布薪资不是最终 offer 或到手收入。</figcaption>
+          </figure>
+          <div>
+            <table class="narrow-table">
+              <thead>
+                <tr><th>经验段</th><th>月薪均值</th><th>相邻变化</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1-3 年</td><td>16.4K</td><td>基准段。</td></tr>
+                <tr><td>3-5 年</td><td>21.7K</td><td>较 1-3 年 +5.3K，约 +32%。</td></tr>
+                <tr><td>5-10 年</td><td>27.4K</td><td>较 3-5 年 +5.7K，约 +26%。</td></tr>
+              </tbody>
+            </table>
+            <div class="callout"><b>所以：</b>薪资建议必须随经验段分层。20.5K 可以作为可解析样本的整体中枢，但不能替代 1-3 年、3-5 年、5-10 年三档判断。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>技能标签：核心信号集中在 SQL、分析挖掘、Python 和统计基础</h2>
+        <p class="lead"><b>事实：</b>标签出现频次最高的四类分别是 SQL 135 次、数据分析/挖掘 126 次、Python 115 次、数学/统计 101 次。它们共同指向岗位描述中的基础能力组合：取数、分析、编程和统计理解。</p>
+        <div class="evidence-grid">
+          <figure>
+            <p class="figure-label">证据图 3</p>
+            <h3>高频技能标签</h3>
+            <img src="report_assets/skill_tags.png" alt="上海数据分析师岗位样例中的高频技能标签">
+            <figcaption>单位：标签出现次数。标签来自岗位文本或平台抽取，不能直接等同于企业真实技术栈。</figcaption>
+          </figure>
+          <div>
+            <table class="narrow-table">
+              <thead>
+                <tr><th>标签</th><th>出现次数</th><th>解释</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>SQL</td><td>135</td><td>取数和数据处理仍是最稳定的基础信号。</td></tr>
+                <tr><td>数据分析/挖掘</td><td>126</td><td>岗位标题之外，招聘方仍在强调分析交付本身。</td></tr>
+                <tr><td>Python</td><td>115</td><td>编程自动化和建模工具信号强，但需结合 JD 才能确认深度。</td></tr>
+                <tr><td>数学/统计</td><td>101</td><td>统计背景被频繁提及，适合纳入能力基线。</td></tr>
+              </tbody>
+            </table>
+            <div class="callout"><b>所以：</b>培训或求职准备应优先覆盖 SQL + Python + 统计分析表达，但不要把标签频次解释成岗位日常工作占比。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>公司类型：需求集中在互联网及软件相关业务场景</h2>
+        <p class="lead"><b>事实：</b>公司类型中互联网 75 条最高，其后为计算机软件 31 条、电子商务 21 条、大数据 20 条。样例需求更多来自数字化、平台化或软件化业务场景。</p>
+        <div class="evidence-grid">
+          <figure>
+            <p class="figure-label">证据图 4</p>
+            <h3>公司类型分布</h3>
+            <img src="report_assets/company_type_mix.png" alt="上海数据分析师岗位样例中的公司类型分布">
+            <figcaption>单位：岗位条数。公司类型为平台展示字段，不代表完整工商行业分类。</figcaption>
+          </figure>
+          <div>
+            <table class="narrow-table">
+              <thead>
+                <tr><th>公司类型</th><th>岗位条数</th><th>含义</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>互联网</td><td>75</td><td>样例中最主要的岗位来源，应优先拆业务分析、产品分析等方向。</td></tr>
+                <tr><td>计算机软件</td><td>31</td><td>偏软件产品和交付场景，可能更重工具链与数据平台协作。</td></tr>
+                <tr><td>电子商务</td><td>21</td><td>可能涉及交易、用户、转化和运营分析，但需 JD 验证。</td></tr>
+                <tr><td>大数据</td><td>20</td><td>技术数据服务相关信号较强，但不能仅凭类型判断岗位深度。</td></tr>
+              </tbody>
+            </table>
+            <div class="callout"><b>所以：</b>公司类型可以帮助设定行业场景优先级，但不能替代岗位族拆分；下一步仍需读取完整 JD 文本。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>建议下一步：先分层画像，再补证据缺口</h2>
+        <p class="lead"><b>管理动作应围绕可落地的三件事：</b>重做经验分层画像、验证岗位族差异、把薪资口径固定为可解析发布薪资估算。</p>
+        <table class="action-table">
+          <thead>
+            <tr>
+              <th>管理动作</th>
+              <th>目标</th>
+              <th>下一次检查</th>
+              <th>需要补的证据</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>按 1-3 年、3-5 年、5-10 年重写岗位画像</td>
+              <td>避免把中级岗位要求误读为入门要求，形成更可执行的求职和课程建议。</td>
+              <td>下一版报告先输出三套画像和薪资带。</td>
+              <td>各经验段的岗位标题、技能标签、公司类型交叉表。</td>
+            </tr>
+            <tr>
+              <td>拆分岗位族：经营、产品、风控、BI、数据挖掘</td>
+              <td>判断同样叫“数据分析师”的岗位是否对应不同能力栈和薪资曲线。</td>
+              <td>补齐 JD 文本后做首轮聚类或规则分组。</td>
+              <td>完整岗位描述、职责关键词、业务对象和工具要求。</td>
+            </tr>
+            <tr>
+              <td>建立薪资发布口径门禁</td>
+              <td>所有薪资结论都标注可解析样本数，避免被误读为真实 offer。</td>
+              <td>发布前核对 266/300 口径和未解析记录类型。</td>
+              <td>34 条未解析薪资文本、发薪月数解析结果、异常薪资类型。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>风险与阻塞：当前报告能判断结构，不能替代岗位深描</h2>
+        <p class="lead"><b>当前结论足以支持方向调整，尚不足以支持具体岗位族策略。</b>如果下一步要输出求职路线、课程模块或招聘策略，需要补齐岗位文本和交叉维度。</p>
+        <div class="risk-zone">
+          <div class="risk-panel">
+            <h3>主要风险</h3>
+            <ul>
+              <li>34 条薪资文本未进入可解析薪资样本，薪资均值必须限定为“可解析岗位”。</li>
+              <li>经验字段可能混有实习出勤频率，不能把“几天/周”解释成工作年限。</li>
+              <li>技能标签是岗位文本信号，不足以证明真实技术栈、工作占比或候选人唯一学习优先级。</li>
+            </ul>
+          </div>
+          <div class="risk-panel">
+            <h3>决策阻塞</h3>
+            <ul>
+              <li>缺少完整 JD 文本，无法区分经营分析、产品分析、风控分析、BI 等岗位族。</li>
+              <li>缺少公司规模、融资阶段、区位和学历要求的交叉分析，暂不能解释薪资差异来源。</li>
+              <li>样例来自上海“数据分析师”关键词，不能外推为全国岗位市场。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>仍需回答的问题</h2>
+        <div class="questions">
+          <ul>
+            <li>3-5 年岗位的高频技能，是否明显不同于 1-3 年岗位，还是只是薪资更高但能力标签相似？</li>
+            <li>互联网、软件、电商、大数据四类公司中，哪一类对 Python、SQL、统计背景的要求更强？</li>
+            <li>未解析薪资的 34 条记录是面议、日薪、实习薪资还是格式异常？它们会不会系统性偏向某类岗位？</li>
+            <li>学历要求、公司规模、融资阶段和行政区位是否解释了同经验段内的薪资差异？</li>
+            <li>完整 JD 文本能否把岗位拆成经营分析、产品分析、风控分析、商业分析、BI 报表等更可行动的岗位族？</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="notes">
+        <h2>口径与注释</h2>
+        <ul>
+          <li>数据范围：本报告基于上海“数据分析师”关键词下 300 条 BOSS 岗位搜索样例；每行代表一次岗位搜索结果，不代表唯一公司或唯一招聘需求。</li>
+          <li>薪资口径：266 条薪资文本可解析为 K/月口径；月薪中位估计按发布薪资上下限中点估算。发布薪资不等于最终 offer、实际到手收入或社保基数。</li>
+          <li>经验口径：经验要求需先映射为经验分桶；“4天/周”“5天/周”等实习出勤文本不得计入工作年限。</li>
+          <li>技能口径：技能标签为岗位描述或平台抽取的文本信号，多标签岗位会贡献多个标签出现次数；标签频次不等同于企业真实技术栈或岗位日常工作占比。</li>
+          <li>公司类型口径：公司类型来自平台展示字段，用于观察样例结构，不用于推断公司经营状况、招聘预算或组织战略。</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BOSS 岗位案例：上海数据分析师岗位董事会备忘录</title>
+  <style>
+    :root {
+      --ink: #202020;
+      --text: #4d4d4d;
+      --muted: #777777;
+      --rule: #d7d2ca;
+      --fine-rule: #ebe7df;
+      --red: #d71920;
+      --teal: #0e6f66;
+      --teal-soft: #e9f2ef;
+      --warm: #f4f0ea;
+      --risk: #8a3a24;
+      --paper: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--paper);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Georgia, "Times New Roman", SimSun, "Microsoft YaHei", serif;
+      font-size: 16px;
+      line-height: 1.72;
+    }
+
+    .page {
+      width: min(1040px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 42px 0 68px;
+    }
+
+    .letterhead {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--ink);
+      align-items: start;
+    }
+
+    .brand-line {
+      width: 58px;
+      height: 5px;
+      margin-bottom: 12px;
+      background: var(--red);
+    }
+
+    .brand {
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .doc-meta {
+      max-width: 360px;
+      color: var(--muted);
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: right;
+    }
+
+    h1 {
+      max-width: 860px;
+      margin: 34px 0 18px;
+      font-size: 34px;
+      line-height: 1.18;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      line-height: 1.28;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.38;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--text);
+    }
+
+    strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 34px;
+      padding: 26px 0 28px;
+      border-top: 4px solid var(--red);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .summary-label {
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .one-sentence {
+      margin: 0 0 18px;
+      max-width: 760px;
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.48;
+    }
+
+    .summary-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+
+    .summary-list li {
+      margin: 0 0 9px;
+      padding-left: 2px;
+    }
+
+    .recommend-box {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 34px;
+      margin: 28px 0 0;
+      padding: 24px 26px;
+      border: 1px solid var(--rule);
+      border-left: 7px solid var(--teal);
+      background: var(--warm);
+    }
+
+    .recommend-box .kicker {
+      color: var(--teal);
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .recommend-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section {
+      padding: 36px 0 38px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .narrow {
+      max-width: 760px;
+    }
+
+    .memo-grid {
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 42px;
+      align-items: start;
+    }
+
+    .exhibit {
+      margin: 0;
+      padding-top: 14px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .exhibit-label {
+      margin: 0 0 8px;
+      color: var(--teal);
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .exhibit img {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--fine-rule);
+      background: #f8f7f4;
+    }
+
+    .caption {
+      margin-top: 9px;
+      color: var(--muted);
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .wide-block {
+      margin-top: 22px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      line-height: 1.48;
+    }
+
+    th {
+      padding: 11px 10px;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      text-align: left;
+      color: var(--ink);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--fine-rule);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    tr.recommended td {
+      background: var(--teal-soft);
+      color: #24453f;
+    }
+
+    .decision {
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .risk-register th {
+      border-top-color: var(--risk);
+    }
+
+    .risk-register .level {
+      color: var(--risk);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .decision-record {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 34px;
+      align-items: start;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .decision-record table {
+      font-size: 12px;
+    }
+
+    .notes {
+      padding: 28px 0 0;
+      color: var(--muted);
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .notes h2 {
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", SimSun, "Microsoft YaHei", serif;
+      font-size: 21px;
+    }
+
+    .notes ol {
+      margin: 0;
+      padding-left: 19px;
+    }
+
+    .notes li {
+      margin-bottom: 8px;
+    }
+
+    .callout-rule {
+      margin: 22px 0 0;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--rule);
+      color: var(--text);
+      font-family: Arial, Helvetica, "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .next-steps {
+      margin: 14px 0 0;
+      padding-left: 20px;
+      color: var(--text);
+    }
+
+    .next-steps li {
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    @media (max-width: 840px) {
+      .page {
+        width: min(100% - 32px, 1040px);
+        padding-top: 28px;
+      }
+
+      .letterhead,
+      .summary,
+      .recommend-box,
+      .memo-grid,
+      .decision-record {
+        grid-template-columns: 1fr;
+      }
+
+      .doc-meta {
+        text-align: left;
+      }
+
+      h1 {
+        font-size: 29px;
+      }
+
+      .one-sentence {
+        font-size: 18px;
+      }
+
+      table {
+        min-width: 720px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="letterhead">
+      <div>
+        <div class="brand-line"></div>
+        <div class="brand">董事会咨询备忘录</div>
+      </div>
+      <div class="doc-meta">
+        主题：BOSS 上海数据分析师岗位案例<br>
+        用途：报告重做与案例决策讨论<br>
+        日期：2026-06-21
+      </div>
+    </header>
+
+    <h1>上海数据分析师岗位的主战场是 1-5 年中级能力池，而不是泛化的就业市场全景</h1>
+
+    <section class="summary" aria-labelledby="exec-summary">
+      <div>
+        <div class="summary-label">执行摘要</div>
+      </div>
+      <div>
+        <h2 id="exec-summary">执行摘要</h2>
+        <p class="one-sentence"><strong>一句话结论：</strong>基于 300 条上海 BOSS 数据分析师岗位样本，需求主体集中在 1-5 年经验段，薪资从 1-3 年的 16.4K 抬升至 3-5 年的 21.7K，并继续随资历上行；核心能力栈清晰落在 SQL、数据分析/挖掘、Python 与数学统计。</p>
+        <ul class="summary-list">
+          <li><strong>岗位池不是均匀分布。</strong>3-5 年岗位 115 条、1-3 年岗位 83 条，二者合计 198 条，占 300 条样本的 66.0%；5-10 年为 38 条，说明样本更适合回答“中级岗位画像”，不适合直接外推为全市场供需。</li>
+          <li><strong>薪资梯度与经验梯度一致。</strong>266 条岗位薪资可解析，月薪中位估计均值为 20.5K；1-3 年、3-5 年、5-10 年分别为 16.4K、21.7K、27.4K，经验溢价足够明显。</li>
+          <li><strong>技能要求呈现“分析工程化”组合。</strong>SQL 出现 135 次，数据分析/挖掘 126 次，Python 115 次，数学/统计 101 次；单纯会工具不足以解释岗位要求，报告应把能力组织成可交付分析工作的能力簇。</li>
+          <li><strong>公司类型偏数字原生行业。</strong>互联网 75 条、计算机软件 31 条、电子商务 21 条、大数据 20 条；这支持数字业务侧岗位画像，但不足以代表传统行业整体招聘结构。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="recommend-box" aria-labelledby="recommendation">
+      <div class="kicker">建议框</div>
+      <div>
+        <h2 id="recommendation">建议把本案例定位为“上海中级数据分析师岗位画像”，并用经验段解释薪资与技能差异</h2>
+        <p><strong>为什么现在这样做：</strong>现有证据已经足以支撑经验结构、薪资梯度、技能簇和公司类型四条主线；继续扩写成宏观就业报告会放大样本边界，降低结论可信度。</p>
+        <p><strong>取舍：</strong>报告会更像董事会备忘录而不是指标面板，牺牲部分图表密度，换取更清晰的决策路径：这份数据能支持什么判断，不能支持什么判断，下一步该补什么证据。</p>
+        <p><strong>改变建议的条件：</strong>如果后续补齐完整 JD、发布日期、岗位族和公司规模后，发现样本在职能和行业上高度异质，应先重分组，再讨论薪资或技能差异。</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="option-matrix">
+      <div class="narrow">
+        <h2 id="option-matrix">选项矩阵：本版报告应服务“定位与取舍”，不是堆图</h2>
+        <p><strong>主推荐路径是中级岗位画像。</strong>它同时解释岗位经验结构、薪资梯度和技能标签，而且不会把 BOSS 平台样本误写成全市场研究。其他路径可以作为辅助章节，但不应成为主线。</p>
+      </div>
+      <div class="wide-block">
+        <table>
+          <thead>
+            <tr>
+              <th>路径</th>
+              <th>最适合回答的问题</th>
+              <th>证据基础</th>
+              <th>主要代价</th>
+              <th>本版取舍</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="recommended">
+              <td>按经验段构建中级岗位画像</td>
+              <td>上海数据分析师岗位的主流经验要求、薪资阶梯与能力组合是什么</td>
+              <td>1-3 年 83 条、3-5 年 115 条、5-10 年 38 条；薪资随经验上行</td>
+              <td>不直接回答宏观就业总量或跨城比较</td>
+              <td class="decision">推荐作为主线</td>
+            </tr>
+            <tr>
+              <td>按技能标签做能力清单</td>
+              <td>求职、课程或训练营应优先补哪些能力</td>
+              <td>SQL、分析/挖掘、Python、统计排在前列</td>
+              <td>标签不能代表 JD 深度，也不能代表真实技能熟练度</td>
+              <td>作为能力章节</td>
+            </tr>
+            <tr>
+              <td>按公司类型做市场来源分析</td>
+              <td>哪些类型企业更常发布这类岗位</td>
+              <td>互联网、软件、电商、大数据位居前列</td>
+              <td>平台分类较粗，不能推断行业战略或招聘预算</td>
+              <td>作为背景约束</td>
+            </tr>
+            <tr>
+              <td>写成泛就业市场报告</td>
+              <td>全市场需求是否增长、薪资是否普遍上升</td>
+              <td>当前数据缺少时间序列、跨平台样本和成交薪资</td>
+              <td>外推风险最高</td>
+              <td>本版不采用</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section memo-grid" aria-labelledby="experience">
+      <div class="narrow">
+        <h2 id="experience">经验结构：1-5 年岗位构成了样本的主要解释框架</h2>
+        <p><strong>3-5 年是最大单一经验段。</strong>样本中 3-5 年岗位 115 条，高于 1-3 年的 83 条，也显著高于 5-10 年的 38 条。这意味着报告读者应优先理解“能够独立完成分析任务的中级岗位”是什么，而不是把它当成入门岗位集合。</p>
+        <p><strong>1-3 年与 3-5 年合计占 66.0%。</strong>这个结构会影响后续所有判断：薪资中位估计均值 20.5K 不应被读作所有经验段的均衡薪资，而应理解为被中级岗位池拉动后的总体结果。</p>
+        <p class="callout-rule"><strong>管理含义：</strong>如果这份案例用于课程、求职或招聘画像，主叙事应围绕 1-3 年到 3-5 年的能力跃迁，而不是只列“热门技能”。</p>
+      </div>
+      <figure class="exhibit">
+        <div class="exhibit-label">证据图 1</div>
+        <h3>经验要求分布显示样本主体集中在 1-5 年岗位</h3>
+        <img src="report_assets/experience_mix.png" alt="上海数据分析师岗位经验要求分布">
+        <figcaption class="caption">图中统计为岗位经验要求标签的出现数量。实习、在校和按天出勤类字段单独保留，不并入全职经验段。</figcaption>
+      </figure>
+    </section>
+
+    <section class="section memo-grid" aria-labelledby="salary">
+      <div class="narrow">
+        <h2 id="salary">薪资梯度：经验溢价清楚，但只能解释发布薪资</h2>
+        <p><strong>可解析薪资覆盖 266 条岗位。</strong>在这些岗位中，月薪中位估计均值为 20.5K。按经验段看，1-3 年为 16.4K，3-5 年为 21.7K，5-10 年为 27.4K。</p>
+        <p><strong>经验上行带来连续抬升。</strong>3-5 年较 1-3 年高 5.3K，5-10 年较 1-3 年高 11.0K。该梯度支持“中级岗位画像”主线，也提醒读者不要用总体 20.5K 替代分层薪资判断。</p>
+        <p class="callout-rule"><strong>解释边界：</strong>这里使用的是发布薪资区间的中位估计，不是候选人最终成交薪资，也没有扣除 13 薪、奖金、试用期、社保口径或岗位福利差异。</p>
+      </div>
+      <figure class="exhibit">
+        <div class="exhibit-label">证据图 2</div>
+        <h3>薪资随经验段上行，3-5 年已明显高于 1-3 年</h3>
+        <img src="report_assets/salary_by_experience.png" alt="不同经验段的月薪中位估计均值">
+        <figcaption class="caption">单位为 K/月。图中包含 1 年以内和 10 年以上等辅助经验段，本备忘录主论证聚焦用户给定的 1-3 年、3-5 年、5-10 年三档。</figcaption>
+      </figure>
+    </section>
+
+    <section class="section memo-grid" aria-labelledby="skills">
+      <div class="narrow">
+        <h2 id="skills">技能标签：岗位要求从工具清单转向可交付分析能力</h2>
+        <p><strong>前四个标签构成核心能力簇。</strong>SQL 出现 135 次，数据分析/挖掘 126 次，Python 115 次，数学/统计 101 次。它们共同指向一个要求：候选人不仅要取数，还要能完成分析建模、解释结果并支撑业务判断。</p>
+        <p><strong>BI 与行业经验是第二层能力。</strong>Power BI、Tableau、行业数据经验等标签也出现，但数量低于 SQL、Python 和统计能力。报告应将它们定位为加分项或岗位方向差异，而不是主结论。</p>
+        <p class="callout-rule"><strong>管理含义：</strong>训练路径不应只写“学 SQL 和 Python”，而应设计为“SQL 取数、Python 处理、统计判断、业务解释”四段式能力闭环。</p>
+      </div>
+      <figure class="exhibit">
+        <div class="exhibit-label">证据图 3</div>
+        <h3>核心标签集中在 SQL、分析/挖掘、Python 和统计背景</h3>
+        <img src="report_assets/skill_tags.png" alt="上海数据分析师岗位技能标签分布">
+        <figcaption class="caption">标签为岗位字段展开后的出现次数；一个岗位可包含多个标签，因此不应把次数直接读成岗位占比。</figcaption>
+      </figure>
+    </section>
+
+    <section class="section memo-grid" aria-labelledby="company-types">
+      <div class="narrow">
+        <h2 id="company-types">公司类型：数字原生企业贡献了最清晰的岗位画像</h2>
+        <p><strong>互联网是最大公司类型。</strong>样本中互联网岗位 75 条，计算机软件 31 条，电子商务 21 条，大数据 20 条，四类合计 147 条。它们共同塑造了对 SQL、Python、数据分析和业务理解的高频要求。</p>
+        <p><strong>这不是全行业招聘结构。</strong>公司类型来自平台分类，颗粒度有限；它能说明样本中的岗位来源，却不能证明传统行业对数据分析师的真实需求较弱。</p>
+        <p class="callout-rule"><strong>管理含义：</strong>如果目标读者是求职者或课程负责人，公司类型章节应作为岗位语境说明；如果目标读者是企业招聘负责人，还需要补充行业、部门和岗位族拆分。</p>
+      </div>
+      <figure class="exhibit">
+        <div class="exhibit-label">证据图 4</div>
+        <h3>互联网、软件、电商和大数据是样本中最主要的公司类型</h3>
+        <img src="report_assets/company_type_mix.png" alt="上海数据分析师岗位公司类型分布">
+        <figcaption class="caption">公司类型为 BOSS 岗位字段分类，适合描述样本结构，不适合直接推断行业总需求或招聘预算。</figcaption>
+      </figure>
+    </section>
+
+    <section class="section" aria-labelledby="risks">
+      <div class="narrow">
+        <h2 id="risks">风险登记：结论可用，但外推必须收紧</h2>
+        <p><strong>本版风险不在图表，而在解释边界。</strong>数据足以支持样本画像和分层判断，但如果把它写成“上海数据分析师市场全景”，会引入样本、平台和薪资口径风险。</p>
+      </div>
+      <div class="wide-block">
+        <table class="risk-register">
+          <thead>
+            <tr>
+              <th>风险</th>
+              <th>为什么重要</th>
+              <th>当前处理</th>
+              <th>后续控制</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="level">样本外推风险</span></td>
+              <td>300 条样本来自特定平台、城市和关键词，不能代表所有招聘渠道。</td>
+              <td>标题与正文均限定为“上海 BOSS 数据分析师岗位案例”。</td>
+              <td>如需市场全景，补充多平台、跨城市、时间序列和去重规则。</td>
+            </tr>
+            <tr>
+              <td><span class="level">薪资口径风险</span></td>
+              <td>发布薪资区间不等于成交薪资，也可能受薪资月数和奖金影响。</td>
+              <td>统一使用“月薪中位估计均值”，并只在 266 条可解析薪资内分析。</td>
+              <td>补充薪资区间原字段、薪资月数、福利和异常值处理记录。</td>
+            </tr>
+            <tr>
+              <td><span class="level">标签解释风险</span></td>
+              <td>技能标签出现次数不能代表熟练度、JD 重要性或实际工作占比。</td>
+              <td>将标签解释为能力簇，而非能力强弱排序。</td>
+              <td>抓取完整 JD 后用文本段落验证技能深度和组合关系。</td>
+            </tr>
+            <tr>
+              <td><span class="level">公司类型颗粒度风险</span></td>
+              <td>平台分类较粗，无法区分部门、业务线和岗位族。</td>
+              <td>公司类型仅作为岗位来源背景，不作为主结论。</td>
+              <td>补充公司规模、融资阶段、行业二级分类和岗位所属部门。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="next">
+      <div class="narrow">
+        <h2 id="next">建议下一步：先补口径，再扩展研究问题</h2>
+        <p><strong>优先动作不是继续加图，而是把报告问题收窄并补足能改变判断的字段。</strong>当前证据已经能支撑完整案例报告，下一步应围绕“是否改变结论”来补数。</p>
+        <ol class="next-steps">
+          <li><strong>固定报告定位。</strong>将案例主标题、摘要和注释统一限定为“上海 BOSS 数据分析师岗位样本画像”，避免写成全市场结论。</li>
+          <li><strong>补完整 JD 文本。</strong>用 JD 正文验证 SQL、Python、统计和业务分析之间的组合关系，判断它们是入门门槛、核心职责还是加分项。</li>
+          <li><strong>补岗位族标签。</strong>区分 BI 分析、经营分析、用户分析、数据挖掘、数据产品和算法相邻岗位，避免同名“数据分析师”混在一起。</li>
+          <li><strong>补时间和公司维度。</strong>加入发布日期、公司规模、行业二级分类和融资阶段，再决定是否做趋势、行业对比或企业侧招聘建议。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="questions">
+      <div class="narrow">
+        <h2 id="questions">仍需回答的问题</h2>
+        <p><strong>以下问题会决定报告能否从岗位画像升级为策略建议。</strong>在没有这些字段之前，本版应保持克制，不把样本结构解释成市场规律。</p>
+      </div>
+      <div class="wide-block">
+        <table>
+          <thead>
+            <tr>
+              <th>问题</th>
+              <th>需要新增的证据</th>
+              <th>可能改变的判断</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>这些岗位是否集中在少数岗位族，而不是同质的“数据分析师”？</td>
+              <td>完整岗位标题、JD 正文、职责关键词、岗位族标注</td>
+              <td>技能标签和薪资梯度需要按岗位族重算</td>
+            </tr>
+            <tr>
+              <td>3-5 年岗位为何最多，是需求真实集中还是平台样本偏差？</td>
+              <td>跨平台样本、发布日期、公司规模和招聘批次</td>
+              <td>是否把 3-5 年作为主推荐人群</td>
+            </tr>
+            <tr>
+              <td>薪资差异是否由经验驱动，还是由公司类型和岗位族共同驱动？</td>
+              <td>经验段、公司类型、岗位族、薪资区间的交叉表</td>
+              <td>薪资建议是否需要分行业或分岗位族表达</td>
+            </tr>
+            <tr>
+              <td>SQL、Python、统计之间是同时要求，还是不同岗位方向的替代要求？</td>
+              <td>技能共现矩阵和 JD 段落证据</td>
+              <td>训练路径是“全栈必修”还是“方向分流”</td>
+            </tr>
+            <tr>
+              <td>互联网公司占比高是否代表需求集中，还是关键词采样带来的偏差？</td>
+              <td>行业二级分类、平台搜索词扩展和传统行业样本补充</td>
+              <td>公司类型章节是否可上升为行业机会判断</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="decision-record" aria-labelledby="decision-record">
+      <div>
+        <h2 id="decision-record">本版决策记录</h2>
+        <p><strong>本文件的设计决策是把完整报告做成咨询备忘录，而非摘要页或仪表盘。</strong>这让读者先看到结论和推荐路径，再逐段审阅经验、薪资、技能、公司类型和口径风险。</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>决策项</th>
+            <th>本版选择</th>
+            <th>依据</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>报告主线</td>
+            <td>中级岗位画像</td>
+            <td>1-3 年与 3-5 年合计 198 条，占样本 66.0%</td>
+          </tr>
+          <tr>
+            <td>视觉结构</td>
+            <td>信头、建议框、选项矩阵、风险登记、决策记录</td>
+            <td>符合董事会咨询备忘录风格，避免指标卡和仪表盘</td>
+          </tr>
+          <tr>
+            <td>图表使用</td>
+            <td>四张现有 PNG 作为证据图</td>
+            <td>覆盖经验、薪资、技能和公司类型四个必要章节</td>
+          </tr>
+          <tr>
+            <td>颜色使用</td>
+            <td>黑白出版物基调，红色作身份标记，低饱和青绿色标示推荐路径</td>
+            <td>降低装饰性，强化阅读和取舍判断</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="notes" aria-labelledby="notes">
+      <h2 id="notes">口径与注释</h2>
+      <ol>
+        <li><strong>数据范围：</strong>本报告使用 300 条上海 BOSS 数据分析师岗位样本。结论只覆盖该样本，不代表上海全渠道招聘市场。</li>
+        <li><strong>薪资口径：</strong>300 条样本中 266 条薪资可解析；“月薪中位估计均值 20.5K”指可解析发布薪资区间的中位估计均值，不等于实际成交薪资。</li>
+        <li><strong>经验口径：</strong>核心经验段为 1-3 年 83 条、3-5 年 115 条、5-10 年 38 条。实习、在校、按天出勤和经验不限等字段不并入这三档。</li>
+        <li><strong>技能口径：</strong>SQL 135、数据分析/挖掘 126、Python 115、数学/统计 101 为标签出现次数。一个岗位可包含多个标签，因此标签次数不能简单等同于岗位占比。</li>
+        <li><strong>公司类型口径：</strong>互联网 75、计算机软件 31、电子商务 21、大数据 20 为平台字段分类计数，适合描述样本结构，不适合直接推断行业总需求。</li>
+        <li><strong>图片来源：</strong>本文件引用同目录下的 report_assets/experience_mix.png、salary_by_experience.png、skill_tags.png、company_type_mix.png，未新增其他图片资产。</li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

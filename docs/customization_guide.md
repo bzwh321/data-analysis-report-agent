@@ -1,97 +1,134 @@
-# 定制指南
+# Customization Guide
 
-## 接入你自己的数据源
+## Add A Case Pack
 
-### 最小步骤（3步）
+Create:
 
-**第1步：继承 BaseFetcher**
-
-```python
-from agents.fetcher_agent import BaseFetcher
-
-class MyFetcher(BaseFetcher):
-    def fetch(self, plan: dict) -> dict:
-        spec = plan['query_spec']
-        # 用 spec['metrics'] / spec['group_by'] / spec['filters'] / spec['date_range']
-        # 执行你的查询逻辑（SQL / pandas / API）
-        rows = my_query(spec)
-        return {
-            "row_count": len(rows),
-            "fields": list(rows[0].keys()),
-            "rows": rows,
-        }
+```text
+cases/your-case-id/
+├── case.yaml
+├── semantic_layer.yaml
+└── experience/
+    ├── thresholds.json
+    ├── priority_rules.md
+    └── good_summaries.md
 ```
 
-**第2步：替换 experience/ 目录内容**
+## `case.yaml`
 
-| 文件 | 必改内容 | 示例 |
-|------|---------|------|
-| `thresholds.json` | 你的业务阈值（利润率/增速/市占率等） | `"gm_rate": {"critical_low": 15.0}` |
-| `priority_rules.md` | 你的优先级判断逻辑 | "SKU 断货率>5% 排第一" |
-| `good_summaries.md` | 你的好结论范例（可直接用现有模板） | 保持现有原则，替换业务词汇 |
+Use it for metadata only:
 
-**第3步：运行**
-
-```python
-from runner import AnalysisRunner
-runner = AnalysisRunner(fetcher=MyFetcher(), output_path="report.html")
-runner.run("你的分析问题")
+```yaml
+case_id: your-case-id
+display_name: Your Case Name
+description: What this case pack is for.
+semantic_layer: semantic_layer.yaml
+experience_dir: experience
+default_question: Optional default question.
+default_context: {}
 ```
 
----
+## `semantic_layer.yaml`
 
-## 调整分析行为（config.py）
+Record field meaning, not prompt behavior:
 
-| 参数 | 默认值 | 何时调整 |
-|------|--------|---------|
-| `MAX_ROUNDS` | 5 | 数据量大 / 分析维度多 → 增大（最多8）；快速预览 → 减小到2 |
-| `MIN_IMPACT_PCT` | 3.0 | 精细分析场景可降到1.5；宽泛扫描可升到5.0 |
-| `OVERLAP_THRESHOLD` | 0.80 | 洞察重复多 → 降到0.65；允许更多深挖 → 升到0.90 |
-| `BRAIN_TEMP` | 0.3 | 需要更稳定的结论 → 降到0.1；需要更多探索 → 升到0.5 |
-
----
-
-## 添加新的分析步骤
-
-默认只允许4种 `analytical_step`（白名单硬编码）。添加新步骤：
-
-1. 在 `config.py` 的 `ALLOWED_STEPS` 中添加：
-   ```python
-   ALLOWED_STEPS = [
-       'trend_analysis', 'decomposition', 'attribution', 'risk_mining',
-       'cohort_analysis',   # 新增
-   ]
-   ```
-
-2. 在 `FetcherAgent.fetch()` 中添加对应的取数逻辑：
-   ```python
-   elif step == 'cohort_analysis':
-       return self._cohort_analysis(...)
-   ```
-
-3. 更新 `experience/plan_schema.json` 中的 `analytical_step_enum`。
-
----
-
-## 切换 LLM（从 Claude 换到 OpenAI）
-
-在 `config.py` 中修改：
-```python
-LLM_MODEL = "gpt-4o"
+```yaml
+semantic_layer_id: your-case-id
+version: "0.1"
+grain:
+  default: daily_metric
+  supported:
+    - name: daily_metric
+      keys: [date, segment]
+      meaning: One row per date and segment.
+fields:
+  date:
+    role: dimension
+    business_name: Date
+    meaning: Reporting date.
+  target_metric:
+    role: metric
+    business_name: Target Metric
+    unit: pct
+    meaning: Define exactly what this metric measures.
+business_terms:
+  Example term: Define the term.
+analysis_boundaries:
+  - State what the data can and cannot prove.
 ```
 
-然后在 `agents/brain_agent.py` 中将 `anthropic.Anthropic()` 替换为 `openai.OpenAI()`，
-调整 `_call()` 方法的 API 调用格式。
+## Case Experience
 
----
+Use `cases/your-case-id/experience/` for:
 
-## 经验库维护规范
+| File | Purpose |
+|---|---|
+| `thresholds.json` | Case-specific materiality and business thresholds |
+| `priority_rules.md` | How to rank findings for this case |
+| `good_summaries.md` | Examples of good case-specific report language |
 
-**关键原则：experience/ 目录的内容必须由人工（领域专家）撰写，不能由 LLM 自动生成。**
+Do not put case-specific rules in root `experience/`.
 
-若让 LLM 自生成经验库，系统退化为普通 LLM 分析，失去业务判断能力。
+## Add A Report Style
 
-建议更新频率：
-- `thresholds.json`：每季度或业务目标调整时更新
-- `priority_rules.md`：每半年结合实际案例复盘后更新
-- `good_summaries.md`：每次出现优秀分析案例时及时沉淀
+Create:
+
+```text
+styles/your-style-id/
+├── page_style.yaml
+├── global_prompt.md
+└── sample.html
+```
+
+Register it in `styles/manifest.yaml`.
+
+Use `page_style.yaml` for:
+
+- audience
+- design intent
+- color palette
+- typography
+- page layout
+- component rules
+- chart and table style
+- responsive constraints
+- things to avoid
+
+Use `global_prompt.md` as the full-page design prompt that the report-writing or report-design agent receives.
+
+Use `sample.html` as a self-contained reference page. Do not reference external CDNs or model/runtime scripts.
+
+Do not put field meanings, thresholds, or business assumptions into a style folder.
+
+Style quality rules:
+
+- Start from the document role: executive brief, board memo, analytical exhibit report, or operating tracker.
+- Use typography, rules, whitespace, and table hierarchy before adding color.
+- Keep meaningful colors to one primary accent, one exception color, and neutral structure.
+- Give every chart/table a takeaway title and unit.
+- Put ordinary data range, metric definitions, sources, and derived-metric notes in a report-end notes section; keep only decision-critical caveats next to the finding.
+- Avoid AI-template patterns: gradient hero blocks, glassmorphism, generic rounded KPI card grids, decorative badges, and icons that do not carry meaning.
+- Use report-native visible labels. For Chinese reports, avoid generic English template labels unless English is explicitly requested.
+- Do not use equal-width three-card summaries as the default ending; prefer an evidence-gap table, action tracker, decision record, or validation checklist.
+- For charts with more than six marks, label only peaks, troughs, endpoints, exception windows, or values required for the conclusion.
+- Keep `sample.html` offline and auditable: inline CSS is allowed; external scripts, CDNs, provider SDKs, and hidden API calls are not.
+
+## Generic Experience
+
+Only edit root `experience/` when the rule applies across unrelated cases. Examples:
+
+- Every finding needs evidence.
+- Do not invent organizational causes.
+- Separate fact, inference, and recommendation.
+- Stop at the data boundary.
+
+## Review Checklist
+
+- [ ] No API keys or provider SDK clients were added.
+- [ ] Field meanings live in `semantic_layer.yaml`.
+- [ ] Case thresholds live under `cases/your-case-id/experience/`.
+- [ ] Report style lives under `styles/your-style-id/`.
+- [ ] Style sample has no external CDN, model call, provider SDK, or hidden runtime dependency.
+- [ ] Style prompt includes anti-template constraints and chart/source rules.
+- [ ] Generic `experience/` has no case-specific business assumptions.
+- [ ] Harness scripts remain deterministic and local.

@@ -1,158 +1,470 @@
-<p align="center">
-  <img src="docs/cover.svg" alt="数据分析报告 Agent" />
-</p>
+# Data Analysis Report Agent
 
-<h1 align="center">数据分析报告 Agent</h1>
+<!-- Provenance marker: bzwh -->
 
-<p align="center">
-  假设驱动的迭代分析框架——给一个问题，自动拆解维度、迭代取数验证假设、整合洞察，输出交互式 HTML 报告。
-</p>
+一个用于生成**可审查数据分析报告**的 Codex skill。
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.9%2B-3B82F6?style=flat-square&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/Claude_API-Anthropic-3B82F6?style=flat-square" />
-  <img src="https://img.shields.io/badge/图表-ECharts-3B82F6?style=flat-square" />
-  <img src="https://img.shields.io/badge/license-MIT-3B82F6?style=flat-square" />
-</p>
+它的核心设计不是“把一堆提示词塞进工作流”，而是把报告生产拆成几层：
 
----
+- 通用报告流程
+- 语义层
+- 案例经验层
+- 页面风格层
+- 本地确定性校验
 
-## 是什么
+![Data Analysis Report Agent topology](docs/assets/skill-topology.svg)
 
-一套以「大脑 Agent」为核心的数据分析系统。它不依赖固定模板，而是：
+## 这个 Skill 解决什么问题
 
-1. 读取经验库，**设计分析框架**（维度 + 关键问题）
-2. 最多 5 轮**迭代分析**：提出假设 → 生成取数计划 → 获取数据 → 反思洞察
-3. 第 1 轮串行建基础，第 2-3 轮**并行 fan-out** 探索不同维度，第 4+ 轮串行收敛
-4. 整合所有洞察，**渲染交互式 HTML 报告**（ECharts 图表）
+很多数据分析报告失败，不是因为模型不会写，而是因为：
 
-每轮自动判断是否继续（边际收益 < 3% 或洞察重叠度 > 80% 时停止），也支持三级升级兜底和人工断点。
+- 表头和业务含义混在提示词里，换一个案例就污染工作流；
+- 阈值、经验判断、好结论样例被写进通用流程，导致下一个项目继承错误经验；
+- 页面风格只是一段文字描述，报告 agent 不知道应该怎么排版；
+- 最终报告没有结构校验，容易出现没有数据来源、没有边界说明、没有行动建议的结论。
 
----
+这个 skill 的目标是让报告生产变成一个可维护协议：
 
-## 快速开始
-
-```bash
-# 克隆项目
-git clone https://github.com/bzwh321/data-analysis-report-agent.git
-cd data-analysis-report-agent
-
-# 安装依赖
-pip install anthropic
-
-# 用内置模拟数据跑演示
-python workflow.py --demo
-
-# 提一个真实问题
-python workflow.py --question "分析2024年各品类利润率走势，找出异常并归因" --output report.html
+```text
+用户问题 + 数据
+  -> 选择 case pack
+  -> 读取语义层
+  -> 读取案例经验层
+  -> 选择报告风格
+  -> 生成分析计划
+  -> 校验计划/数据/输出
+  -> 生成可审查报告
 ```
 
----
+## 重要边界
 
-## 工作流拓扑
+这个仓库不是一个独立模型运行器。
 
-```
-[用户问题]
-    │
-    ▼
-Node 1 · design_framework          ← 大脑读经验库，设计分析维度
-    │
-    ▼
-Node 2 · iterative_loop（≤5轮）
-    │
-    ├── Round 1（串行，建立基础）
-    │     define → plan → fetch → reflect
-    │
-    ├── Round 2-3（并行 fan-out，探索不同维度）
-    │     ThreadPoolExecutor(max_workers=2)
-    │     ↓ fan-in 合并 + 路由判断
-    │
-    └── Round 4+（串行，依赖前轮综合 history）
-          _should_stop() → STOP / PIVOT / CONTINUE
-    │
-    ▼
-Node 3 · integrate_insights         ← 整合所有轮次洞察
-    │
-    ▼
-Node 4 · format_charts              ← 生成 ECharts 配置
-    │
-    ▼
-Node 5 · render_report              ← 渲染 HTML 报告
-```
+它不包含：
 
----
+- API key
+- provider SDK client
+- model name
+- hidden runtime
+- 网络调用
+- 自动取数服务
 
-## 接入自己的数据源
-
-继承 `BaseFetcher`，实现 `fetch()` 方法：
-
-```python
-from agents.fetcher_agent import BaseFetcher
-from workflow import run_workflow
-
-class MyFetcher(BaseFetcher):
-    def fetch(self, plan: dict) -> dict:
-        # plan 包含 analytical_step、query_spec 等字段
-        rows = query_my_database(plan["query_spec"])
-        return {
-            "row_count": len(rows),
-            "fields": list(rows[0].keys()) if rows else [],
-            "rows": rows,
-        }
-
-state = run_workflow("你的问题", fetcher=MyFetcher())
-```
-
-完整示例见 `examples/custom_fetcher_example.py`。
-
----
-
-## 配置调参
-
-编辑 `config.py`，无需改动其他文件：
-
-| 参数 | 默认值 | 说明 |
-|---|---|---|
-| `MAX_ROUNDS` | 5 | 迭代分析最大轮次 |
-| `MIN_IMPACT_PCT` | 3.0 | 边际收益阈值（低于此值停止） |
-| `OVERLAP_THRESHOLD` | 0.80 | 洞察重叠度阈值（高于此值停止） |
-| `LLM_MODEL` | claude-opus-4-5 | 使用的模型 |
-
-业务规则（阈值、优先级、好结论范例）在 `experience/` 目录下编辑。
-
----
+Codex 或其他宿主 agent 负责推理、读数据、写报告。`harness/` 里的 Python 文件只做本地确定性结构校验。
 
 ## 目录结构
 
-```
+```text
 data-analysis-report-agent/
-├── workflow.py            ← 完整工作流定义（含拓扑图注释），主入口
-├── runner.py              ← 向后兼容包装（AnalysisRunner 类）
-├── config.py              ← 所有参数配置
-├── agents/
-│   ├── brain_agent.py     ← 大脑节点（框架设计 / 假设 / 反思 / 整合）
-│   ├── fetcher_agent.py   ← 取数节点（BaseFetcher + MockFetcher）
-│   ├── formatter_agent.py ← 图表配置节点（ECharts JSON）
-│   └── designer_agent.py  ← HTML 渲染节点
-├── harness/               ← 硬校验层（Plan / Data / Output 三层）
-├── experience/            ← 经验库（业务阈值 / 优先级规则 / 好结论范例）
-├── examples/              ← 示例代码
-├── docs/                  ← 文档资源
-└── run_logs/              ← 运行日志（每次运行一个子目录）
+├── SKILL.md                         # skill 主说明：稳定流程和报告契约
+├── README.md                        # GitHub 使用说明
+├── experience/                      # 通用、跨案例报告经验
+│   ├── thresholds.json
+│   ├── priority_rules.md
+│   ├── good_summaries.md
+│   └── plan_schema.json
+├── cases/                           # 案例包
+│   ├── retail-profitability/
+│   ├── boss-data-analyst-jobs/
+│   └── workforce-cost-budget/
+├── styles/                          # 页面设计风格包
+│   ├── manifest.yaml
+│   ├── analytical-deep-dive/
+│   ├── executive-diagnostic-brief/
+│   ├── consulting-board-memo/
+│   └── operating-review/
+├── harness/                         # 本地确定性校验
+│   ├── plan_validator.py
+│   ├── data_validator.py
+│   └── output_validator.py
+└── docs/
+    ├── architecture.md
+    ├── customization_guide.md
+    ├── skill-topology.html
+    └── assets/
+        ├── skill-topology.svg
+        └── report-template-gallery.svg
 ```
 
----
+## 你需要输入什么
 
-## 设计决策
+最少需要：
 
-- **假设驱动**：每轮先提假设再取数，避免无目的扫表
-- **并行 fan-out**：第 2-3 轮并行探索互不依赖的维度，减少总轮次
-- **三级升级兜底**：取数计划失败时逐级注入更多上下文，最终触发人工断点
-- **硬校验层 harness**：Plan / Data / Output 三层校验，防止 LLM 幻觉直接进入报告
-- **经验库解耦**：业务规则与代码分离，非开发者可直接编辑 `experience/` 调整分析行为
+| 输入 | 必需 | 说明 |
+|---|---:|---|
+| 用户问题 | 是 | 例如“上海数据分析师岗位的薪资、经验门槛和技能要求是什么？” |
+| 数据 | 是 | Excel、CSV、SQL 结果、JSON rows，或宿主环境能读取的数据 |
+| 字段含义 | 强烈建议 | 最好通过 `cases/<case-id>/semantic_layer.yaml` 提供 |
+| 案例经验 | 可选 | 阈值、优先级规则、好结论样例 |
+| 报告风格 | 可选 | 从 `styles/manifest.yaml` 选择 |
+| 输出格式 | 可选 | HTML、Markdown、结构化 JSON，或宿主 agent 支持的其他报告形态 |
 
----
+如果没有语义层，不要让 agent 直接根据表头猜业务含义。先补语义层，再做报告。
+
+## 快速使用
+
+在 Codex 中，把本目录作为 skill 使用，然后给出问题、数据路径和 case/style 选择。
+
+示例：
+
+```text
+使用 data-analysis-report-agent。
+数据在：D:\...\BOSS直聘数据分析师职位-案例分析原始数据.xlsx
+使用 case：cases/boss-data-analyst-jobs
+使用风格：styles/consulting-board-memo
+请生成一份 HTML 报告，回答：
+上海数据分析师岗位的薪资水平、经验门槛和核心技能要求是什么？
+```
+
+如果是新数据，先让 agent 生成语义层：
+
+```text
+使用 data-analysis-report-agent。
+请先读取这个 Excel 的表头和前几行，帮我创建一个新的 case pack。
+要求：
+1. 不要把业务字段含义写进 SKILL.md
+2. 字段含义写到 semantic_layer.yaml
+3. 阈值和案例经验写到 cases/<case-id>/experience/
+```
+
+## 工作流
+
+1. 识别问题和输出目标。
+2. 选择或创建 case pack。
+3. 读取通用经验层 `experience/`。
+4. 读取案例语义层 `cases/<case-id>/semantic_layer.yaml`。
+5. 读取案例经验层 `cases/<case-id>/experience/`。
+6. 选择页面风格 `styles/<style-id>/`。
+7. 生成分析计划。
+8. 用 `harness/plan_validator.py` 校验计划。
+9. 读取或检查数据。
+10. 用 `harness/data_validator.py` 校验数据结构。
+11. 提炼事实、推断、建议。
+12. 生成报告。
+13. 用 `harness/output_validator.py` 校验最终结构。
+
+## 语义层怎么维护
+
+语义层文件位置：
+
+```text
+cases/<case-id>/semantic_layer.yaml
+```
+
+语义层只回答一个问题：
+
+> 这些字段在这个案例里是什么意思？
+
+推荐结构：
+
+```yaml
+semantic_layer_id: your-case-id
+version: "0.1"
+purpose: 说明这个语义层服务什么案例
+
+source:
+  expected_file_name: your-data.xlsx
+  expected_sheet: Sheet1
+
+grain:
+  default: row_grain
+  supported:
+    - name: row_grain
+      keys: [date, segment]
+      meaning: 每一行代表什么
+
+fields:
+  raw_field_name:
+    source_header: 原始表头
+    role: metric
+    business_name: 业务名称
+    unit: pct
+    meaning: 这个字段衡量什么
+    quality_rule: 使用前需要注意什么
+
+derived_metrics:
+  derived_metric_name:
+    business_name: 派生指标名称
+    unit: pct
+    formula: numerator / denominator * 100
+    meaning: 为什么要算这个指标
+
+business_terms:
+  业务词: 业务词定义
+
+analysis_boundaries:
+  - 这份数据能证明什么
+  - 这份数据不能证明什么
+```
+
+维护规则：
+
+- 字段含义、口径、单位、粒度写在语义层。
+- 不要在语义层写 prompt 指令。
+- 不要在语义层写页面风格。
+- 不要在语义层写“模型应该怎么想”。
+- 原始字段有歧义时，必须写 `quality_rule` 或 `analysis_boundaries`。
+- 每次字段变更，更新 `version` 或在 `purpose` 中说明适用范围。
+
+好语义层的标准：
+
+- 读者不用看原始 Excel，也能知道每个字段代表什么。
+- agent 不需要猜表头含义。
+- 报告能明确停在数据边界内。
+
+## 经验层怎么维护
+
+经验层分两类。
+
+### 1. 通用经验层
+
+位置：
+
+```text
+experience/
+```
+
+只放跨案例都成立的规则，例如：
+
+- 每条结论必须有数据来源。
+- 区分事实、推断和建议。
+- 不要编造组织原因。
+- 影响很小的分支可以停止下钻。
+
+不要把某个行业、某个案例的阈值写到这里。
+
+### 2. 案例经验层
+
+位置：
+
+```text
+cases/<case-id>/experience/
+```
+
+包含：
+
+| 文件 | 用途 |
+|---|---|
+| `thresholds.json` | 这个案例的阈值、告警线、物料性标准 |
+| `priority_rules.md` | 这个案例里结论如何排序 |
+| `good_summaries.md` | 好结论写法样例 |
+
+例子：
+
+```json
+{
+  "salary_parse_rate": {
+    "warning_low": 0.85,
+    "desc": "薪资可解析率低于85%时，薪资结论必须降级。"
+  },
+  "impact_min_pct": 3.0
+}
+```
+
+维护规则：
+
+- 只写这个案例适用的经验。
+- 阈值必须能解释为什么重要。
+- `good_summaries.md` 应该给“好输出样例”，不是堆分析方法。
+- 案例经验不能覆盖语义层字段含义。
+- 如果一条规则开始适用于多个无关案例，再考虑提升到根目录 `experience/`。
+
+## 页面风格怎么维护
+
+风格文件位置：
+
+```text
+styles/<style-id>/
+├── page_style.yaml
+├── global_prompt.md
+└── sample.html
+```
+
+风格层只回答：
+
+> 报告应该长什么样？
+
+不要把业务字段、阈值、行业经验写进风格层。
+
+当前内置风格：
+
+![Report template gallery](docs/assets/report-template-gallery.svg)
+
+| 风格 | 适用场景 |
+|---|---|
+| `analytical-deep-dive` | 白皮书、研究报告、深度分析 |
+| `executive-diagnostic-brief` | 高管诊断、异常判断、快速决策 |
+| `consulting-board-memo` | 董事会备忘录、推荐路径、方案取舍 |
+| `operating-review` | 周会/月会复盘、行动追踪、状态管理 |
+
+风格维护规则：
+
+- `page_style.yaml` 写配色、字体、布局、容器、图表和表格规则。
+- `global_prompt.md` 写给报告撰写 agent 的全局页面提示词。
+- `sample.html` 是静态视觉参考页。
+- 不要引用 CDN、外部脚本或隐藏运行时。
+- 不要用装饰性渐变、玻璃态、通用卡片堆。
+- 中文报告不要出现泛用英文模板标签。
+
+## 校验方式
+
+计划校验：
+
+```powershell
+python harness/plan_validator.py path\to\plan.json
+```
+
+数据校验：
+
+```powershell
+python harness/data_validator.py path\to\data.json path\to\plan.json
+```
+
+输出校验：
+
+```powershell
+python harness/output_validator.py path\to\final_report.json
+```
+
+skill 结构校验：
+
+```powershell
+$env:PYTHONUTF8='1'
+python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .
+```
+
+## 内置案例
+
+### BOSS 数据分析师岗位案例
+
+路径：
+
+```text
+cases/boss-data-analyst-jobs/
+```
+
+用途：
+
+- 招聘岗位样例分析
+- 薪资文本解析
+- 经验/学历字段混杂处理
+- 技能标签统计
+- 公司类型结构观察
+
+本地 HTML 报告样例：
+
+- `cases/boss-data-analyst-jobs/report.html`
+- `cases/boss-data-analyst-jobs/report-executive-diagnostic-brief.html`
+- `cases/boss-data-analyst-jobs/report-consulting-board-memo.html`
+- `cases/boss-data-analyst-jobs/report-operating-review.html`
+
+### 人工成本预算案例
+
+路径：
+
+```text
+cases/workforce-cost-budget/
+```
+
+用途：
+
+- 人工成本预算分析
+- 组织层级口径
+- 成本/营收效率
+- 疑似人数代理字段处理
+
+### 零售利润率案例
+
+路径：
+
+```text
+cases/retail-profitability/
+```
+
+用途：
+
+- 零售利润率下滑归因
+- 事件性冲击和结构漂移区分
+- 促销季影响分析
+
+## 新增一个案例的步骤
+
+1. 复制目录：
+
+```text
+cases/retail-profitability/
+```
+
+2. 改名为：
+
+```text
+cases/your-case-id/
+```
+
+3. 修改：
+
+```text
+case.yaml
+semantic_layer.yaml
+experience/thresholds.json
+experience/priority_rules.md
+experience/good_summaries.md
+```
+
+4. 用真实样例数据跑一遍：
+
+- plan validator
+- data validator
+- output validator
+
+5. 如果生成 HTML 报告，确认：
+
+- 没有外部 CDN
+- 图片路径可用
+- 数据范围和公式在末尾注释
+- 主体结论不超过语义层边界
+
+## 新增一个风格的步骤
+
+1. 创建目录：
+
+```text
+styles/your-style-id/
+```
+
+2. 添加：
+
+```text
+page_style.yaml
+global_prompt.md
+sample.html
+```
+
+3. 在 `styles/manifest.yaml` 注册。
+
+4. 用同一份数据生成至少一份完整报告，确认风格差异不是只换颜色。
+
+风格差异应该体现在：
+
+- 配色
+- 版心
+- 容器结构
+- 图表摆放
+- 表格密度
+- 信息层级
+- 结尾模块
+
+## 发布前检查清单
+
+- [ ] `SKILL.md` 没有 case-specific 字段含义。
+- [ ] 根目录 `experience/` 没有某个案例专属阈值。
+- [ ] 每个 case 都有 `semantic_layer.yaml`。
+- [ ] 每个 case 的经验写在 `cases/<case-id>/experience/`。
+- [ ] 每个 style 都有 `page_style.yaml`、`global_prompt.md`、`sample.html`。
+- [ ] HTML 样例不依赖外部 CDN 或脚本。
+- [ ] 校验脚本仍然是本地确定性逻辑。
+- [ ] 不包含 API key、provider SDK client、模型名或隐藏 runtime。
+- [ ] README 中的图片路径在 GitHub 上可显示。
 
 ## License
 
-MIT
+根据你的项目发布策略补充。若要公开给他人复用，建议在上传 GitHub 前明确许可证。

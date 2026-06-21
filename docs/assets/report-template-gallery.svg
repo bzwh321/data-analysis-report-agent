@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Report Template Gallery</title>
+  <desc id="desc">Four local HTML report templates for BOSS job analysis case.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f5f3ef}.ink{fill:#26313a}.muted{fill:#6b747c}.card{fill:#fff;stroke:#ddd8cf;stroke-width:2}.h{font:700 30px Arial,"Microsoft YaHei",sans-serif}.b{font:400 17px Arial,"Microsoft YaHei",sans-serif}.s{font:400 14px Arial,"Microsoft YaHei",sans-serif}.t{font:700 18px Arial,"Microsoft YaHei",sans-serif}.line{stroke:#d7dde1;stroke-width:2}.green{fill:#007a53}.blue{fill:#1768ac}.red{fill:#b4232a}.teal{fill:#2f7f73}.amber{fill:#986f1a}.gray{fill:#9aa7af}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="h ink" x="80" y="84">BOSS 岗位案例 · 四种报告页面模板</text>
+  <text class="b muted" x="80" y="120">同一份数据，不同报告角色、配色与容器风格。所有模板均为离线 HTML，可审查、可截图、可维护。</text>
+
+  <rect class="card" x="80" y="175" width="330" height="560" rx="20"/>
+  <rect class="green" x="110" y="215" width="140" height="7" rx="3"/>
+  <text class="t ink" x="110" y="268">白皮书深潜版</text>
+  <text class="s muted" x="110" y="302">出版物式章节 / Exhibit 容器</text>
+  <line class="line" x1="110" y1="340" x2="380" y2="340"/>
+  <rect x="110" y="365" width="120" height="92" fill="#eef7f1" stroke="#007a53"/>
+  <rect x="250" y="365" width="130" height="92" fill="#f7f5f1" stroke="#d7dde1"/>
+  <rect x="110" y="485" width="270" height="120" fill="#fff" stroke="#d7dde1"/>
+  <line class="line" x1="130" y1="525" x2="350" y2="525"/>
+  <line class="line" x1="130" y1="560" x2="320" y2="560"/>
+  <text class="s muted" x="110" y="665">适合：研究报告、深度分析、案例白皮书</text>
+
+  <rect class="card" x="455" y="175" width="330" height="560" rx="20"/>
+  <rect class="blue" x="485" y="215" width="140" height="7" rx="3"/>
+  <text class="t ink" x="485" y="268">高管诊断简报</text>
+  <text class="s muted" x="485" y="302">Severity header / 诊断带 / 管理动作</text>
+  <line class="line" x1="485" y1="340" x2="755" y2="340"/>
+  <rect x="485" y="365" width="80" height="82" fill="#eef5fb" stroke="#1768ac"/>
+  <rect x="580" y="365" width="80" height="82" fill="#eef5fb" stroke="#1768ac"/>
+  <rect x="675" y="365" width="80" height="82" fill="#fff2f0" stroke="#b5473f"/>
+  <rect x="485" y="485" width="270" height="120" fill="#fff" stroke="#d7dde1"/>
+  <line class="line" x1="505" y1="525" x2="735" y2="525"/>
+  <line class="line" x1="505" y1="560" x2="705" y2="560"/>
+  <text class="s muted" x="485" y="665">适合：高管汇报、异常诊断、决策简报</text>
+
+  <rect class="card" x="830" y="175" width="330" height="560" rx="20"/>
+  <rect class="red" x="860" y="215" width="70" height="7" rx="3"/>
+  <text class="t ink" x="860" y="268">咨询董事会备忘</text>
+  <text class="s muted" x="860" y="302">Letterhead / 建议框 / 选项矩阵</text>
+  <line class="line" x1="860" y1="340" x2="1130" y2="340"/>
+  <rect x="860" y="365" width="270" height="70" fill="#f7f4f0" stroke="#2f7f73"/>
+  <rect x="860" y="470" width="270" height="135" fill="#fff" stroke="#d7dde1"/>
+  <line class="line" x1="880" y1="512" x2="1110" y2="512"/>
+  <line class="line" x1="880" y1="552" x2="1110" y2="552"/>
+  <text class="s muted" x="860" y="665">适合：推荐路径、取舍讨论、董事会材料</text>
+
+  <rect class="card" x="1205" y="175" width="330" height="560" rx="20"/>
+  <rect class="teal" x="1235" y="215" width="110" height="7" rx="3"/>
+  <text class="t ink" x="1235" y="268">经营复盘版</text>
+  <text class="s muted" x="1235" y="302">状态条 / 异常队列 / 行动跟踪</text>
+  <line class="line" x1="1235" y1="340" x2="1505" y2="340"/>
+  <rect class="green" x="1235" y="365" width="60" height="60" rx="6"/>
+  <rect class="amber" x="1310" y="365" width="60" height="60" rx="6"/>
+  <rect class="red" x="1385" y="365" width="60" height="60" rx="6"/>
+  <rect class="gray" x="1460" y="365" width="45" height="60" rx="6"/>
+  <rect x="1235" y="470" width="270" height="135" fill="#fff" stroke="#d7dde1"/>
+  <line class="line" x1="1255" y1="512" x2="1485" y2="512"/>
+  <line class="line" x1="1255" y1="552" x2="1485" y2="552"/>
+  <text class="s muted" x="1235" y="665">适合：周会/月会复盘、行动追踪、状态管理</text>
+</svg>

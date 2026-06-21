@@ -1,151 +1,220 @@
 ---
 name: data-analysis-report-agent
-description: 数据分析报告Agent。触发条件：用户说「帮我分析数据」「做一份数据分析报告」「分析利润率/销售/品类走势」「找出异常原因」「数据归因」「跑一次数据分析」。大脑Agent（BrainAgent）主导分析决策，内置DEFINE→PLAN→REFLECT三阶段迭代，最多5轮，取数Agent执行结构化取数，全链路Harness硬校验，结论可追溯到具体数据字段，最终输出HTML报告。
-runner: python runner.py
-entry: D:\知识库\skills\data-analysis-report-agent\runner.py
-allowed tools: Read, Write, Bash, Glob, Grep, Agent
-last_verified: 2026-05-17
+description: Create auditable data analysis reports with semantic-layer grounding, case-specific experience packs, deterministic validation, and source-traceable findings. Use when the user asks to analyze data, diagnose metric movement, produce an operating report, explain anomalies, build a report from a specific dataset or case pack, or turn table fields and business rules into a structured analysis report. This skill does not call model provider APIs; Codex performs the reasoning and may use only the bundled deterministic validators and case resources.
 ---
 
-# data-analysis-report-agent — 数据分析报告Agent
+<!-- Provenance marker: 不知渭河 -->
 
-## 核心定位
+# Data Analysis Report Agent
 
-解决普通LLM分析的三大结构性问题：
+## Purpose
 
-| 问题 | 本系统的对策 |
-|------|------------|
-| 数据复述，无归因 | DEFINE阶段先设假设，REFLECT对照验证 |
-| 结论无法追溯来源 | Harness强校验：每条finding必须有data_source |
-| 推断组织原因（无数据） | 组织归因不是必须模块，无数据则跳过 |
-| 不知道何时停止分析 | 硬代码停止判断（轮次/影响阈值/重叠度），非LLM自判 |
+Use this skill to produce a human-reviewable data analysis report from:
 
----
+1. A user question.
+2. A dataset or fetcher result provided by the user or local environment.
+3. A semantic layer that defines field names, business meaning, units, grain, aliases, and analysis boundaries.
+4. Optional case-specific experience: thresholds, priority rules, and good-report examples.
+5. Optional page design style: color palette, layout system, components, chart/table treatment, and a global prompt for the report-writing agent.
 
-## 架构总览
+Keep the skill clean: do not add provider clients, API keys, model names, or hidden runtime code. Codex is the reasoning engine. Bundled Python files are deterministic validators only.
 
-```
-Experience库（人工撰写，业务判断力唯一来源）
-    ↓ 注入上下文
-BrainAgent (temp=0.3)
-    ├── Phase 1: 设计分析框架 → 01_framework.json
-    ├── Phase 2: 迭代循环（≤5轮）
-    │     DEFINE（问自己）→ 假设+判断标准
-    │     PLAN  （问数据）→ Plan JSON → Harness校验
-    │     ACT            → FetcherAgent执行取数
-    │     REFLECT（问自己）→ 对照假设解读 → CONTINUE/PIVOT/STOP
-    └── Phase 3: 整合洞察 → final_insights JSON
-                ↓
-    FormatterAgent (temp=0.1) → ECharts配置
-    DesignerAgent  (temp=0.2) → HTML报告
-```
+## Folder Contract
 
----
-
-## 快速调用
-
-### 最小调用（MockFetcher演示）
-
-```python
-from runner import AnalysisRunner
-from agents import MockFetcher
-
-runner = AnalysisRunner(
-    fetcher=MockFetcher(),
-    output_path="output/report.html"
-)
-runner.run("分析2024年各品类利润率走势，找出异常并归因")
-```
-
-### 命令行
-
-```bash
-cd D:\知识库\skills\data-analysis-report-agent
-python runner.py --demo                         # 演示模式
-python runner.py -q "你的分析问题" -o report.html  # 自定义问题
-```
-
-### 接入真实数据源
-
-```python
-from agents.fetcher_agent import BaseFetcher
-
-class MyFetcher(BaseFetcher):
-    def fetch(self, plan: dict) -> dict:
-        rows = my_db_query(plan['query_spec'])
-        return {"row_count": len(rows), "fields": list(rows[0].keys()), "rows": rows}
-
-runner = AnalysisRunner(fetcher=MyFetcher(), output_path="report.html")
-runner.run("你的分析问题")
-```
-
----
-
-## 文件结构
-
-```
+```text
 data-analysis-report-agent/
-├── SKILL.md                   ← 本文件（主索引）
-├── config.py                  ← 所有参数（MAX_ROUNDS=5, MIN_IMPACT_PCT=3%）
-├── runner.py                  ← 主入口
-├── agents/
-│   ├── brain_agent.py         ← 大脑Agent（DEFINE→PLAN→REFLECT）
-│   ├── fetcher_agent.py       ← 取数Agent（BaseFetcher + MockFetcher）
-│   ├── formatter_agent.py     ← 制图Agent
-│   └── designer_agent.py      ← 设计Agent（HTML报告）
-├── harness/
-│   ├── plan_validator.py      ← Plan格式硬校验
-│   ├── data_validator.py      ← 取数结果硬校验
-│   └── output_validator.py    ← 结论可追溯性校验
-├── experience/                ← 经验库（必须人工撰写）
-│   ├── thresholds.json        ← 业务阈值
-│   ├── priority_rules.md      ← 优先级逻辑
-│   ├── good_summaries.md      ← 好结论范例+禁用词表
-│   └── plan_schema.json       ← Plan格式Schema
-├── run_logs/demo_run/         ← 5轮示例留档
-├── examples/                  ← 接入示例（CSV/SQL/demo）
-└── docs/                      ← 架构文档+定制指南
+├── SKILL.md
+├── experience/                 # Generic, cross-case report rules only
+│   ├── thresholds.json
+│   ├── priority_rules.md
+│   ├── good_summaries.md
+│   └── plan_schema.json
+├── cases/
+│   └── retail-profitability/   # Example case pack
+│       ├── case.yaml
+│       ├── semantic_layer.yaml
+│       └── experience/
+│           ├── thresholds.json
+│           ├── priority_rules.md
+│           └── good_summaries.md
+├── styles/
+│   ├── manifest.yaml
+│   ├── executive-diagnostic-brief/
+│   ├── consulting-board-memo/
+│   ├── analytical-deep-dive/
+│   └── operating-review/
+├── harness/                    # Deterministic validators
+│   ├── plan_validator.py
+│   ├── data_validator.py
+│   └── output_validator.py
+└── docs/
+    ├── architecture.md
+    └── customization_guide.md
 ```
 
----
+## Required Separation
 
-## 关键配置（config.py）
+Never put case-specific business meaning into the workflow instructions.
+
+| Layer | Allowed Content | Not Allowed |
+|---|---|---|
+| `SKILL.md` | Stable workflow, validation gates, report contract | Industry-specific thresholds, field meanings |
+| `experience/` | Generic evidence, priority, and writing rules | Profit, SKU, channel, product, or other case-specific assumptions |
+| `cases/<case-id>/semantic_layer.yaml` | Table headers, metric meanings, grain, units, aliases, boundaries | Prompt instructions or model behavior |
+| `cases/<case-id>/experience/` | Case thresholds, case priority rules, good case outputs | Generic workflow rules |
+| `styles/<style-id>/` | Page design tokens, layout, components, chart/table style, global prompt | Business thresholds, field meanings, case assumptions |
+| `harness/` | Deterministic validation scripts | LLM calls, network calls, credentials |
+
+## Workflow
+
+1. Identify the case.
+   - If the user gives a case path, use it.
+   - If the user does not specify a case, use only generic `experience/` and ask for field meanings when needed.
+   - Do not infer business meaning from column names alone.
+
+2. Load context in this order.
+   - `experience/thresholds.json`
+   - `experience/priority_rules.md`
+   - `experience/good_summaries.md`
+   - `experience/plan_schema.json`
+   - `cases/<case-id>/case.yaml` when a case is selected
+   - `cases/<case-id>/semantic_layer.yaml` when a case is selected
+   - `cases/<case-id>/experience/*` when a case is selected
+   - `styles/manifest.yaml` when a style choice is needed
+   - `styles/<style-id>/page_style.yaml` and `global_prompt.md` when a style is selected
+
+3. Build an analysis plan.
+   - State the metric, grain, comparison window, dimensions, filters, expected fields, and stop condition.
+   - Validate with `harness/plan_validator.py` before using the plan.
+
+4. Inspect or fetch data.
+   - Use data already provided by the user when available.
+   - If data must be queried, let the host environment or user-provided tooling do it.
+   - Validate returned rows with `harness/data_validator.py`.
+
+5. Derive findings.
+   - Every finding must reference data fields or row-level evidence.
+   - Separate fact, inference, and recommendation.
+   - Stop at the semantic layer boundary; do not invent organizational causes.
+
+6. Produce the report.
+   - Start with an answer-first executive summary.
+   - Include prioritized findings, evidence, risks, data gaps, and next steps.
+   - Include chart specs only as plain structured requests; do not require a chart-rendering runtime.
+   - Follow the selected page design style if one is provided.
+   - Validate final structure with `harness/output_validator.py`.
+
+## Plan Shape
+
+Use this shape for each analytical step:
+
+```json
+{
+  "round": 1,
+  "analytical_step": "trend_analysis",
+  "question": "Which dimension explains the metric movement?",
+  "query_spec": {
+    "metrics": ["target_metric"],
+    "group_by": ["time_period", "main_dimension"],
+    "filters": {},
+    "date_range": {"start": "YYYY-MM-DD", "end": "YYYY-MM-DD"}
+  },
+  "expected_output": {
+    "format": "table",
+    "required_fields": ["time_period", "main_dimension", "target_metric"]
+  },
+  "acceptance_criteria": {
+    "min_rows": 1,
+    "all_required_fields": true
+  },
+  "stop_condition": {
+    "if_impact_below_pct": 3.0,
+    "reason": "Stop when the remaining explained impact is below the materiality threshold."
+  }
+}
+```
+
+## Report Contract
+
+The final report should include:
+
+```json
+{
+  "executive_summary": "...",
+  "findings": [
+    {
+      "title": "...",
+      "content": "...",
+      "data_source": "round_1_data.rows[0].target_metric",
+      "impact_pct": 12.3
+    }
+  ],
+  "data_gaps": ["..."],
+  "chart_instructions": [
+    {
+      "chart_type": "line",
+      "title": "...",
+      "source_ref": "round_1_data",
+      "fields": ["time_period", "target_metric"]
+    }
+  ]
+}
+```
+
+## Validation
+
+Run deterministic validators only:
+
+```powershell
+python harness/plan_validator.py path\to\plan.json
+python harness/data_validator.py path\to\data.json path\to\plan.json
+python harness/output_validator.py path\to\final_report.json
+```
+
+Prefer the CLI commands above. If importing validators from another Python process, make sure the skill root is on `PYTHONPATH` or add it to `sys.path` first:
 
 ```python
-MAX_ROUNDS         = 5      # 最大迭代轮次，到达强制收拢
-MIN_IMPACT_PCT     = 3.0    # 影响<3%停止该分支
-OVERLAP_THRESHOLD  = 0.80   # 与已有洞察重叠>80%停止
-BRAIN_TEMP         = 0.3    # 大脑温度
-FETCHER_TEMP       = 0.0    # 取数温度（确定性）
-ALLOWED_STEPS      = ['trend_analysis','decomposition','attribution','risk_mining']
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("path/to/data-analysis-report-agent").resolve()))
+from harness.plan_validator import validate_plan
+from harness.data_validator import validate_data
+from harness.output_validator import validate_final_output
 ```
 
----
+## Case Pack Rule
 
-## 经验库维护规范
+To add a new case, copy the structure of `cases/retail-profitability/` and replace:
 
-**关键原则：experience/ 目录必须由人工（领域专家）撰写，不能由LLM自动生成。**
-LLM自生成经验库 = 系统退化为普通LLM分析，丧失业务判断力。
+1. `case.yaml`
+2. `semantic_layer.yaml`
+3. `experience/thresholds.json`
+4. `experience/priority_rules.md`
+5. `experience/good_summaries.md`
 
-更新频率建议：
-- `thresholds.json`：每季度或业务目标调整时
-- `priority_rules.md`：每半年结合案例复盘
-- `good_summaries.md`：出现优秀分析案例时及时沉淀
+Do not modify generic `experience/` unless the rule is truly reusable across unrelated cases.
 
----
+## Style Pack Rule
 
-## 环境依赖
+Report style lives under `styles/<style-id>/` and must stay separate from business semantics.
 
-```
-pip install anthropic
-ANTHROPIC_API_KEY=your_key（环境变量）
-Python 3.11+
-```
+Each style folder contains:
 
----
+1. `page_style.yaml` for color palette, layout, typography, components, charts, tables, density, and visual constraints.
+2. `global_prompt.md` for the global style prompt injected into the report-writing or report-design agent.
+3. `sample.html` as a self-contained visual reference page.
 
-## GitHub仓库
+Use `styles/manifest.yaml` to compare available styles before choosing one.
 
-https://github.com/bzwh321/data-analysis-report-agent
+Style packs should describe page design, not business logic. A good style pack has:
 
-（本地路径与GitHub保持同步，在此目录执行 `git push` 即可更新）
+1. A clear audience and document type.
+2. A restrained palette with no more than three meaningful colors.
+3. Typography, spacing, rules, and table/chart treatment that can be reviewed without hidden runtime code.
+4. Exhibit or figure rules when the style includes analytical charts.
+5. Anti-template constraints: no decorative gradients, glass panels, generic rounded card grids, or visual elements that do not support the report conclusion.
+
+When a report uses a style pack, every chart or table should have a takeaway title and visible units. Put ordinary data range, metric definitions, sources, and chart notes in a report-end notes section unless that information materially changes the reader's interpretation of the conclusion. If the style is based on consulting-report references, use the pattern only as design inspiration; do not copy proprietary text, layouts, or branding.
+
+Visible labels should follow the report language. For Chinese reports, avoid generic English template labels such as "One-sentence answer", "Key insights", "Implications", "Figure", "Recommendation", or "Action tracker" unless the user explicitly asks for English.

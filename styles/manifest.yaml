@@ -1,0 +1,34 @@
+# Provenance marker: bzwh
+styles:
+  - style_id: executive-diagnostic-brief
+    display_name: 高管诊断简报
+    best_for: 指标异动、异常归因、管理层快速决策
+    design_reference: McKinsey/BCG executive-summary severity brief
+    folder: executive-diagnostic-brief
+    page_style: page_style.yaml
+    global_prompt: global_prompt.md
+    sample_html: sample.html
+  - style_id: consulting-board-memo
+    display_name: 咨询式董事会备忘录
+    best_for: 战略选择、方案比较、复杂经营问题汇报
+    design_reference: Bain-style publication memo and consulting option matrix
+    folder: consulting-board-memo
+    page_style: page_style.yaml
+    global_prompt: global_prompt.md
+    sample_html: sample.html
+  - style_id: analytical-deep-dive
+    display_name: 数据分析深潜报告
+    best_for: 严谨归因、方法透明、证据链完整的数据分析交付
+    design_reference: McKinsey/MGI and BCG analytical exhibit report
+    folder: analytical-deep-dive
+    page_style: page_style.yaml
+    global_prompt: global_prompt.md
+    sample_html: sample.html
+  - style_id: operating-review
+    display_name: 经营复盘月报
+    best_for: 周报、月报、季度复盘、KPI运营例会
+    design_reference: Consulting operating review tracker
+    folder: operating-review
+    page_style: page_style.yaml
+    global_prompt: global_prompt.md
+    sample_html: sample.html

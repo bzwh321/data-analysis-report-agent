@@ -15,15 +15,15 @@ build/
 venv/
 env/
 
-# 运行日志（demo_run 保留，其余忽略）
-run_logs/*/
-!run_logs/demo_run/
-!run_logs/.gitkeep
+# 运行日志
+run_logs/
 
 # 报告输出
 output/
 *.html
-!examples/*.html
+!styles/**/sample.html
+!cases/**/report*.html
+!docs/*.html
 
 # IDE
 .vscode/

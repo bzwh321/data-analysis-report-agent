@@ -1,0 +1,140 @@
+semantic_layer_id: boss-data-analyst-jobs
+version: "0.1"
+purpose: 记录BOSS直聘岗位样例的表头、业务含义、口径、粒度和分析边界；仅在指定该 case 时加载。
+
+source:
+  expected_file_name: BOSS直聘数据分析师职位-案例分析原始数据.xlsx
+  expected_sheet: Sheet1
+  observed_rows_excluding_header: 300
+  observed_columns: 17
+
+grain:
+  default: posting
+  supported:
+    - name: posting
+      keys: [company_name, job_title, district_text, salary_range_text]
+      meaning: 每一行代表一次岗位搜索结果中的一个招聘岗位，不代表唯一公司或唯一招聘需求。
+    - name: posting_tag
+      keys: [job_title, skill_tag]
+      meaning: 将标签列展开后的一条岗位-标签记录，用于统计技能出现频次。
+
+fields:
+  city:
+    source_header: 城市
+    role: dimension
+    business_name: 搜索城市
+    meaning: 本次岗位搜索的城市范围。
+    quality_rule: 当前样例均为上海；不得外推为全国岗位市场。
+  keyword:
+    source_header: 关键词
+    role: dimension
+    business_name: 搜索关键词
+    meaning: 用户在招聘平台检索时使用的关键词。
+  job_title:
+    source_header: 职位
+    role: dimension
+    business_name: 岗位名称
+    meaning: 招聘方展示的岗位标题，用于识别岗位方向，但不等同于标准职级。
+  district_text:
+    source_header: 地区
+    role: dimension
+    business_name: 工作地点文本
+    meaning: 城市、区县、商圈或地铁站组合文本，可用于粗粒度地理分布分析。
+  salary_range_text:
+    source_header: 薪资范围
+    role: raw_metric
+    business_name: 发布薪资文本
+    unit: text
+    meaning: 招聘页面展示的薪资范围，可能包含月薪范围和发薪月数。
+    quality_rule: 必须先解析为薪资上下限、月薪中位数和发薪月数后再做均值或分位数。
+  salary_low_k:
+    role: derived_metric
+    business_name: 月薪下限
+    unit: K/月
+    meaning: 从薪资文本中解析出的月薪下限，单位为千元每月。
+  salary_high_k:
+    role: derived_metric
+    business_name: 月薪上限
+    unit: K/月
+    meaning: 从薪资文本中解析出的月薪上限，单位为千元每月。
+  salary_mid_k:
+    role: derived_metric
+    business_name: 月薪中位估计
+    unit: K/月
+    meaning: (salary_low_k + salary_high_k) / 2，用于岗位薪资横向比较。
+    quality_rule: 仅对可解析为K/月格式的记录计算；日薪、面议、实习薪资需单独标记。
+  salary_month_count:
+    role: derived_metric
+    business_name: 发薪月数
+    unit: months
+    meaning: 从薪资文本中解析出的年发薪月数；未标注时按12薪处理。
+  annual_salary_mid_k:
+    role: derived_metric
+    business_name: 年薪中位估计
+    unit: K/年
+    meaning: salary_mid_k * salary_month_count，用于含年终月数的薪资比较。
+  experience_requirement_raw:
+    source_header: 经验要求
+    role: raw_dimension
+    business_name: 原始经验要求
+    meaning: 招聘页面展示的经验要求文本，样例中混有实习出勤频率。
+    quality_rule: 需要先映射为经验分桶；如"4天/周"不应解释为工作年限。
+  experience_bucket:
+    role: derived_dimension
+    business_name: 经验要求分桶
+    meaning: 将经验文本映射为不限、应届/实习、1年以内、1-3年、3-5年、5-10年等可比较分桶。
+  education_requirement_raw:
+    source_header: 学历要求
+    role: raw_dimension
+    business_name: 原始学历要求
+    meaning: 招聘页面展示的学历要求文本，样例中混有实习周期。
+    quality_rule: 需要先映射为学历分桶；如"3个月"不应解释为学历。
+  education_bucket:
+    role: derived_dimension
+    business_name: 学历要求分桶
+    meaning: 将学历文本映射为学历不限、大专、本科、硕士、博士、实习周期等分桶。
+  company_name:
+    source_header: 公司名称
+    role: dimension
+    business_name: 公司名称
+    meaning: 招聘方展示名称，可能不是完整工商主体名称。
+  company_type:
+    source_header: 公司类型
+    role: dimension
+    business_name: 公司行业类型
+    meaning: 招聘方展示的行业或业务类型，用于观察岗位需求所在行业结构。
+  financing_stage:
+    source_header: 融资情况
+    role: dimension
+    business_name: 融资阶段
+    meaning: 平台展示的公司融资状态。
+  company_size:
+    source_header: 公司规模
+    role: dimension
+    business_name: 公司规模
+    meaning: 平台展示的员工规模分组。
+  skill_tags:
+    source_headers: [标签1, 标签2, 标签3, 标签4, 标签5]
+    role: multi_value_dimension
+    business_name: 岗位标签
+    meaning: 岗位要求或平台抽取的能力、专业、行业经验标签。
+    quality_rule: 标签是岗位文本信号，不代表候选人真实能力或企业实际技术栈。
+  benefits_text:
+    source_header: 福利待遇
+    role: text
+    business_name: 福利待遇文本
+    meaning: 招聘页面展示的福利描述，可作为定性补充，不作为薪资口径的一部分。
+
+business_terms:
+  发布薪资: 招聘平台展示的岗位薪资范围，不等同于最终offer或实际到手收入。
+  年薪中位估计: 月薪区间中点乘以发薪月数，是可比化估算，不是合同薪资。
+  技能标签出现频次: 多个标签列展开后的出现次数，可反映岗位描述中的常见能力信号。
+  经验门槛: 岗位发布中的经验要求分布，不代表候选人真实录用门槛。
+
+analysis_boundaries:
+  - 当前样例仅覆盖上海、数据分析师关键词下的300条岗位搜索结果，不得外推为全国市场。
+  - 发布薪资不是最终录用薪资；不得推断实际offer、社保基数或到手收入。
+  - 薪资文本中无法解析为K/月的记录应从薪资均值、分位数中剔除，并在注释中说明样本数。
+  - 经验和学历字段中混有实习出勤频率或周期，必须分桶后再分析。
+  - 技能标签只能说明岗位描述偏好，不足以证明企业真实技术栈或岗位工作内容。
+  - 不根据岗位发布数据推断公司经营状况、招聘预算或组织战略。

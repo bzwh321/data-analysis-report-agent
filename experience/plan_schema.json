@@ -1,5 +1,5 @@
 {
-  "_comment": "大脑Agent每次提问必须输出此格式，Harness强校验",
+  "_comment": "Report writer 每次分析请求必须输出此格式；harness 会做确定性校验。",
   "required_fields": [
     "round",
     "analytical_step",
@@ -22,13 +22,10 @@
   ],
   "expected_output_required": [
     "format",
-    "required_fields",
-    "unit_sales",
-    "unit_rate"
+    "required_fields"
   ],
   "acceptance_criteria_required": [
     "min_rows",
-    "profit_rate_range",
     "all_required_fields"
   ],
   "stop_condition_required": [

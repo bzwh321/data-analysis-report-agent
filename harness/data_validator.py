@@ -1,7 +1,7 @@
 """
 data_validator.py — 取数结果硬校验
 
-取数 Agent 返回 data JSON 后，Harness 立即校验：
+Host data tool 或用户提供 data JSON 后，harness 立即校验：
 - 结果结构合法性
 - 必需字段存在性
 - 数值范围合法性（防止 LLM 幻觉数据）
@@ -13,7 +13,7 @@ def validate_data(data: dict, plan: dict) -> tuple[bool, list[str]]:
     校验取数结果是否满足 plan 要求。
 
     Args:
-        data: 取数 Agent 返回的 dict
+        data: host data tool 或用户提供的 dict
         plan: 已通过 plan_validator 的 Plan JSON
 
     Returns:
@@ -67,3 +67,23 @@ def validate_data(data: dict, plan: dict) -> tuple[bool, list[str]]:
         errors.append("WARNING: 取数结果为空（row_count=0），请检查过滤条件")
 
     return len(errors) == 0, errors
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+    import sys
+    from pathlib import Path
+
+    parser = argparse.ArgumentParser(description="Validate a data JSON file against a plan JSON file.")
+    parser.add_argument("data_json", help="Path to a data JSON file.")
+    parser.add_argument("plan_json", help="Path to the plan JSON file used to fetch the data.")
+    args = parser.parse_args()
+
+    data = json.loads(Path(args.data_json).read_text(encoding="utf-8"))
+    plan = json.loads(Path(args.plan_json).read_text(encoding="utf-8"))
+    ok, messages = validate_data(data, plan)
+    print("PASS" if ok else "FAIL")
+    for message in messages:
+        print(f"- {message}")
+    sys.exit(0 if ok else 1)

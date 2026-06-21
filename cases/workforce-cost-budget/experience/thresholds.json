@@ -1,0 +1,25 @@
+{
+  "_comment": "人工成本预算案例阈值：只在 workforce-cost-budget case 中加载。",
+  "headcount_proxy": {
+    "valid_integer_min": 0,
+    "valid_integer_max": 10000,
+    "desc": "原始字段需表现为非负整数且符合组织规模常识后，才允许作为人数代理参与人均指标。"
+  },
+  "labor_cost_to_revenue_pct": {
+    "warning_high": 35.0,
+    "critical_high": 50.0,
+    "desc": "人工成本预算占营收比>35%列为压力信号，>50%列为高压力；需结合部门性质解释。"
+  },
+  "month_over_month_change_pct": {
+    "warning_abs": 15.0,
+    "critical_abs": 30.0,
+    "desc": "核心金额或效率指标环比绝对变化>15%需解释，>30%优先列入异常。"
+  },
+  "org_share": {
+    "material_share": 0.15,
+    "dominant_share": 0.30,
+    "desc": "单个组织贡献≥15%可列入主分析，≥30%可视为主导贡献。"
+  },
+  "impact_min_pct": 3.0,
+  "desc": "维度下钻发现的影响<3% = 停止该分支。"
+}

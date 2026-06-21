@@ -1,6 +1,0 @@
-anthropic>=0.25.0
-# 以下为可选依赖，按需安装
-# sqlalchemy>=2.0.0       # SQL 数据库取数（SimpleSQLFetcher / LLMAssistedFetcher）
-# pandas>=2.0.0           # CSV 取数（CSVFetcher）
-# psycopg2-binary>=2.9.0  # PostgreSQL 驱动
-# pymysql>=1.1.0          # MySQL 驱动

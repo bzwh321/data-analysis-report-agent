@@ -1,0 +1,172 @@
+semantic_layer_id: workforce-cost-budget
+version: "0.1"
+purpose: 记录人员薪酬与人工成本预算样例的表头、业务含义、口径、粒度和分析边界；仅在指定该 case 时加载。
+
+source:
+  expected_file_name: 人员薪酬表人工成本预算.xlsx
+  expected_sheet: 组件
+  observed_rows_excluding_header: 126
+  observed_columns: 19
+
+grain:
+  default: month_org_unit
+  supported:
+    - name: month_org_unit
+      keys: [period, org_level_1, org_level_2, org_level_3]
+      meaning: 每一行代表某月份、某组织路径下的汇总人工成本和营收表现，不是员工个人明细。
+    - name: month_department
+      keys: [period, org_level_2]
+      meaning: 按月份和二级组织汇总后的部门经营效率视角。
+
+fields:
+  period:
+    source_header: 时间
+    role: time
+    business_name: 月份
+    meaning: 成本与营收所属月份。
+    examples: ["2023-01", "2023-07"]
+  org_level_1:
+    source_header: 一级组织名称
+    role: dimension
+    business_name: 一级组织
+    meaning: 组织层级的第一层，用于集团或公司级聚合。
+  org_level_2:
+    source_header: 二级组织名称
+    role: dimension
+    business_name: 二级组织
+    meaning: 主要部门或业务单元，是本案例优先观察的责任单元。
+  org_level_3:
+    source_header: 三级组织名称
+    role: dimension
+    business_name: 三级组织
+    meaning: 二级组织下的细分团队或成本中心。
+  raw_id_number_field:
+    source_header: 身份证号码
+    role: ambiguous_metric
+    business_name: 原始疑似人数口径字段
+    meaning: 原始表头为"身份证号码"，但样例值为小整数，更像人数或人数代理字段。
+    quality_rule: 未经业务确认前不得按个人身份证号码使用、展示或联结；只能作为待确认的汇总人数代理。
+  headcount_proxy:
+    role: derived_metric
+    business_name: 人数代理
+    unit: people
+    meaning: 在确认 raw_id_number_field 为汇总人数后，用作人均成本和人均营收计算的分母。
+    quality_rule: 必须保持聚合口径，不输出个人级信息。
+  income_tax:
+    source_header: 个税
+    role: metric
+    business_name: 个税
+    unit: currency
+    meaning: 汇总个税金额。
+  income_tax_month:
+    source_header: 个税(月)
+    role: metric
+    business_name: 月度个税
+    unit: currency
+    meaning: 月度口径个税金额。
+  housing_fund:
+    source_header: 公积金
+    role: metric
+    business_name: 公积金
+    unit: currency
+    meaning: 汇总公积金金额。
+  housing_fund_month:
+    source_header: 公积金(月)
+    role: metric
+    business_name: 月度公积金
+    unit: currency
+    meaning: 月度口径公积金金额。
+  other_cost:
+    source_header: 其他
+    role: metric
+    business_name: 其他人工成本
+    unit: currency
+    meaning: 除已列示项目外的其他人工成本。
+  other_cost_month:
+    source_header: 其他(月)
+    role: metric
+    business_name: 月度其他人工成本
+    unit: currency
+    meaning: 月度口径其他人工成本。
+  labor_cost_budget:
+    source_header: 人工成本预算
+    role: metric
+    business_name: 人工成本预算
+    unit: currency
+    meaning: 组织在对应期间的人工成本预算金额。
+  labor_cost_budget_month:
+    source_header: 人工成本预算(月)
+    role: metric
+    business_name: 月度人工成本预算
+    unit: currency
+    meaning: 月度口径人工成本预算金额。
+  social_security_cost:
+    source_header: 社保费
+    role: metric
+    business_name: 社保费
+    unit: currency
+    meaning: 汇总社保费用。
+  social_security_cost_month:
+    source_header: 社保费(月)
+    role: metric
+    business_name: 月度社保费
+    unit: currency
+    meaning: 月度口径社保费用。
+  net_salary:
+    source_header: 实发工资
+    role: metric
+    business_name: 实发工资
+    unit: currency
+    meaning: 汇总实发工资金额。
+  net_salary_month:
+    source_header: 实发工资(月)
+    role: metric
+    business_name: 月度实发工资
+    unit: currency
+    meaning: 月度口径实发工资金额。
+  revenue:
+    source_header: 营收总额
+    role: metric
+    business_name: 营收总额
+    unit: currency
+    meaning: 组织在对应期间的营收总额。
+  revenue_month:
+    source_header: 营收总额(月)
+    role: metric
+    business_name: 月度营收
+    unit: currency
+    meaning: 月度口径营收金额。
+
+derived_metrics:
+  labor_cost_to_revenue_pct:
+    business_name: 人工成本预算占营收比
+    unit: pct
+    formula: labor_cost_budget / revenue * 100
+    meaning: 衡量人工成本预算相对于营收规模的压力。
+  budget_per_head:
+    business_name: 人均人工成本预算
+    unit: currency/person
+    formula: labor_cost_budget / headcount_proxy
+    meaning: 在人数代理字段确认后，用于横向比较组织人均预算。
+  net_salary_per_head:
+    business_name: 人均实发工资
+    unit: currency/person
+    formula: net_salary / headcount_proxy
+    meaning: 在人数代理字段确认后，用于观察薪酬发放强度。
+  revenue_per_head:
+    business_name: 人均营收
+    unit: currency/person
+    formula: revenue / headcount_proxy
+    meaning: 在人数代理字段确认后，用于观察组织产出效率。
+
+business_terms:
+  人工成本预算占营收比: 人工成本预算 / 营收总额，用于观察成本压力，不等同于利润率。
+  人数代理: 原始字段名称异常但数值像人数的字段，必须经业务确认后才能用于人均指标。
+  组织归因: 当前数据能定位到组织层级的差异，但不能直接判断个人绩效或管理责任。
+
+analysis_boundaries:
+  - 当前数据是组织和月份层面的汇总数据，不得生成个人员工画像或个人责任判断。
+  - 原始"身份证号码"字段不得作为个人身份信息处理；在未确认前只能作为异常字段说明。
+  - 成本占营收比升高只能说明成本压力，不足以证明人员冗余、绩效低或预算失控。
+  - 若需要问责或动作分配，必须补充预算口径、组织职责、业务量和计划值。
+  - 月度和累计字段同时存在时，必须明确所用口径，避免把累计值和月度值混算。

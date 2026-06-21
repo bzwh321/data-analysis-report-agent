@@ -1,14 +1,29 @@
 """
 plan_validator.py — Plan JSON 格式硬校验
 
-大脑 Agent 每轮输出 Plan 后，Harness 必须通过以下全部校验才允许取数。
-任一失败 → 拒绝执行 → 返回错误列表 → 大脑 Agent 必须修正。
+这是 deterministic 校验脚本，不调用任何模型 API。
+默认读取 experience/plan_schema.json 中的 step 白名单；调用方也可以传入 schema_path。
 """
 
-from config import MAX_ROUNDS, ALLOWED_STEPS, MIN_IMPACT_PCT
+import json
+from pathlib import Path
+from typing import Optional
 
 
-def validate_plan(plan: dict) -> tuple[bool, list[str]]:
+DEFAULT_MAX_ROUNDS = 5
+DEFAULT_MIN_IMPACT_PCT = 3.0
+
+
+def _load_schema(schema_path: Optional[str]) -> dict:
+    if not schema_path:
+        schema_path = str(Path(__file__).resolve().parents[1] / "experience" / "plan_schema.json")
+    path = Path(schema_path)
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def validate_plan(plan: dict, schema_path: Optional[str] = None) -> tuple[bool, list[str]]:
     """
     校验 Plan JSON 格式。
 
@@ -17,6 +32,8 @@ def validate_plan(plan: dict) -> tuple[bool, list[str]]:
         is_valid=True 表示所有校验通过
     """
     errors: list[str] = []
+    schema = _load_schema(schema_path)
+    allowed_steps = schema.get("analytical_step_enum", [])
 
     # ── 顶层必需字段 ──────────────────────────────────────────────────────
     required_top = ["round", "analytical_step", "question",
@@ -30,13 +47,13 @@ def validate_plan(plan: dict) -> tuple[bool, list[str]]:
         return False, errors  # 顶层字段缺失，后续校验无意义
 
     # ── 轮次上限 ─────────────────────────────────────────────────────────
-    if plan["round"] > MAX_ROUNDS:
-        errors.append(f"round({plan['round']}) > MAX_ROUNDS({MAX_ROUNDS})")
+    if plan["round"] > DEFAULT_MAX_ROUNDS:
+        errors.append(f"round({plan['round']}) > max_rounds({DEFAULT_MAX_ROUNDS})")
 
     # ── 分析步骤白名单 ────────────────────────────────────────────────────
-    if plan["analytical_step"] not in ALLOWED_STEPS:
+    if allowed_steps and plan["analytical_step"] not in allowed_steps:
         errors.append(
-            f"analytical_step '{plan['analytical_step']}' 不在白名单 {ALLOWED_STEPS}"
+            f"analytical_step '{plan['analytical_step']}' 不在白名单 {allowed_steps}"
         )
 
     # ── query_spec 必需字段 ───────────────────────────────────────────────
@@ -51,7 +68,7 @@ def validate_plan(plan: dict) -> tuple[bool, list[str]]:
 
     # ── expected_output 必需字段 ──────────────────────────────────────────
     eo = plan.get("expected_output", {})
-    for field in ["format", "required_fields", "unit_sales", "unit_rate"]:
+    for field in ["format", "required_fields"]:
         if field not in eo:
             errors.append(f"expected_output 缺少字段：{field}")
     if "required_fields" in eo and not isinstance(eo["required_fields"], list):
@@ -61,12 +78,29 @@ def validate_plan(plan: dict) -> tuple[bool, list[str]]:
     sc = plan.get("stop_condition", {})
     if "if_impact_below_pct" not in sc:
         errors.append("stop_condition 缺少字段：if_impact_below_pct")
-    elif sc["if_impact_below_pct"] < MIN_IMPACT_PCT:
+    elif sc["if_impact_below_pct"] < DEFAULT_MIN_IMPACT_PCT:
         errors.append(
             f"stop_condition.if_impact_below_pct({sc['if_impact_below_pct']}) "
-            f"< MIN_IMPACT_PCT({MIN_IMPACT_PCT})，不允许设置更低的停止阈值"
+            f"< min_impact_pct({DEFAULT_MIN_IMPACT_PCT})，不允许设置更低的停止阈值"
         )
     if "reason" not in sc:
         errors.append("stop_condition 缺少字段：reason")
 
     return len(errors) == 0, errors
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(description="Validate an analysis plan JSON file.")
+    parser.add_argument("plan_json", help="Path to a plan JSON file.")
+    parser.add_argument("--schema", default=None, help="Optional path to plan_schema.json.")
+    args = parser.parse_args()
+
+    plan = json.loads(Path(args.plan_json).read_text(encoding="utf-8"))
+    ok, messages = validate_plan(plan, schema_path=args.schema)
+    print("PASS" if ok else "FAIL")
+    for message in messages:
+        print(f"- {message}")
+    sys.exit(0 if ok else 1)
