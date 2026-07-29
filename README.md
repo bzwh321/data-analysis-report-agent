@@ -2,482 +2,330 @@
 
 <!-- Provenance marker: bzwh -->
 
-一个用于生成**可审查数据分析报告**的 Codex skill。
+把数据、表头业务含义和你真正关心的问题交给 AI，得到一份**结论可核对、证据可追溯、页面可继续微调**的数据分析报告。
 
-它的核心设计不是“把一堆提示词塞进工作流”，而是把报告生产拆成几层：
+这个仓库不是一个只能演示的提示词。它把数据分析 Agent、业务语义层、案例经验、报告风格和本地校验器放在同一个 Skill 目录里，适合生成 HTML、Markdown 和结构化分析材料。
 
-- 通用报告流程
-- 语义层
-- 案例经验层
-- 页面风格层
-- 本地确定性校验
+![Data Analysis Report Agent report styles](docs/assets/report-template-gallery.svg)
 
-![Data Analysis Report Agent topology](docs/assets/skill-topology.svg)
+## 最推荐的使用方式：三步
 
-## 这个 Skill 解决什么问题
+### 第一步：把完整 Skill 导入 AI，并明确点名
 
-很多数据分析报告失败，不是因为模型不会写，而是因为：
+先下载完整仓库：
 
-- 表头和业务含义混在提示词里，换一个案例就污染工作流；
-- 阈值、经验判断、好结论样例被写进通用流程，导致下一个项目继承错误经验；
-- 页面风格只是一段文字描述，报告 agent 不知道应该怎么排版；
-- 最终报告没有结构校验，容易出现没有数据来源、没有边界说明、没有行动建议的结论。
-
-这个 skill 的目标是让报告生产变成一个可维护协议：
-
-```text
-用户问题 + 数据
-  -> 选择 case pack
-  -> 读取语义层
-  -> 读取案例经验层
-  -> 选择报告风格
-  -> 生成分析计划
-  -> 记录阶段事件、成本和边际价值
-  -> 校验计划/数据/输出
-  -> 生成可审查报告
-  -> 如需 PPTX，交给 data-report-presentation-planner 形成并锁定 v0.5 故事线、语义布局与全局颜色方案
-  -> 交给 data-report-ppt-author，以隔离页级任务包让 Page Visual Designer 锁定 slide-plan、SVG视觉参考和图表设计契约
-  -> Harness 通过页面设计门禁；仅代表页或风险页调用设计 Judge，再由同一页级 PPT Implementer 上下文制作和组合原生对象
-  -> data-report-pptx-renderer 作为 Compiler/SDK 编译和确定性校验
-  -> 合并锁定页面，交付可编辑演示文稿
+```powershell
+git clone https://github.com/bzwh321/data-analysis-report-agent.git
 ```
 
-## 重要边界
+把整个 `data-analysis-report-agent/` 目录导入、挂载或复制到支持 Skills 的 AI 工作环境中，入口文件是 [`SKILL.md`](SKILL.md)。
 
-这个仓库不是一个独立模型运行器。
+不要只上传 `SKILL.md`。这个 Skill 还会读取：
 
-它不包含：
+- `cases/`：表头业务含义和案例经验；
+- `styles/`：HTML 报告的视觉风格与参考页面；
+- `experience/`：跨案例通用的分析规则；
+- `references/`：材料包、运行日志和下游交付合同；
+- `harness/`：确定性校验脚本。
 
-- API key
-- provider SDK client
-- model name
-- hidden runtime
-- 网络调用
-- 自动取数服务
-- PPTX 渲染 runtime
+不同 AI 产品导入 Skill 的方式可能不同。如果宿主不支持自动注册 Skills，也可以把完整目录放进项目文件，并明确要求 AI 以 `SKILL.md` 为工作协议。
 
-Codex 或其他宿主 agent 负责推理、读数据、写报告。`harness/` 里的 Python 文件只做本地确定性结构校验。
-当用户需要可编辑 PPTX 时，本 skill 应先输出结构化报告和决策就绪的 `analysis_material_pack` v0.3：分析 Agent 必须完成业务问题驱动的 ReAct、候选结论审查与重写、管理用途和下一验证问题，并把图表候选绑定到要证明的 finding。随后再调用 `D:\知识库\skills\data-report-presentation-planner` 完成 v0.5 故事线、人审、逐页合同、语义布局意图和全局语义颜色方案。Planner 负责选择、合并、删除和排序已经审查的素材，不负责为弱结论补业务意义；编译后只把页级素材与紧邻上下文下发。大纲获批后由 `D:\知识库\skills\data-report-ppt-author` 从隔离任务包执行：标准页只运行 Page Visual Designer、一个可恢复的页级 PPT Implementer 上下文和 rendered-slide Judge；Chart Design UI 与 page-design Judge 按复杂度或风险触发；确定性 Harness 与 QA 每页必跑。Author 只能解析颜色契约，PPT Implementer 不得自行撰写文字颜色。审查用 SVG 不得进入最终 PPTX。`D:\知识库\skills\data-report-pptx-renderer` 只作为 Compiler/SDK 和 legacy fallback。不要把 `pptxgenjs`、`python-pptx` 或 HTML 转 PPT 逻辑塞进本 skill。
-
-运行产物、浏览器截图、试验依赖和生成报告不得长期存放在 skill 包内。宿主环境应把它们写到外部工作目录；本机当前产物位置记录在 [`OUTPUTS.md`](OUTPUTS.md)。这样上传或分发 skill 时不会携带大体积历史产物。
-
-## 目录结构
+第一次对话建议直接使用下面这段引导词：
 
 ```text
-data-analysis-report-agent/
-├── SKILL.md                         # skill 主说明：稳定流程和报告契约
-├── README.md                        # GitHub 使用说明
-├── experience/                      # 通用、跨案例报告经验
-│   ├── thresholds.json
-│   ├── priority_rules.md
-│   ├── good_summaries.md
-│   └── plan_schema.json
-├── cases/                           # 案例包
-│   ├── retail-profitability/
-│   ├── boss-data-analyst-jobs/
-│   └── workforce-cost-budget/
-├── styles/                          # 页面设计风格包
-│   ├── manifest.yaml
-│   ├── analytical-deep-dive/
-│   ├── executive-diagnostic-brief/
-│   ├── consulting-board-memo/
-│   └── operating-review/
-├── harness/                         # 本地确定性校验
-│   ├── plan_validator.py
-│   ├── data_validator.py
-│   ├── output_validator.py
-│   └── run_observability_validator.py
-└── docs/
-    ├── architecture.md
-    ├── customization_guide.md
-    ├── skill-topology.html
-    └── assets/
-        ├── skill-topology.svg
-        └── report-template-gallery.svg
+请明确使用 `data-analysis-report-agent`，入口是这个目录中的 `SKILL.md`。
+
+开始前请先确认：
+1. 你读取的是名为 `data-analysis-report-agent` 的 Skill；
+2. 你已经读取它的 `SKILL.md`，并会按需读取 `cases/`、`styles/`、
+   `experience/`、`references/` 和 `harness/`；
+3. 不要切换到名称相似的通用数据分析 Skill；
+4. 如果没有找到这个 Skill，请停止分析，并告诉我你实际找到的 Skill 名称和路径。
+
+确认无误后，再读取我提供的数据集。
 ```
 
-## 你需要输入什么
+这段话的作用不是增加仪式感，而是让 AI 在开始计算前先锁定正确的 Skill 和入口文件，避免调用错工作流。
 
-最少需要：
+### 第二步：把数据、表头含义和分析方向一起给它
 
-| 输入 | 必需 | 说明 |
-|---|---:|---|
-| 用户问题 | 是 | 例如“上海数据分析师岗位的薪资、经验门槛和技能要求是什么？” |
-| 数据 | 是 | Excel、CSV、SQL 结果、JSON rows，或宿主环境能读取的数据 |
-| 字段含义 | 强烈建议 | 最好通过 `cases/<case-id>/semantic_layer.yaml` 提供 |
-| 案例经验 | 可选 | 阈值、优先级规则、好结论样例 |
-| 报告风格 | 可选 | 从 `styles/manifest.yaml` 选择 |
-| 输出格式 | 可选 | HTML、Markdown、结构化 JSON，或宿主 agent 支持的其他报告形态；PPTX 通过 Planner → PPT Author → Compiler/SDK 工作流生成 |
+只给一份 Excel，AI 也许能猜出字段，但“猜对表头”不等于“理解业务”。如果你同时说明字段口径和分析目标，通常能省掉多轮追问，也能减少漂亮但无用的结论。
 
-如果没有语义层，不要让 agent 直接根据表头猜业务含义。先补语义层，再做报告。
+建议一次提供这些信息：
 
-## 快速使用
+| 信息 | 建议内容 |
+| --- | --- |
+| 数据集 | Excel、CSV、JSON、SQL 查询结果或 AI 可读取的数据路径 |
+| 表头业务含义 | 每个关键字段代表什么、单位是什么、一行数据代表什么 |
+| 分析方向 | 你想判断趋势、异常、结构、原因、机会还是风险 |
+| 使用者 | 报告给自己、业务负责人、管理层还是客户看 |
+| 决策目标 | 看完报告后准备做什么决定 |
+| 时间与范围 | 分析周期、筛选条件、是否需要同比或环比 |
+| 输出形式 | HTML、Markdown、结构化 JSON，或下游 PPTX 分析素材 |
 
-在 Codex 中，把本目录作为 skill 使用，然后给出问题、数据路径和 case/style 选择。
-
-示例：
+可以直接复制下面的模板：
 
 ```text
-使用 data-analysis-report-agent。
-数据在：D:\...\BOSS直聘数据分析师职位-案例分析原始数据.xlsx
-使用 case：cases/boss-data-analyst-jobs
-使用风格：styles/consulting-board-memo
-请生成一份 HTML 报告，回答：
-上海数据分析师岗位的薪资水平、经验门槛和核心技能要求是什么？
+请使用 `data-analysis-report-agent` 分析 `./data/sales.xlsx`。
+
+表头和业务含义：
+- `month`：自然月，格式为 YYYY-MM；
+- `category`：商品一级品类；
+- `sales`：含税销售额，单位为元；
+- `profit`：销售毛利额，单位为元；
+- `order_count`：支付成功订单数；
+- 每一行代表“某月 × 某品类”的汇总结果。
+
+我希望重点回答：
+1. 哪些品类的利润率出现了实质性下滑？
+2. 下滑主要来自销售结构变化，还是品类自身利润率变化？
+3. 哪些结论已经被数据支持，哪些只是待验证方向？
+4. 管理层下一步最值得追查和采取的动作是什么？
+
+报告给经营负责人阅读，分析范围是 2025 年 1 月至 12 月。
+请先复述字段口径、分析边界和计划；发现字段歧义时先问我，不要自行猜测。
+第一版请输出可离线打开的 HTML 报告，并保留证据、数据边界和行动建议。
 ```
 
-如果是新数据，先让 agent 生成语义层：
-
-```text
-使用 data-analysis-report-agent。
-请先读取这个 Excel 的表头和前几行，帮我创建一个新的 case pack。
-要求：
-1. 不要把业务字段含义写进 SKILL.md
-2. 字段含义写到 semantic_layer.yaml
-3. 阈值和案例经验写到 cases/<case-id>/experience/
-```
-
-## 工作流
-
-1. 识别问题和输出目标。
-2. 选择或创建 case pack。
-3. 读取通用经验层 `experience/`。
-4. 读取案例语义层 `cases/<case-id>/semantic_layer.yaml`。
-5. 读取案例经验层 `cases/<case-id>/experience/`。
-6. 选择页面风格 `styles/<style-id>/`。
-7. 生成分析计划。
-8. 用 `harness/plan_validator.py` 校验计划。
-9. 初始化并持续写入 `analysis-run-events.jsonl` 和 `analysis-run-log.json`。
-10. 读取或检查数据。
-11. 用 `harness/data_validator.py` 校验数据结构。
-12. 提炼事实、推断、建议，并记录每轮产出增量和边际价值。
-13. 生成报告。
-14. 用 `harness/output_validator.py` 校验最终结构。
-15. 用 `harness/run_observability_validator.py` 校验运行日志。
-
-## 语义层怎么维护
-
-语义层文件位置：
+如果你经常分析同一种业务，可以把字段含义整理成：
 
 ```text
 cases/<case-id>/semantic_layer.yaml
 ```
 
-语义层只回答一个问题：
+这样下一次只需要给新数据和新问题，不必重复解释全部表头。具体结构见[自定义指南](docs/customization_guide.md)。
 
-> 这些字段在这个案例里是什么意思？
+### 第三步：看 HTML 截图，像和设计师沟通一样微调
 
-推荐结构：
+第一版 HTML 的价值，是让内容和页面真正“看得见”。不要只在聊天里说“再高级一点”或“再好看一点”，最好打开 HTML、截取具体页面，再告诉 AI 哪一块需要调整。
 
-```yaml
-semantic_layer_id: your-case-id
-version: "0.1"
-purpose: 说明这个语义层服务什么案例
+一轮反馈控制在三到五个明确问题，通常更容易得到稳定结果：
 
-source:
-  expected_file_name: your-data.xlsx
-  expected_sheet: Sheet1
+- 结论标题是否一眼能看懂；
+- 主图是否真正证明了标题；
+- 页面信息是否太挤或留白过多；
+- 颜色有没有抢过数据本身；
+- 表格、注释和数据来源是否清楚；
+- 哪一块内容应该上移、合并或删除。
 
-grain:
-  default: row_grain
-  supported:
-    - name: row_grain
-      keys: [date, segment]
-      meaning: 每一行代表什么
-
-fields:
-  raw_field_name:
-    source_header: 原始表头
-    role: metric
-    business_name: 业务名称
-    unit: pct
-    meaning: 这个字段衡量什么
-    quality_rule: 使用前需要注意什么
-
-derived_metrics:
-  derived_metric_name:
-    business_name: 派生指标名称
-    unit: pct
-    formula: numerator / denominator * 100
-    meaning: 为什么要算这个指标
-
-business_terms:
-  业务词: 业务词定义
-
-analysis_boundaries:
-  - 这份数据能证明什么
-  - 这份数据不能证明什么
-```
-
-维护规则：
-
-- 字段含义、口径、单位、粒度写在语义层。
-- 不要在语义层写 prompt 指令。
-- 不要在语义层写页面风格。
-- 不要在语义层写“模型应该怎么想”。
-- 原始字段有歧义时，必须写 `quality_rule` 或 `analysis_boundaries`。
-- 每次字段变更，更新 `version` 或在 `purpose` 中说明适用范围。
-
-好语义层的标准：
-
-- 读者不用看原始 Excel，也能知道每个字段代表什么。
-- agent 不需要猜表头含义。
-- 报告能明确停在数据边界内。
-
-## 经验层怎么维护
-
-经验层分两类。
-
-### 1. 通用经验层
-
-位置：
+截图微调引导词：
 
 ```text
-experience/
+这是当前 HTML 报告的截图，请继续使用 `data-analysis-report-agent`
+和本轮已经确认的数据结论。
+
+这一轮只微调页面表达，不重新计算数据，也不要擅自增加新结论。
+
+请修改：
+1. 把顶部结论改成一句可以直接用于汇报的判断；
+2. 放大主图，弱化右侧次要说明；
+3. 减少重复卡片，把证据和解释放在同一阅读路径；
+4. 保留数据来源、口径和边界说明；
+5. 修改后重新输出 HTML，并说明本轮只改了哪些页面元素。
 ```
 
-只放跨案例都成立的规则，例如：
+如果截图暴露的是结论错误，而不只是版式问题，应明确要求 AI 回到数据和证据层重新验证，不要用视觉微调掩盖分析问题。
 
-- 每条结论必须有数据来源。
-- 区分事实、推断和建议。
-- 不要编造组织原因。
-- 影响很小的分支可以停止下钻。
+## 一段完整的启动引导词
 
-不要把某个行业、某个案例的阈值写到这里。
-
-### 2. 案例经验层
-
-位置：
+不想拆成多轮时，可以直接使用下面这版：
 
 ```text
-cases/<case-id>/experience/
+请使用 `data-analysis-report-agent`，入口是 `SKILL.md`。
+开始前先确认 Skill 名称和入口路径；如果没有找到，请停止，不要改用相似 Skill。
+
+数据集：`./data/your-data.xlsx`
+表头业务含义：
+- 请在这里列出关键字段、单位、粒度和特殊口径。
+
+分析方向：
+- 请在这里写你最想回答的 2—5 个业务问题。
+
+报告读者：
+- 请写明谁会阅读，以及看完后要支持什么决定。
+
+执行要求：
+1. 先复述字段含义、数据边界和分析计划，字段不清楚时先问我；
+2. 区分事实、推断和建议，不根据表头猜组织原因；
+3. 每条核心结论必须能回到字段、计算或证据；
+4. 第一版输出可离线打开的 HTML；
+5. HTML 完成后等待我基于截图反馈，再做页面微调；
+6. 如果反馈涉及结论变化，先重新验证数据，不要只改文案。
 ```
 
-包含：
+## 你会得到什么
 
-| 文件 | 用途 |
-|---|---|
-| `thresholds.json` | 这个案例的阈值、告警线、物料性标准 |
-| `priority_rules.md` | 这个案例里结论如何排序 |
-| `good_summaries.md` | 好结论写法样例 |
+一次完整运行通常包括：
 
-例子：
+- 回答优先的管理摘要；
+- 按重要性排序的核心发现；
+- 事实、推断和建议的明确区分；
+- 可以追溯到字段或数据切片的证据；
+- 数据能证明什么、不能证明什么；
+- 候选解释、信息缺口和下一步验证问题；
+- 图表与结论的对应关系；
+- 可继续截图评审的 HTML 报告；
+- 需要时可交给下游演示文稿工作流的结构化分析材料。
 
-```json
-{
-  "salary_parse_rate": {
-    "warning_low": 0.85,
-    "desc": "薪资可解析率低于85%时，薪资结论必须降级。"
-  },
-  "impact_min_pct": 3.0
-}
-```
+这个 Skill 不会为了凑页数强行生成固定数量的结论或图表。分析深度由问题价值、证据质量和新增解释力决定。
 
-维护规则：
+## 内置参考素材
 
-- 只写这个案例适用的经验。
-- 阈值必须能解释为什么重要。
-- `good_summaries.md` 应该给“好输出样例”，不是堆分析方法。
-- 案例经验不能覆盖语义层字段含义。
-- 如果一条规则开始适用于多个无关案例，再考虑提升到根目录 `experience/`。
+### 案例包
 
-## 页面风格怎么维护
+| 案例 | 目录 | 适用场景 |
+| --- | --- | --- |
+| BOSS 数据分析师岗位 | `cases/boss-data-analyst-jobs/` | 薪资、经验、学历、公司类型和技能标签分析 |
+| 零售利润率 | `cases/retail-profitability/` | 利润率下滑、促销冲击和品类结构归因 |
+| 人工成本预算 | `cases/workforce-cost-budget/` | 组织人工成本、预算和营收效率分析 |
 
-风格文件位置：
-
-```text
-styles/<style-id>/
-├── page_style.yaml
-├── global_prompt.md
-└── sample.html
-```
-
-风格层只回答：
-
-> 报告应该长什么样？
-
-不要把业务字段、阈值、行业经验写进风格层。
-
-当前内置风格：
-
-![Report template gallery](docs/assets/report-template-gallery.svg)
-
-| 风格 | 适用场景 |
-|---|---|
-| `analytical-deep-dive` | 白皮书、研究报告、深度分析 |
-| `executive-diagnostic-brief` | 高管诊断、异常判断、快速决策 |
-| `consulting-board-memo` | 董事会备忘录、推荐路径、方案取舍 |
-| `operating-review` | 周会/月会复盘、行动追踪、状态管理 |
-
-风格维护规则：
-
-- `page_style.yaml` 写配色、字体、布局、容器、图表和表格规则。
-- `global_prompt.md` 写给报告撰写 agent 的全局页面提示词。
-- `sample.html` 是静态视觉参考页。
-- 不要引用 CDN、外部脚本或隐藏运行时。
-- 不要用装饰性渐变、玻璃态、通用卡片堆。
-- 中文报告不要出现泛用英文模板标签。
-
-## 校验方式
-
-计划校验：
-
-```powershell
-python harness/plan_validator.py path\to\plan.json
-```
-
-数据校验：
-
-```powershell
-python harness/data_validator.py path\to\data.json path\to\plan.json
-```
-
-输出校验：
-
-```powershell
-python harness/output_validator.py path\to\final_report.json
-```
-
-skill 结构校验：
-
-```powershell
-$env:PYTHONUTF8='1'
-python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .
-```
-
-## 内置案例
-
-### BOSS 数据分析师岗位案例
-
-路径：
-
-```text
-cases/boss-data-analyst-jobs/
-```
-
-用途：
-
-- 招聘岗位样例分析
-- 薪资文本解析
-- 经验/学历字段混杂处理
-- 技能标签统计
-- 公司类型结构观察
-
-本地 HTML 报告样例：
-
-- `cases/boss-data-analyst-jobs/report.html`
-- `cases/boss-data-analyst-jobs/report-executive-diagnostic-brief.html`
-- `cases/boss-data-analyst-jobs/report-consulting-board-memo.html`
-- `cases/boss-data-analyst-jobs/report-operating-review.html`
-
-### 人工成本预算案例
-
-路径：
-
-```text
-cases/workforce-cost-budget/
-```
-
-用途：
-
-- 人工成本预算分析
-- 组织层级口径
-- 成本/营收效率
-- 疑似人数代理字段处理
-
-### 零售利润率案例
-
-路径：
-
-```text
-cases/retail-profitability/
-```
-
-用途：
-
-- 零售利润率下滑归因
-- 事件性冲击和结构漂移区分
-- 促销季影响分析
-
-## 新增一个案例的步骤
-
-1. 复制目录：
-
-```text
-cases/retail-profitability/
-```
-
-2. 改名为：
-
-```text
-cases/your-case-id/
-```
-
-3. 修改：
+每个案例可以包含：
 
 ```text
 case.yaml
 semantic_layer.yaml
-experience/thresholds.json
-experience/priority_rules.md
-experience/good_summaries.md
+experience/
+├── thresholds.json
+├── priority_rules.md
+└── good_summaries.md
 ```
 
-4. 用真实样例数据跑一遍：
+### 报告风格
 
-- plan validator
-- data validator
-- output validator
+| 风格 | 适用场景 |
+| --- | --- |
+| `analytical-deep-dive` | 深度分析、方法透明、证据链完整 |
+| `executive-diagnostic-brief` | 指标异动、异常诊断、快速决策 |
+| `consulting-board-memo` | 方案比较、战略选择、董事会备忘录 |
+| `operating-review` | 周报、月报、季度经营复盘 |
 
-5. 如果生成 HTML 报告，确认：
-
-- 没有外部 CDN
-- 图片路径可用
-- 数据范围和公式在末尾注释
-- 主体结论不超过语义层边界
-
-## 新增一个风格的步骤
-
-1. 创建目录：
+每个风格目录都包含：
 
 ```text
-styles/your-style-id/
+page_style.yaml    # 配色、字体、布局、图表和表格规则
+global_prompt.md   # 页面设计引导词
+sample.html        # 可离线查看的参考页面
 ```
 
-2. 添加：
+完整风格注册表见 [`styles/manifest.yaml`](styles/manifest.yaml)。
+
+仓库内也保留了同一案例的多种 HTML 成品，便于比较页面表达：
+
+- [数据分析深潜报告](cases/boss-data-analyst-jobs/report.html)
+- [高管诊断简报](cases/boss-data-analyst-jobs/report-executive-diagnostic-brief.html)
+- [咨询式董事会备忘录](cases/boss-data-analyst-jobs/report-consulting-board-memo.html)
+- [经营复盘报告](cases/boss-data-analyst-jobs/report-operating-review.html)
+
+## 它是怎么工作的
+
+![Data Analysis Report Agent topology](docs/assets/skill-topology.svg)
 
 ```text
-page_style.yaml
-global_prompt.md
-sample.html
+用户问题 + 数据 + 字段业务含义
+  -> 选择或创建 case pack
+  -> 读取通用经验和案例经验
+  -> 选择报告风格
+  -> 生成并校验分析计划
+  -> 检查数据结构
+  -> 分析、记录证据并审查结论
+  -> 生成报告和分析材料包
+  -> 校验输出
+  -> 交付 HTML / Markdown / JSON
 ```
 
-3. 在 `styles/manifest.yaml` 注册。
+仓库内的内容分工：
 
-4. 用同一份数据生成至少一份完整报告，确认风格差异不是只换颜色。
+| 目录或文件 | 职责 |
+| --- | --- |
+| `SKILL.md` | 稳定的分析流程、边界和输出合同 |
+| `cases/` | 某类业务的字段含义和案例经验 |
+| `experience/` | 跨案例通用的分析规则 |
+| `styles/` | 报告视觉与页面表达 |
+| `references/` | 分析材料包和运行合同 |
+| `harness/` | 本地确定性校验，不调用模型 |
+| `docs/` | 架构、扩展方式和设计说明 |
 
-风格差异应该体现在：
+## 重要边界
 
-- 配色
-- 版心
-- 容器结构
-- 图表摆放
-- 表格密度
-- 信息层级
-- 结尾模块
+这个仓库不是独立运行的数据分析软件，也不包含：
 
-## 发布前检查清单
+- API Key；
+- 模型供应商客户端；
+- 固定模型名称；
+- 自动取数服务；
+- 隐藏网络调用；
+- PPTX 渲染运行时。
 
-- [ ] `SKILL.md` 没有 case-specific 字段含义。
-- [ ] 根目录 `experience/` 没有某个案例专属阈值。
-- [ ] 每个 case 都有 `semantic_layer.yaml`。
-- [ ] 每个 case 的经验写在 `cases/<case-id>/experience/`。
-- [ ] 每个 style 都有 `page_style.yaml`、`global_prompt.md`、`sample.html`。
-- [ ] HTML 样例不依赖外部 CDN 或脚本。
-- [ ] 校验脚本仍然是本地确定性逻辑。
-- [ ] 不包含 API key、provider SDK client、模型名或隐藏 runtime。
-- [ ] README 中的图片路径在 GitHub 上可显示。
+负责推理和读取数据的是你导入 Skill 的宿主 AI。`harness/` 中的 Python 脚本只做本地、确定性的结构校验。
+
+如果需要可编辑 PPTX，这个 Skill 负责先生成经过审查的报告和 `analysis_material_pack`。后续仍需要独立的演示规划、PPT 作者和编译校验 Skill；这些下游 Skill 不包含在本仓库中。
+
+运行报告、截图和临时文件应保存在 Skill 目录之外，避免上传历史产物。当前仓库的本机产物约定见 [`OUTPUTS.md`](OUTPUTS.md)。
+
+## 自定义自己的业务
+
+新增业务案例时，复制一个现有案例并修改：
+
+```text
+cases/your-case-id/
+├── case.yaml
+├── semantic_layer.yaml
+└── experience/
+    ├── thresholds.json
+    ├── priority_rules.md
+    └── good_summaries.md
+```
+
+维护原则：
+
+- 字段含义、单位、粒度和口径写进 `semantic_layer.yaml`；
+- 某个案例专用的阈值写进案例自己的 `experience/`；
+- 跨行业都成立的规则才写进根目录 `experience/`；
+- 页面风格只负责“报告长什么样”，不承载业务口径；
+- 数据无法证明的内容必须写成边界或待验证方向。
+
+详细说明见：
+
+- [自定义指南](docs/customization_guide.md)
+- [架构说明](docs/architecture.md)
+- [分析材料包合同](references/analysis_material_pack_contract.md)
+- [运行可观测性合同](references/analysis_run_observability_contract.md)
+
+## 本地校验
+
+校验分析材料包和运行日志：
+
+```powershell
+python harness/test_material_pack_contract.py
+python harness/test_run_observability_contract.py
+```
+
+校验内置兼容样例：
+
+```powershell
+python harness/deck_synthesis_validator.py examples/deck_synthesis_attribution_sample.json
+python harness/pptx_contract_validator.py examples/pptx_handoff_attribution_3drivers.json
+python harness/pptx_contract_validator.py examples/pptx_handoff_template_dashboard.json
+```
+
+校验 Skill 目录结构：
+
+```powershell
+python -X utf8 "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" .
+```
+
+最后一条命令依赖 Codex 本机自带的 `skill-creator` 校验脚本；其他宿主环境可以跳过。
+
+## 问题反馈
+
+如果发现字段口径、校验器或示例存在问题，请在 [GitHub Issues](https://github.com/bzwh321/data-analysis-report-agent/issues) 中说明：
+
+- 使用的数据结构；
+- 预期回答的问题；
+- 实际输出或错误信息；
+- 是否使用了 case pack 和页面风格；
+- 能否稳定复现。
 
 ## License
 
-根据你的项目发布策略补充。若要公开给他人复用，建议在上传 GitHub 前明确许可证。
+本仓库当前没有提供 `LICENSE` 文件。仓库公开可见不等于已经授予复制、修改或分发许可；如需复用，请先联系仓库所有者确认授权范围。
