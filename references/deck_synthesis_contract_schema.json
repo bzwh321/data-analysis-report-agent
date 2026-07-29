@@ -1,0 +1,198 @@
+{
+  "synthesis_version": "0.1",
+  "required_top_level": [
+    "synthesis_version",
+    "task",
+    "deck_goal",
+    "audience",
+    "source_report_ref",
+    "sources",
+    "findings",
+    "slides"
+  ],
+  "allowed_deck_goals": [
+    "boss_consulting_deck",
+    "data_review_deck",
+    "operating_review_deck"
+  ],
+  "allowed_audiences": [
+    "management",
+    "executive",
+    "operator",
+    "analyst"
+  ],
+  "allowed_layout_archetypes": [
+    "driver_attribution",
+    "performance_dashboard",
+    "comparison_exhibit",
+    "problem_solution",
+    "executive_summary",
+    "appendix_table"
+  ],
+  "allowed_output_layouts": [
+    "title",
+    "executive_summary",
+    "finding_with_chart",
+    "finding_with_table",
+    "matrix",
+    "notes_sources",
+    "comparison_vs",
+    "problem_solution_grid",
+    "dashboard_performance"
+  ],
+  "allowed_visual_modes": [
+    "native_chart",
+    "shape_exhibit",
+    "hybrid_dashboard"
+  ],
+  "required_finding_fields": [
+    "id",
+    "claim",
+    "evidence_refs"
+  ],
+  "required_slide_fields": [
+    "id",
+    "slide_goal",
+    "primary_claim",
+    "included_findings",
+    "evidence_refs",
+    "layout_archetype",
+    "merge_logic",
+    "interpretation_packet",
+    "review_packet",
+    "composition",
+    "output_slide_contract"
+  ],
+  "required_interpretation_packet_fields": [
+    "page_question",
+    "audience_decision",
+    "story_pattern",
+    "finding_roles",
+    "required_evidence",
+    "missing_evidence_requests",
+    "analysis_agent_request"
+  ],
+  "allowed_story_patterns": [
+    "movement_attribution_dense",
+    "driver_attribution",
+    "performance_dashboard",
+    "comparison_exhibit",
+    "problem_solution",
+    "executive_summary",
+    "appendix_table"
+  ],
+  "allowed_finding_roles": [
+    "issue_context",
+    "trend_context",
+    "driver_explanation",
+    "driver_contribution",
+    "benchmark_context",
+    "segment_context",
+    "recommendation",
+    "supporting_evidence"
+  ],
+  "required_missing_evidence_request_fields": [
+    "need",
+    "why_needed",
+    "suggested_analysis_question",
+    "required_fields",
+    "expected_finding_role"
+  ],
+  "allowed_analysis_agent_request_statuses": [
+    "not_needed",
+    "needs_analysis_refresh"
+  ],
+  "required_review_packet_fields": [
+    "review_summary",
+    "evidence_table",
+    "cause_cards",
+    "chart_plan",
+    "layout_blueprint",
+    "review_checks"
+  ],
+  "required_evidence_row_fields": [
+    "finding_ref",
+    "label",
+    "value",
+    "unit",
+    "source_ref",
+    "interpretation"
+  ],
+  "required_cause_card_fields": [
+    "finding_ref",
+    "cause",
+    "data_point",
+    "mechanism",
+    "evidence_ref",
+    "chart_binding"
+  ],
+  "required_chart_plan_fields": [
+    "chart_id",
+    "type",
+    "title",
+    "source_ref",
+    "message",
+    "data_fields",
+    "annotations"
+  ],
+  "allowed_chart_types": [
+    "bar",
+    "column",
+    "rank_bar",
+    "line",
+    "pie",
+    "table",
+    "kpi_strip",
+    "shape_exhibit"
+  ],
+  "allowed_density_levels": [
+    "standard",
+    "high",
+    "consulting_dense"
+  ],
+  "required_output_slide_contract_fields": [
+    "synthesis_ref",
+    "layout",
+    "slide_role",
+    "title",
+    "claim",
+    "evidence_refs",
+    "visual_mode"
+  ],
+  "archetype_rules": {
+    "driver_attribution": {
+      "min_included_findings": 2,
+      "min_driver_cards": 2,
+      "min_evidence_rows": 3,
+      "min_chart_plans": 1,
+      "recommended_output_layouts": [
+        "finding_with_chart",
+        "dashboard_performance"
+      ]
+    },
+    "performance_dashboard": {
+      "min_included_findings": 2,
+      "recommended_output_layouts": [
+        "dashboard_performance"
+      ]
+    },
+    "comparison_exhibit": {
+      "min_included_findings": 2,
+      "recommended_output_layouts": [
+        "comparison_vs"
+      ]
+    },
+    "problem_solution": {
+      "min_included_findings": 2,
+      "recommended_output_layouts": [
+        "problem_solution_grid"
+      ]
+    }
+  },
+  "quality_limits": {
+    "primary_claim_max_chars": 90,
+    "section_content_max_chars": 120,
+    "max_findings_per_slide": 6,
+    "review_summary_max_chars": 140
+  }
+}

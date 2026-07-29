@@ -1,0 +1,212 @@
+{
+  "executive_summary": "2024年11月销售额环比下降18.8%，家具贡献73.3%的下降额，应优先在家具范围继续定位，而不是平均排查全部品类。",
+  "findings": [
+    {
+      "title": "家具是第一排查范围",
+      "content": "家具贡献73.3%的11月销售下降，应优先在家具范围继续定位。",
+      "data_source": "analysis.tables.category_delta.rows[furniture]"
+    }
+  ],
+  "analysis_material_pack": {
+    "contract_version": "0.3",
+    "analysis_goal": {
+      "question": "11月销售额下降发生在哪里，哪些证据值得进入管理汇报？",
+      "audience": "经营管理层",
+      "decision_to_support": "确定优先排查的业务范围。",
+      "time_scope": "2024-11 vs 2024-10"
+    },
+    "metric_context": [
+      {
+        "metric_id": "sales_amount",
+        "definition": "订单明细确认销售额",
+        "unit": "元",
+        "grain": "订单行",
+        "filters": {},
+        "source_refs": ["orders"]
+      }
+    ],
+    "validated_findings": [
+      {
+        "finding_id": "finding_total_decline",
+        "statement": "11月销售额环比下降18.8%，需要先定位下降范围再决定干预。",
+        "scope": "2024-11 vs 2024-10，全体有效订单行",
+        "importance": "high",
+        "confidence": "high",
+        "causal_status": "descriptive",
+        "management_implication": "该变化构成需要定位的经营问题，但总体降幅本身不能说明原因。",
+        "recommended_use": "investigate",
+        "next_validation_question": "下降集中在哪些互斥业务范围，哪个范围最值得优先排查？",
+        "evidence_refs": ["monthly_sales"],
+        "boundary_refs": []
+      },
+      {
+        "finding_id": "finding_furniture_decline",
+        "statement": "家具贡献73.3%的11月销售下降，应作为第一排查范围。",
+        "scope": "2024-11 vs 2024-10，全体有效订单行，按类别互斥分组",
+        "importance": "high",
+        "confidence": "high",
+        "causal_status": "associative",
+        "management_implication": "排查资源应先聚焦家具，而不是平均分配到所有类别。",
+        "recommended_use": "investigate",
+        "next_validation_question": "家具下降进一步集中在哪些区域、子类别或客群？",
+        "evidence_refs": ["category_delta"],
+        "boundary_refs": ["boundary_parallel_slices"]
+      }
+    ],
+    "candidate_explanations": [
+      {
+        "candidate_id": "candidate_north_region",
+        "parent_id": "finding_furniture_decline",
+        "statement": "华北是家具下降最大的区域切片。",
+        "status": "verified_slice",
+        "expected_value": "high",
+        "evidence_refs": ["furniture_region_delta"]
+      }
+    ],
+    "evidence_inventory": [
+      {
+        "evidence_id": "monthly_sales",
+        "type": "table",
+        "subject": "月度销售额趋势",
+        "grain": "month",
+        "data_ref": "analysis.tables.monthly_sales",
+        "quality": "validated",
+        "source_refs": ["orders"],
+        "availability": "ready"
+      },
+      {
+        "evidence_id": "category_delta",
+        "type": "table",
+        "subject": "类别销售额环比差额",
+        "grain": "category-month",
+        "data_ref": "analysis.tables.category_delta",
+        "quality": "validated",
+        "source_refs": ["orders"],
+        "availability": "ready"
+      },
+      {
+        "evidence_id": "furniture_region_delta",
+        "type": "table",
+        "subject": "家具销售额按区域环比差额",
+        "grain": "region-month",
+        "data_ref": "analysis.tables.furniture_region_delta",
+        "quality": "validated",
+        "source_refs": ["orders"],
+        "availability": "ready"
+      }
+    ],
+    "chart_candidates": [
+      {
+        "chart_id": "monthly_sales_trend",
+        "question_answered": "下降发生在何时、幅度多大？",
+        "finding_refs": ["finding_total_decline"],
+        "message_to_prove": "11月销售下降18.8%，需要进入定位分析而不是按常态波动处理。",
+        "decision_role": "issue_judgement",
+        "visual_priority": "dominant",
+        "focus_target": "2024-11",
+        "why_visual_not_text": "时间序列能够同时展示11月降幅及其相对前期水平，避免孤立数字失去基准。",
+        "evidence_refs": ["monthly_sales"],
+        "recommended_form": "line",
+        "editability_need": "native_chart_required"
+      },
+      {
+        "chart_id": "furniture_region_rank",
+        "question_answered": "家具下降集中在哪些区域？",
+        "finding_refs": ["finding_furniture_decline"],
+        "message_to_prove": "家具内部存在值得继续排查的区域集中，而不是所有区域同步下降。",
+        "decision_role": "driver",
+        "visual_priority": "supporting",
+        "focus_target": "家具销售下降额最大的区域",
+        "why_visual_not_text": "区域排序需要同时展示多个区域的方向和量级，文字无法可靠表达集中度。",
+        "evidence_refs": ["furniture_region_delta"],
+        "recommended_form": "rank_bar",
+        "editability_need": "native_chart_preferred"
+      }
+    ],
+    "boundaries": [
+      {
+        "boundary_id": "boundary_parallel_slices",
+        "scope": "家具的子类别、区域和客群是平行切片。",
+        "limitation": "不同切片不能相加为独立原因。",
+        "affected_material_refs": ["candidate_north_region"]
+      }
+    ],
+    "gaps": [
+      {
+        "gap_id": "gap_north_province_conditional",
+        "question": "华北家具下降具体集中在哪些省份？",
+        "importance": "medium",
+        "expected_value": "medium",
+        "feasibility": "requires_conditional_extract",
+        "related_refs": ["candidate_north_region"]
+      }
+    ],
+    "claim_review_log": {
+      "entries": [
+        {
+          "finding_id": "finding_total_decline",
+          "candidate_statement": "11月销售额环比下降18.8%。",
+          "final_statement": "11月销售额环比下降18.8%，需要先定位下降范围再决定干预。",
+          "review_status": "rewritten",
+          "review_reason": "原结论只有数值变化，没有说明管理用途和下一步分析顺序。",
+          "checks": {
+            "factually_supported": true,
+            "business_meaning_clear": true,
+            "decision_direction_clear": true,
+            "causal_strength_appropriate": true,
+            "alternative_explanations_considered": true,
+            "visual_evidence_sufficient": true
+          }
+        },
+        {
+          "finding_id": "finding_furniture_decline",
+          "candidate_statement": "家具贡献73.3%的下降额。",
+          "final_statement": "家具贡献73.3%的11月销售下降，应作为第一排查范围。",
+          "review_status": "rewritten",
+          "review_reason": "原结论只表达排序事实，未将影响量转化为资源配置和排查优先级。",
+          "checks": {
+            "factually_supported": true,
+            "business_meaning_clear": true,
+            "decision_direction_clear": true,
+            "causal_strength_appropriate": true,
+            "alternative_explanations_considered": true,
+            "visual_evidence_sufficient": true
+          }
+        }
+      ]
+    },
+    "analysis_decision_log": {
+      "entries": [
+        {
+          "branch_id": "candidate_north_region",
+          "parent_id": "finding_furniture_decline",
+          "question": "家具下降是否存在区域集中？",
+          "decision": "continue",
+          "reason": "区域影响量高，能够改变后续排查优先级。",
+          "evidence_refs": ["furniture_region_delta"],
+          "impact_estimate": "high",
+          "confidence": "high",
+          "marginal_explanatory_value": "high",
+          "next_probe": "在华北父级筛选下检查省份贡献。",
+          "depth": 1
+        },
+        {
+          "branch_id": "gap_north_province_conditional",
+          "parent_id": "candidate_north_region",
+          "question": "现有证据能否证明华北内部省份贡献？",
+          "decision": "stop",
+          "reason": "现有省份表是家具整体口径，不是华北条件口径。",
+          "evidence_refs": [],
+          "impact_estimate": "unknown",
+          "confidence": "high",
+          "marginal_explanatory_value": "unknown",
+          "next_probe": null,
+          "depth": 2
+        }
+      ]
+    }
+  },
+  "data_gaps": [
+    "缺少华北条件下的省份拆解。"
+  ]
+}

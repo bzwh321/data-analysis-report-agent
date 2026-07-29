@@ -1,0 +1,108 @@
+{
+  "contract_version": "0.1",
+  "required_top_level": [
+    "contract_version",
+    "deck_goal",
+    "audience",
+    "title",
+    "style_id",
+    "sources",
+    "slides"
+  ],
+  "allowed_deck_goals": [
+    "boss_consulting_deck",
+    "data_review_deck",
+    "operating_review_deck"
+  ],
+  "allowed_audiences": [
+    "management",
+    "executive",
+    "operator",
+    "analyst"
+  ],
+  "allowed_style_ids": [
+    "executive-diagnostic-brief",
+    "consulting-board-memo",
+    "analytical-deep-dive",
+    "operating-review",
+    "html-executive-diagnostic",
+    "swiss-consulting-brief",
+    "template-gold-comparison",
+    "template-green-dashboard",
+    "template-grey-green-operations"
+  ],
+  "allowed_layouts": [
+    "title",
+    "executive_summary",
+    "finding_with_chart",
+    "finding_with_table",
+    "matrix",
+    "notes_sources",
+    "comparison_vs",
+    "problem_solution_grid",
+    "dashboard_performance"
+  ],
+  "allowed_visual_modes": [
+    "native_chart",
+    "shape_exhibit",
+    "hybrid_dashboard"
+  ],
+  "required_slide_fields": [
+    "id",
+    "synthesis_ref",
+    "layout",
+    "slide_role",
+    "title",
+    "claim",
+    "evidence_refs",
+    "visual_mode"
+  ],
+  "layout_requirements": {
+    "finding_with_chart": [
+      "chart"
+    ],
+    "finding_with_table": [
+      "table"
+    ],
+    "comparison_vs": [
+      "comparison.left",
+      "comparison.right"
+    ],
+    "problem_solution_grid": [
+      "problem_solution.problems",
+      "problem_solution.solutions"
+    ],
+    "dashboard_performance": [
+      "dashboard.kpis",
+      "dashboard.trend_chart",
+      "dashboard.ring_metrics",
+      "dashboard.insights"
+    ]
+  },
+  "chart_types": [
+    "bar",
+    "column",
+    "rank_bar",
+    "line",
+    "pie"
+  ],
+  "native_chart_required_fields": [
+    "type",
+    "title",
+    "labels",
+    "series",
+    "source_ref"
+  ],
+  "table_required_fields": [
+    "columns",
+    "rows",
+    "source_ref"
+  ],
+  "quality_limits": {
+    "slide_title_max_chars": 36,
+    "claim_max_chars": 72,
+    "insight_max_chars": 90,
+    "reason_card_body_max_chars": 96,
+    "min_chart_labels_for_annotation_gate": 6
+  }
+}

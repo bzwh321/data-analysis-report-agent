@@ -32,8 +32,14 @@
   -> 读取案例经验层
   -> 选择报告风格
   -> 生成分析计划
+  -> 记录阶段事件、成本和边际价值
   -> 校验计划/数据/输出
   -> 生成可审查报告
+  -> 如需 PPTX，交给 data-report-presentation-planner 形成并锁定 v0.5 故事线、语义布局与全局颜色方案
+  -> 交给 data-report-ppt-author，以隔离页级任务包让 Page Visual Designer 锁定 slide-plan、SVG视觉参考和图表设计契约
+  -> Harness 通过页面设计门禁；仅代表页或风险页调用设计 Judge，再由同一页级 PPT Implementer 上下文制作和组合原生对象
+  -> data-report-pptx-renderer 作为 Compiler/SDK 编译和确定性校验
+  -> 合并锁定页面，交付可编辑演示文稿
 ```
 
 ## 重要边界
@@ -48,8 +54,12 @@
 - hidden runtime
 - 网络调用
 - 自动取数服务
+- PPTX 渲染 runtime
 
 Codex 或其他宿主 agent 负责推理、读数据、写报告。`harness/` 里的 Python 文件只做本地确定性结构校验。
+当用户需要可编辑 PPTX 时，本 skill 应先输出结构化报告和决策就绪的 `analysis_material_pack` v0.3：分析 Agent 必须完成业务问题驱动的 ReAct、候选结论审查与重写、管理用途和下一验证问题，并把图表候选绑定到要证明的 finding。随后再调用 `D:\知识库\skills\data-report-presentation-planner` 完成 v0.5 故事线、人审、逐页合同、语义布局意图和全局语义颜色方案。Planner 负责选择、合并、删除和排序已经审查的素材，不负责为弱结论补业务意义；编译后只把页级素材与紧邻上下文下发。大纲获批后由 `D:\知识库\skills\data-report-ppt-author` 从隔离任务包执行：标准页只运行 Page Visual Designer、一个可恢复的页级 PPT Implementer 上下文和 rendered-slide Judge；Chart Design UI 与 page-design Judge 按复杂度或风险触发；确定性 Harness 与 QA 每页必跑。Author 只能解析颜色契约，PPT Implementer 不得自行撰写文字颜色。审查用 SVG 不得进入最终 PPTX。`D:\知识库\skills\data-report-pptx-renderer` 只作为 Compiler/SDK 和 legacy fallback。不要把 `pptxgenjs`、`python-pptx` 或 HTML 转 PPT 逻辑塞进本 skill。
+
+运行产物、浏览器截图、试验依赖和生成报告不得长期存放在 skill 包内。宿主环境应把它们写到外部工作目录；本机当前产物位置记录在 [`OUTPUTS.md`](OUTPUTS.md)。这样上传或分发 skill 时不会携带大体积历史产物。
 
 ## 目录结构
 
@@ -75,7 +85,8 @@ data-analysis-report-agent/
 ├── harness/                         # 本地确定性校验
 │   ├── plan_validator.py
 │   ├── data_validator.py
-│   └── output_validator.py
+│   ├── output_validator.py
+│   └── run_observability_validator.py
 └── docs/
     ├── architecture.md
     ├── customization_guide.md
@@ -96,7 +107,7 @@ data-analysis-report-agent/
 | 字段含义 | 强烈建议 | 最好通过 `cases/<case-id>/semantic_layer.yaml` 提供 |
 | 案例经验 | 可选 | 阈值、优先级规则、好结论样例 |
 | 报告风格 | 可选 | 从 `styles/manifest.yaml` 选择 |
-| 输出格式 | 可选 | HTML、Markdown、结构化 JSON，或宿主 agent 支持的其他报告形态 |
+| 输出格式 | 可选 | HTML、Markdown、结构化 JSON，或宿主 agent 支持的其他报告形态；PPTX 通过 Planner → PPT Author → Compiler/SDK 工作流生成 |
 
 如果没有语义层，不要让 agent 直接根据表头猜业务含义。先补语义层，再做报告。
 
@@ -136,11 +147,13 @@ data-analysis-report-agent/
 6. 选择页面风格 `styles/<style-id>/`。
 7. 生成分析计划。
 8. 用 `harness/plan_validator.py` 校验计划。
-9. 读取或检查数据。
-10. 用 `harness/data_validator.py` 校验数据结构。
-11. 提炼事实、推断、建议。
-12. 生成报告。
-13. 用 `harness/output_validator.py` 校验最终结构。
+9. 初始化并持续写入 `analysis-run-events.jsonl` 和 `analysis-run-log.json`。
+10. 读取或检查数据。
+11. 用 `harness/data_validator.py` 校验数据结构。
+12. 提炼事实、推断、建议，并记录每轮产出增量和边际价值。
+13. 生成报告。
+14. 用 `harness/output_validator.py` 校验最终结构。
+15. 用 `harness/run_observability_validator.py` 校验运行日志。
 
 ## 语义层怎么维护
 

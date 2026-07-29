@@ -20,6 +20,7 @@ run_logs/
 
 # 报告输出
 output/
+outputs/
 *.html
 !styles/**/sample.html
 !cases/**/report*.html

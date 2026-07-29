@@ -1,0 +1,519 @@
+{
+  "report_id": "sales_decline_diagnosis_sample",
+  "report_type": "metric_diagnostics",
+  "question": "6月销售额为什么下降？",
+  "executive_summary": "6月销售额环比下降12.4%，主要由传统渠道萎缩、华东库存短缺和促销效率下滑解释；三项合计贡献11.3个百分点下降，是本页PPT需要合并呈现的核心归因。",
+  "sources": [
+    {
+      "id": "monthly_sales",
+      "label": "示例：月度销售额环比数据",
+      "grain": "month",
+      "fields": ["month", "sales_amount", "mom_change_pct"]
+    },
+    {
+      "id": "driver_decomposition",
+      "label": "示例：销售额下降归因拆解表",
+      "grain": "driver",
+      "fields": ["driver", "impact_pct_point", "impact_abs", "mechanism"]
+    }
+  ],
+  "evidence_tables": [
+    {
+      "id": "monthly_sales",
+      "columns": ["month", "sales_amount", "mom_change_pct"],
+      "rows": [
+        {
+          "month": "2026-06",
+          "sales_amount": 8750,
+          "mom_change_pct": -12.4
+        }
+      ]
+    },
+    {
+      "id": "driver_decomposition",
+      "columns": ["driver", "impact_pct_point", "impact_abs", "mechanism"],
+      "rows": [
+        {
+          "driver": "传统渠道萎缩",
+          "impact_pct_point": -5.1,
+          "impact_abs": 5.1,
+          "mechanism": "线下渠道客流和转化同时走弱，直接拉低销售额。"
+        },
+        {
+          "driver": "华东库存短缺",
+          "impact_pct_point": -3.8,
+          "impact_abs": 3.8,
+          "mechanism": "核心区域可售库存不足，影响成交承接。"
+        },
+        {
+          "driver": "促销效率下滑",
+          "impact_pct_point": -2.4,
+          "impact_abs": 2.4,
+          "mechanism": "投放后转化效率下降，放大本月销售缺口。"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "f_total_decline",
+      "title": "6月销售额环比下降12.4%",
+      "claim": "6月销售额环比下降12.4%",
+      "content": "6月销售额较上月下降12.4%，构成本次归因分析需要解释的目标异动。",
+      "data_source": "monthly_sales.rows[0].mom_change_pct",
+      "evidence_refs": ["monthly_sales"],
+      "metric": "销售额",
+      "direction": "down",
+      "impact_value": -12.4,
+      "unit": "%"
+    },
+    {
+      "id": "f_channel_decline",
+      "title": "传统渠道萎缩是最大单项下降驱动",
+      "claim": "传统渠道萎缩贡献5.1个百分点下降",
+      "content": "传统渠道萎缩贡献5.1个百分点下降，是当前拆解中最大的单项下降驱动，应在PPT图表中高亮。",
+      "data_source": "driver_decomposition.rows[0].impact_pct_point",
+      "evidence_refs": ["driver_decomposition"],
+      "metric": "销售额",
+      "direction": "down",
+      "impact_value": -5.1,
+      "unit": "百分点"
+    },
+    {
+      "id": "f_inventory_shortage",
+      "title": "华东库存短缺放大核心区域销售缺口",
+      "claim": "华东库存短缺贡献3.8个百分点下降",
+      "content": "华东库存短缺贡献3.8个百分点下降，说明核心区域供给不足影响成交承接。",
+      "data_source": "driver_decomposition.rows[1].impact_pct_point",
+      "evidence_refs": ["driver_decomposition"],
+      "metric": "销售额",
+      "direction": "down",
+      "impact_value": -3.8,
+      "unit": "百分点"
+    },
+    {
+      "id": "f_promo_efficiency",
+      "title": "促销效率下滑进一步扩大销售降幅",
+      "claim": "促销效率下滑贡献2.4个百分点下降",
+      "content": "促销效率下滑贡献2.4个百分点下降，说明投放后的转化效率下降，放大本月销售缺口。",
+      "data_source": "driver_decomposition.rows[2].impact_pct_point",
+      "evidence_refs": ["driver_decomposition"],
+      "metric": "销售额",
+      "direction": "down",
+      "impact_value": -2.4,
+      "unit": "百分点"
+    }
+  ],
+  "analysis_material_pack": {
+    "material_goal": "为高信息密度 React/HTML 报告和 PPT 复用过量产出分析素材，先提供趋势判断、主因树、子原因、候选图表和可选叙事，再由下游选择压缩。",
+    "diagnosis_frame": {
+      "target_metric": "销售额",
+      "movement_claim": "6月销售额环比下降12.4%",
+      "time_window": "2026-06 vs 2026-05",
+      "judgement": "超过5%干预阈值，需要解释并排序处理原因。",
+      "comparison_basis": "环比、最近6个月趋势、下降贡献拆解",
+      "required_context": ["trend_series", "movement_threshold", "driver_contribution", "driver_drilldown"]
+    },
+    "driver_tree": [
+      {
+        "id": "driver_channel_decline",
+        "driver": "传统渠道萎缩",
+        "rank": 1,
+        "claim": "传统渠道萎缩贡献5.1个百分点下降，是最大单项下降驱动。",
+        "contribution": {
+          "value": -5.1,
+          "unit": "百分点"
+        },
+        "evidence_refs": ["driver_decomposition"],
+        "context_inheritance": {
+          "inherits_from": "diagnosis_frame",
+          "metric": "销售额",
+          "time_window": "2026-06 vs 2026-05",
+          "parent_claim_ref": "f_channel_decline",
+          "analysis_scope": "所有子原因只能解释传统渠道萎缩这个父主因，不能独立解释总销售额下降。"
+        },
+        "subdrivers": [
+          {
+            "id": "sub_channel_traffic",
+            "parent_driver_id": "driver_channel_decline",
+            "hypothesis": "线下客流下降导致传统渠道成交基数变小。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "mechanism",
+            "inheritance_statement": "该子原因继承父主因“传统渠道萎缩贡献5.1个百分点下降”，只解释传统渠道为什么下降。",
+            "support_status": "hypothesis",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "按门店等级、城市线级、周末/工作日拆解客流变化，判断是否由自然客流减少驱动。",
+            "chart_candidates": ["channel_traffic_trend", "store_tier_rank_bar"]
+          },
+          {
+            "id": "sub_channel_conversion",
+            "parent_driver_id": "driver_channel_decline",
+            "hypothesis": "到店或到站后的转化率下降，放大渠道销售下滑。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "funnel_step",
+            "inheritance_statement": "该子原因继承父主因“传统渠道萎缩贡献5.1个百分点下降”，只解释传统渠道内部漏斗效率变化。",
+            "support_status": "hypothesis",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "拆分访问、咨询、下单漏斗，比较传统渠道各环节转化率环比变化。",
+            "chart_candidates": ["channel_funnel_comparison", "conversion_rate_line"]
+          },
+          {
+            "id": "sub_channel_mix_shift",
+            "parent_driver_id": "driver_channel_decline",
+            "hypothesis": "需求从传统渠道转移到线上或其他渠道，传统渠道下降不完全等于总需求下降。",
+            "claim_scope": "contextual_support",
+            "linkage_type": "mix_shift",
+            "inheritance_statement": "该子原因继承父主因“传统渠道萎缩贡献5.1个百分点下降”，用于解释渠道结构变化而不是直接扩大总归因。",
+            "support_status": "needs_data",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "做渠道 mix 变化和同客群跨渠道转移分析，识别是渠道迁移还是整体需求下滑。",
+            "chart_candidates": ["channel_mix_stacked_bar", "customer_overlap_matrix"]
+          }
+        ],
+        "chart_candidates": ["driver_rank_bar", "channel_trend_small_line", "channel_funnel_panel"]
+      },
+      {
+        "id": "driver_inventory_shortage",
+        "driver": "华东库存短缺",
+        "rank": 2,
+        "claim": "华东库存短缺贡献3.8个百分点下降，说明核心区域供给不足影响成交承接。",
+        "contribution": {
+          "value": -3.8,
+          "unit": "百分点"
+        },
+        "evidence_refs": ["driver_decomposition"],
+        "context_inheritance": {
+          "inherits_from": "diagnosis_frame",
+          "metric": "销售额",
+          "time_window": "2026-06 vs 2026-05",
+          "parent_claim_ref": "f_inventory_shortage",
+          "analysis_scope": "所有子原因只能解释华东库存短缺这个父主因，不能独立解释总销售额下降。"
+        },
+        "subdrivers": [
+          {
+            "id": "sub_inventory_core_sku",
+            "parent_driver_id": "driver_inventory_shortage",
+            "hypothesis": "核心 SKU 可售库存不足导致高需求商品无法成交。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "supply_constraint",
+            "inheritance_statement": "该子原因继承父主因“华东库存短缺贡献3.8个百分点下降”，只解释库存短缺的商品层机制。",
+            "support_status": "hypothesis",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "按 SKU 销售贡献、缺货天数、断货门店数排序，找出影响最大的缺货 SKU。",
+            "chart_candidates": ["sku_stockout_rank_bar", "availability_heatmap"]
+          },
+          {
+            "id": "sub_inventory_region_gap",
+            "parent_driver_id": "driver_inventory_shortage",
+            "hypothesis": "库存短缺集中在华东，区域供给问题高于全国平均。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "segment",
+            "inheritance_statement": "该子原因继承父主因“华东库存短缺贡献3.8个百分点下降”，只解释区域维度上的库存差异。",
+            "support_status": "hypothesis",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "对比华东与其他区域的可售天数、缺货率和销售损失贡献。",
+            "chart_candidates": ["region_inventory_comparison", "region_loss_map"]
+          },
+          {
+            "id": "sub_inventory_replenishment_delay",
+            "parent_driver_id": "driver_inventory_shortage",
+            "hypothesis": "补货周期延迟导致库存恢复慢于需求恢复。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "temporal",
+            "inheritance_statement": "该子原因继承父主因“华东库存短缺贡献3.8个百分点下降”，只解释库存短缺为何在本月持续。",
+            "support_status": "needs_data",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "检查采购、调拨、入仓、上架各环节时长，定位补货延迟发生在哪个环节。",
+            "chart_candidates": ["replenishment_timeline", "supply_chain_stage_bar"]
+          }
+        ],
+        "chart_candidates": ["inventory_days_bar", "region_stockout_panel", "sku_stockout_rank_bar"]
+      },
+      {
+        "id": "driver_promo_efficiency",
+        "driver": "促销效率下滑",
+        "rank": 3,
+        "claim": "促销效率下滑贡献2.4个百分点下降，说明投放未有效转化为成交。",
+        "contribution": {
+          "value": -2.4,
+          "unit": "百分点"
+        },
+        "evidence_refs": ["driver_decomposition"],
+        "context_inheritance": {
+          "inherits_from": "diagnosis_frame",
+          "metric": "销售额",
+          "time_window": "2026-06 vs 2026-05",
+          "parent_claim_ref": "f_promo_efficiency",
+          "analysis_scope": "所有子原因只能解释促销效率下滑这个父主因，不能独立解释总销售额下降。"
+        },
+        "subdrivers": [
+          {
+            "id": "sub_promo_roi",
+            "parent_driver_id": "driver_promo_efficiency",
+            "hypothesis": "促销投放 ROI 下降，费用增长没有带来等比例销售。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "efficiency",
+            "inheritance_statement": "该子原因继承父主因“促销效率下滑贡献2.4个百分点下降”，只解释投放效率机制。",
+            "support_status": "hypothesis",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "按活动、渠道、客群拆 ROI，比较投放费用、转化率和销售额的弹性。",
+            "chart_candidates": ["promo_roi_scatter", "spend_sales_dual_axis"]
+          },
+          {
+            "id": "sub_promo_offer_fit",
+            "parent_driver_id": "driver_promo_efficiency",
+            "hypothesis": "优惠门槛或权益设计与本月需求不匹配。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "mechanism",
+            "inheritance_statement": "该子原因继承父主因“促销效率下滑贡献2.4个百分点下降”，只解释促销机制设计是否降低转化。",
+            "support_status": "needs_data",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "比较不同优惠门槛、折扣力度、权益类型下的点击率、领取率和使用率。",
+            "chart_candidates": ["offer_type_grouped_bar", "coupon_funnel"]
+          },
+          {
+            "id": "sub_promo_audience_quality",
+            "parent_driver_id": "driver_promo_efficiency",
+            "hypothesis": "投放触达人群质量下降，新增曝光没有转化为有效购买意向。",
+            "claim_scope": "within_parent_driver",
+            "linkage_type": "segment",
+            "inheritance_statement": "该子原因继承父主因“促销效率下滑贡献2.4个百分点下降”，只解释人群质量对促销效率的影响。",
+            "support_status": "needs_data",
+            "evidence_refs": [],
+            "data_points": [],
+            "possible_analysis": "按新老客、历史购买频次、渠道来源和人群包拆分转化表现。",
+            "chart_candidates": ["audience_conversion_heatmap", "cohort_conversion_line"]
+          }
+        ],
+        "chart_candidates": ["promo_efficiency_panel", "promo_roi_scatter", "coupon_funnel"]
+      }
+    ],
+    "chart_inventory": [
+      {
+        "chart_id": "sales_trend_6m",
+        "purpose": "展示销售额下降发生在6月，并判断是否超过阈值。",
+        "chart_type": "line",
+        "source_ref": "monthly_sales",
+        "fields": ["month", "sales_amount", "mom_change_pct"],
+        "supports": ["f_total_decline"],
+        "ppt_priority": "must_use"
+      },
+      {
+        "chart_id": "driver_rank_bar",
+        "purpose": "展示三个主因的下降贡献排序。",
+        "chart_type": "rank_bar",
+        "source_ref": "driver_decomposition",
+        "fields": ["driver", "impact_abs"],
+        "supports": ["f_channel_decline", "f_inventory_shortage", "f_promo_efficiency"],
+        "ppt_priority": "must_use"
+      },
+      {
+        "chart_id": "channel_funnel_panel",
+        "purpose": "解释传统渠道下降可能来自客流、咨询和下单漏斗。",
+        "chart_type": "funnel_or_stage_bar",
+        "source_ref": "channel_detail_pending",
+        "fields": ["stage", "current_value", "previous_value", "change"],
+        "supports": ["driver_channel_decline"],
+        "ppt_priority": "strong_candidate"
+      },
+      {
+        "chart_id": "inventory_days_bar",
+        "purpose": "解释华东库存短缺是否低于安全库存线。",
+        "chart_type": "column",
+        "source_ref": "inventory_detail_pending",
+        "fields": ["region", "available_days", "safety_days"],
+        "supports": ["driver_inventory_shortage"],
+        "ppt_priority": "strong_candidate"
+      },
+      {
+        "chart_id": "promo_roi_scatter",
+        "purpose": "解释促销效率下降是否来自费用增加但成交效率降低。",
+        "chart_type": "scatter",
+        "source_ref": "promo_detail_pending",
+        "fields": ["campaign", "spend", "sales_lift", "roi"],
+        "supports": ["driver_promo_efficiency"],
+        "ppt_priority": "backup"
+      }
+    ],
+    "react_context_projection": {
+      "context_id": "ctx_sales_decline_2026_06",
+      "provider": "AnalysisMaterialContext",
+      "inheritance_index": {
+        "sub_channel_traffic": {
+          "parent_driver_id": "driver_channel_decline",
+          "parent_claim": "传统渠道萎缩贡献5.1个百分点下降，是最大单项下降驱动。",
+          "parent_contribution": {
+            "value": -5.1,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释传统渠道萎缩这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "mechanism",
+          "inheritance_statement": "该子原因继承父主因“传统渠道萎缩贡献5.1个百分点下降”，只解释传统渠道为什么下降。"
+        },
+        "sub_channel_conversion": {
+          "parent_driver_id": "driver_channel_decline",
+          "parent_claim": "传统渠道萎缩贡献5.1个百分点下降，是最大单项下降驱动。",
+          "parent_contribution": {
+            "value": -5.1,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释传统渠道萎缩这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "funnel_step",
+          "inheritance_statement": "该子原因继承父主因“传统渠道萎缩贡献5.1个百分点下降”，只解释传统渠道内部漏斗效率变化。"
+        },
+        "sub_channel_mix_shift": {
+          "parent_driver_id": "driver_channel_decline",
+          "parent_claim": "传统渠道萎缩贡献5.1个百分点下降，是最大单项下降驱动。",
+          "parent_contribution": {
+            "value": -5.1,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释传统渠道萎缩这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "contextual_support",
+          "linkage_type": "mix_shift",
+          "inheritance_statement": "该子原因继承父主因“传统渠道萎缩贡献5.1个百分点下降”，用于解释渠道结构变化而不是直接扩大总归因。"
+        },
+        "sub_inventory_core_sku": {
+          "parent_driver_id": "driver_inventory_shortage",
+          "parent_claim": "华东库存短缺贡献3.8个百分点下降，说明核心区域供给不足影响成交承接。",
+          "parent_contribution": {
+            "value": -3.8,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释华东库存短缺这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "supply_constraint",
+          "inheritance_statement": "该子原因继承父主因“华东库存短缺贡献3.8个百分点下降”，只解释库存短缺的商品层机制。"
+        },
+        "sub_inventory_region_gap": {
+          "parent_driver_id": "driver_inventory_shortage",
+          "parent_claim": "华东库存短缺贡献3.8个百分点下降，说明核心区域供给不足影响成交承接。",
+          "parent_contribution": {
+            "value": -3.8,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释华东库存短缺这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "segment",
+          "inheritance_statement": "该子原因继承父主因“华东库存短缺贡献3.8个百分点下降”，只解释区域维度上的库存差异。"
+        },
+        "sub_inventory_replenishment_delay": {
+          "parent_driver_id": "driver_inventory_shortage",
+          "parent_claim": "华东库存短缺贡献3.8个百分点下降，说明核心区域供给不足影响成交承接。",
+          "parent_contribution": {
+            "value": -3.8,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释华东库存短缺这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "temporal",
+          "inheritance_statement": "该子原因继承父主因“华东库存短缺贡献3.8个百分点下降”，只解释库存短缺为何在本月持续。"
+        },
+        "sub_promo_roi": {
+          "parent_driver_id": "driver_promo_efficiency",
+          "parent_claim": "促销效率下滑贡献2.4个百分点下降，说明投放未有效转化为成交。",
+          "parent_contribution": {
+            "value": -2.4,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释促销效率下滑这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "efficiency",
+          "inheritance_statement": "该子原因继承父主因“促销效率下滑贡献2.4个百分点下降”，只解释投放效率机制。"
+        },
+        "sub_promo_offer_fit": {
+          "parent_driver_id": "driver_promo_efficiency",
+          "parent_claim": "促销效率下滑贡献2.4个百分点下降，说明投放未有效转化为成交。",
+          "parent_contribution": {
+            "value": -2.4,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释促销效率下滑这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "mechanism",
+          "inheritance_statement": "该子原因继承父主因“促销效率下滑贡献2.4个百分点下降”，只解释促销机制设计是否降低转化。"
+        },
+        "sub_promo_audience_quality": {
+          "parent_driver_id": "driver_promo_efficiency",
+          "parent_claim": "促销效率下滑贡献2.4个百分点下降，说明投放未有效转化为成交。",
+          "parent_contribution": {
+            "value": -2.4,
+            "unit": "百分点"
+          },
+          "parent_analysis_scope": "所有子原因只能解释促销效率下滑这个父主因，不能独立解释总销售额下降。",
+          "inherited_metric": "销售额",
+          "inherited_time_window": "2026-06 vs 2026-05",
+          "claim_scope": "within_parent_driver",
+          "linkage_type": "segment",
+          "inheritance_statement": "该子原因继承父主因“促销效率下滑贡献2.4个百分点下降”，只解释人群质量对促销效率的影响。"
+        }
+      },
+      "display_rules": [
+        "每张子观点卡必须展示父主因、父贡献和继承口径。",
+        "support_status 为 hypothesis 或 needs_data 的子观点不得渲染成确定结论。",
+        "子观点图表只能解释父主因，不得直接解释总销售额下降。"
+      ]
+    },
+    "ppt_usage_notes": [
+      "PPT首页优先使用 sales_trend_6m、driver_rank_bar 和三个 driver panel。",
+      "如果空间不足，子原因只展示每个主因最强的一条，其余进入备注或附录。",
+      "support_status 为 needs_data 的子原因不能写成确定结论，只能作为后续分析方向。"
+    ]
+  },
+  "chart_instructions": [
+    {
+      "chart_id": "driver_rank",
+      "chart_type": "rank_bar",
+      "title": "销售额下降贡献拆解",
+      "source_ref": "driver_decomposition",
+      "fields": ["driver", "impact_abs"],
+      "takeaway": "传统渠道萎缩是最大单项下降驱动，三项合计解释主要降幅。",
+      "required_annotations": [
+        {
+          "target": "传统渠道萎缩",
+          "label": "最大下降驱动"
+        },
+        {
+          "target": "3.0",
+          "label": "3个百分点关注线"
+        }
+      ]
+    }
+  ],
+  "risks": [
+    "样例未接入真实订单、库存和投放明细，因此只能演示结构契约，不能作为真实业务结论。"
+  ],
+  "data_gaps": [
+    "缺少渠道客流、库存可售天数、促销曝光和转化明细，无法继续拆到更细动作层。"
+  ],
+  "next_steps": [
+    "把该分析结果交给deck-synthesis-agent，合并为一页高信息密度归因页。",
+    "在PPT层用原生柱状图、原因卡和标注线承载同一组证据。"
+  ]
+}

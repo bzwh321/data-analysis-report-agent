@@ -1,0 +1,6 @@
+{"event_version":"0.1","event_id":"evt-001","run_id":"observability-sample-run","timestamp":"2026-07-16T10:00:00+08:00","event_type":"run_started"}
+{"event_version":"0.1","event_id":"evt-002","run_id":"observability-sample-run","timestamp":"2026-07-16T10:00:01+08:00","event_type":"stage_started","stage_id":"round-1-trend","stage_type":"analysis_round","round":1,"question":"Where did the target metric change?","input_refs":["source-profile.json"]}
+{"event_version":"0.1","event_id":"evt-003","run_id":"observability-sample-run","timestamp":"2026-07-16T10:00:10+08:00","event_type":"stage_completed","stage_id":"round-1-trend","status":"completed","duration_seconds":9.0,"output_refs":["plan-results/round-1-result.json"]}
+{"event_version":"0.1","event_id":"evt-004","run_id":"observability-sample-run","timestamp":"2026-07-16T10:00:11+08:00","event_type":"validation_completed","status":"pass","output_refs":["validation.json"]}
+{"event_version":"0.1","event_id":"evt-005","run_id":"observability-sample-run","timestamp":"2026-07-16T10:00:12+08:00","event_type":"run_completed","status":"completed"}
+

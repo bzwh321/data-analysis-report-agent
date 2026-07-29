@@ -1,0 +1,69 @@
+{
+  "contract_version": "0.1",
+  "run_id": "observability-sample-run",
+  "recording_mode": "live",
+  "execution_mode": "deterministic",
+  "status": "completed",
+  "started_at": "2026-07-16T10:00:00+08:00",
+  "completed_at": "2026-07-16T10:00:12+08:00",
+  "duration_seconds": 12.0,
+  "source_ref": "source-profile.json",
+  "events_ref": "analysis_run_events_sample.jsonl",
+  "usage": {
+    "model_calls": 0,
+    "subagent_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "estimated_cost": 0,
+    "unavailable_fields": []
+  },
+  "stages": [
+    {
+      "stage_id": "round-1-trend",
+      "stage_type": "analysis_round",
+      "round": 1,
+      "question": "Where did the target metric change?",
+      "status": "completed",
+      "measurement_status": "measured",
+      "started_at": "2026-07-16T10:00:01+08:00",
+      "completed_at": "2026-07-16T10:00:10+08:00",
+      "duration_seconds": 9.0,
+      "input_refs": ["source-profile.json"],
+      "output_refs": ["plan-results/round-1-result.json"],
+      "metrics": {
+        "rows_read": 1200,
+        "rows_output": 12,
+        "evidence_added": 2,
+        "findings_added": 1,
+        "chart_candidates_added": 1,
+        "gaps_closed": 1,
+        "candidate_branches_entered": 3,
+        "branches_continued": 1,
+        "branches_stopped": 2,
+        "model_calls": 0,
+        "subagent_calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "estimated_cost": 0,
+        "unavailable_fields": []
+      },
+      "value_assessment": {
+        "marginal_value": "high",
+        "decision_impact": "material",
+        "continue_recommendation": "continue",
+        "reason": "The trend located the decline window and opened one evidence-backed driver probe."
+      }
+    }
+  ],
+  "summary": {
+    "stage_count": 1,
+    "validated_findings_added": 1,
+    "evidence_files_added": 2,
+    "chart_candidates_added": 1,
+    "consecutive_zero_yield_stage_count": 0,
+    "duplicate_probe_count": 0,
+    "overthinking_flags": [],
+    "warnings": []
+  }
+}
+

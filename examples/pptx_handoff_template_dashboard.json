@@ -1,0 +1,172 @@
+{
+  "contract_version": "0.1",
+  "deck_goal": "boss_consulting_deck",
+  "audience": "management",
+  "title": "渠道销售业绩看板样例",
+  "subtitle": "可编辑咨询式数据看板",
+  "style_id": "template-green-dashboard",
+  "chart_system_id": "swiss_consulting",
+  "theme_id": "green_dashboard",
+  "background_style_id": "template-green-content",
+  "sources": [
+    {
+      "id": "sales_trend",
+      "label": "示例：各渠道月度销售额数据",
+      "detail": "月度销售额、渠道贡献和活动节点数据"
+    }
+  ],
+  "slides": [
+    {
+      "id": "s01-dashboard-performance",
+      "synthesis_ref": "syn-s01-dashboard-performance",
+      "layout": "dashboard_performance",
+      "slide_role": "performance_dashboard",
+      "title": "数据看板 | 业绩成果展示",
+      "subtitle": "C002",
+      "claim": "618活动和双十一活动是全年销售额的两个峰值",
+      "visual_mode": "hybrid_dashboard",
+      "theme_id": "green_dashboard",
+      "background_style_id": "template-green-content",
+      "source_ref": "sales_trend",
+      "evidence_refs": [
+        "sales_trend"
+      ],
+      "callout": "职场通用PPT · 可编辑 · 可修改",
+      "dashboard": {
+        "kpis": [
+          {
+            "label": "商超渠道",
+            "value": "86,500",
+            "delta": "+9%",
+            "status": "positive",
+            "direction": "up"
+          },
+          {
+            "label": "传统渠道",
+            "value": "72,300",
+            "delta": "-3%",
+            "status": "negative",
+            "direction": "down"
+          },
+          {
+            "label": "电商平台",
+            "value": "58,200",
+            "delta": "+28%",
+            "status": "positive",
+            "direction": "up"
+          },
+          {
+            "label": "便利店系统",
+            "value": "42,800",
+            "delta": "+15%",
+            "status": "positive",
+            "direction": "up"
+          }
+        ],
+        "trend_chart": {
+          "type": "line",
+          "title": "销售额趋势图看板",
+          "unit": "销售额",
+          "labels": [
+            "1月",
+            "2月",
+            "3月",
+            "4月",
+            "5月",
+            "6月",
+            "7月",
+            "8月",
+            "9月",
+            "10月",
+            "11月",
+            "12月"
+          ],
+          "series": [
+            {
+              "name": "销售额",
+              "values": [
+                100,
+                200,
+                400,
+                250,
+                360,
+                700,
+                600,
+                600,
+                400,
+                300,
+                600,
+                400
+              ]
+            }
+          ],
+          "source_ref": "sales_trend",
+          "takeaway": "618活动和双十一活动是全年销售额的两个峰值",
+          "value_format": "0",
+          "axis": {
+            "min": 0,
+            "max": 800,
+            "major_unit": 100
+          },
+          "data_label_position": "t",
+          "show_grid": true,
+          "show_legend": false,
+          "reference_lines": [
+            {
+              "value": 600,
+              "label": "600 高位区间",
+              "role": "benchmark",
+              "style": "dash"
+            }
+          ],
+          "annotations": [
+            {
+              "label": "618活动影响\n6月销售额最高",
+              "target_label": "6月",
+              "color": "focus"
+            },
+            {
+              "label": "双十一活动\n销售额回升",
+              "target_label": "11月",
+              "color": "positive"
+            }
+          ],
+          "highlight_labels": [
+            "6月",
+            "11月"
+          ]
+        },
+        "ring_metrics": [
+          {
+            "label": "商超渠道",
+            "value": 0.33,
+            "display_value": "33%",
+            "caption": "核心贡献",
+            "status": "positive"
+          },
+          {
+            "label": "便利店",
+            "value": 0.28,
+            "display_value": "28%",
+            "caption": "增速稳定",
+            "status": "positive"
+          },
+          {
+            "label": "传统渠道",
+            "value": 0.22,
+            "display_value": "22%",
+            "caption": "承压收缩",
+            "status": "neutral"
+          }
+        ],
+        "insights": [
+          "传统渠道面临市场压力，销售额呈现小幅收缩。",
+          "便利店系统保持双位数增长，受益于即时性需求。",
+          "商超渠道展现强韧性，仍是销售核心阵地。",
+          "电商平台延续爆发式增长，新渠道持续渗透。"
+        ]
+      }
+    }
+  ],
+  "data_gaps": []
+}
