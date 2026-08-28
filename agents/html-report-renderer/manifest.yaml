@@ -1,0 +1,18 @@
+name: html-report-renderer
+version: "1.0"
+status: active
+description: Exact HTML or React rendering of a validated report text pack.
+execution:
+  temperature: 0.0
+  node_type: agent
+  parallel: false
+prompt_ref: SKILL.md
+io:
+  inputs:
+    - validated_report_text_pack
+    - format_contract
+    - color_system
+    - selected_style
+    - selected_style_sample_html
+  outputs:
+    - html_or_react_report

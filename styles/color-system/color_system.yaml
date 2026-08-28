@@ -1,0 +1,225 @@
+module_id: html-report-color-system
+version: 1.1.0-selection
+status: pending_user_choice
+authority: single_source_of_truth_for_html_report_color
+scope:
+  owns:
+    - active_palette
+    - color_count
+    - color_roles
+    - chart_color_usage
+    - highlight_color_usage
+    - contrast_and_grayscale_checks
+  does_not_own:
+    - grid
+    - typography
+    - spacing
+    - component_geometry
+    - report_style_character
+
+active_palette_id: null
+
+custom_palette_sources:
+  allowed: true
+  folder: custom-palettes
+  file_pattern: "*.palette.yaml"
+  registration_rule: merge_only_after_contrast_and_role_validation
+  required_shape:
+    palette_id: lowercase_hyphen_id
+    display_name: human_readable_name
+    colors: [base, primary, accent]
+    contrast: [primary_on_base, accent_on_base]
+  outside_registered_palette: forbidden
+
+usage_contract:
+  color_layers: [theme, semantic_signal]
+  theme_colors_per_report: 3
+  roles:
+    base:
+      share: 60%
+      use: page_ground_large_quiet_areas_and_tint_source
+    primary:
+      share: 30%
+      use: body_ink_headings_rules_context_series
+    accent:
+      share: 10%
+      use: one_current_non_status_focus_or_decision_anchor
+  one_palette_per_report: true
+  new_theme_hues_outside_palette: forbidden
+  user_added_palettes: allowed_only_when_registered_in_color_system_or_custom_palette_sources
+  derived_tints:
+    allowed: true
+    method: mix_primary_or_accent_with_base_or_change_opacity
+    count_as_new_hue: false
+  body_text_role: primary
+  accent_small_text:
+    allowed_when_contrast_at_least: 4.5
+    otherwise: use_primary_text_plus_accent_shape_or_rule
+  semantic_safety:
+    color_alone_cannot_carry_meaning: true
+    pair_with: [direct_label, shape, line_style, position]
+    numeric_sign_does_not_choose_color: true
+  charts:
+    context_series: primary_tints_or_opacity_steps
+    non_status_focus: accent
+    comparison_reference: primary
+    multi_category_strategy: [direct_labels, opacity, line_style, hatching, small_multiples]
+    extra_category_hues: forbidden
+  print_and_accessibility:
+    primary_on_base_contrast_min: 7.0
+    accent_graphic_on_base_contrast_min: 3.0
+    accent_text_on_base_contrast_min: 4.5
+    grayscale_test_required: true
+
+semantic_signal_palette:
+  available_in_every_report: true
+  relationship_to_theme: reserved_semantic_layer_outside_the_theme_triplet
+  visible_usage_rule:
+    ordinary_view: use_only_the_signal_colors_required_by_actual_business_states
+    status_comparison_view: all_three_allowed_when_the_chart_explicitly_compares_status_classes
+    decorative_use: forbidden
+    signal_overrides_theme_accent_on_the_same_mark: true
+  signals:
+    critical:
+      display_name: 异常红
+      hex: "#B33A32"
+      meaning: material_adverse_exception_or_failed_threshold
+      icon_shape: diamond_or_short_vertical_bar
+      line_style: solid_3px
+      label_required: true
+      minimum_contrast_on_candidate_bases: 5.13
+    watch:
+      display_name: 关注黄
+      hex: "#8A6500"
+      meaning: near_threshold_uncertainty_dependency_or_pending_check
+      icon_shape: triangle
+      line_style: dashed_2px
+      label_required: true
+      minimum_contrast_on_candidate_bases: 4.64
+    healthy:
+      display_name: 正常绿
+      hex: "#19704B"
+      meaning: validated_healthy_state_achieved_target_or_confirmed_recovery
+      icon_shape: circle
+      line_style: solid_2px
+      label_required: true
+      minimum_contrast_on_candidate_bases: 5.29
+  meaning_rules:
+    numeric_direction_alone_never_selects_a_signal: true
+    cost_increase_may_be_critical_even_when_numeric_delta_is_positive: true
+    decline_may_be_healthy_when_the_metric_is_cost_or_defect_rate: true
+    unvalidated_improvement_cannot_use_healthy: true
+  icons_and_small_marks:
+    critical: red_diamond_or_bar_plus_text
+    watch: yellow_triangle_plus_text
+    healthy: green_circle_plus_text
+    small_text_color: use_theme_primary_unless_signal_contrast_and_size_pass
+  chart_mapping:
+    default_context:
+      marks: theme_primary_tints
+      reference: theme_primary
+      selected_non_status_focus: theme_accent
+    line_chart:
+      critical_segment_or_endpoint: critical
+      watch_forecast_or_uncertainty: watch_dashed_line_or_tinted_band
+      healthy_confirmed_recovery_or_target: healthy
+      rule: keep_the_rest_of_the_series_in_theme_primary_tints
+    bar_chart:
+      ordinary_bars: theme_primary_tints
+      selected_non_status_bar: theme_accent
+      status_bar: map_to_critical_watch_or_healthy
+      waterfall_rule: classify_by_business_impact_not_plus_or_minus_sign
+    area_and_band:
+      uncertainty_or_threshold_zone: watch_tint
+      material_exception_window: critical_tint
+      validated_healthy_range: healthy_tint
+    table_and_kpi:
+      status_icon: map_to_critical_watch_or_healthy
+      text: theme_primary
+      full_cell_fill: avoid_unless_status_comparison_is_the_main_task
+    signal_budget:
+      default_max_signal_colors_in_one_chart: 1
+      allow_two_when: transition_or_comparison_requires_two_named_states
+      allow_three_when: explicit_status_distribution_or_traffic_light_comparison
+      when_signals_are_used: suppress_competing_theme_accent_on_same_marks
+  accessibility:
+    color_alone_is_never_sufficient: true
+    red_green_pair_requires_direct_labels_and_distinct_shapes_or_line_styles: true
+    grayscale_distinction: [critical_solid_thick, watch_dashed, healthy_solid_thin]
+    minimum_graphic_contrast_on_any_candidate_base: 4.5
+
+selection_rule:
+  gate: choose_one_candidate_before_setting_active_palette_id
+  preview: palette_preview.html
+  existing_style_sample_colors: illustrative_and_non_authoritative_until_selection
+  style_sample_preview_palette_ids:
+    editorial-evidence-report: editorial-olive
+    internet-reporting: graphite-cobalt
+  pending_behavior: ask_for_palette_choice_or_render_a_structure_only_preview
+  after_selection:
+    - set_active_palette_id
+    - apply_the_three_tokens_to_the_default_sample
+    - keep_the_universal_signal_palette_unchanged
+    - keep_style_and_format_files_color_free
+
+candidates:
+  editorial-olive:
+    display_name: 编辑橄榄
+    character: 克制、温暖、可信，适合管理层诊断和编辑式报告
+    colors:
+      base: "#F3EFE6"
+      primary: "#34372D"
+      accent: "#9F542F"
+    contrast:
+      primary_on_base: 10.58
+      accent_on_base: 4.84
+  navy-copper:
+    display_name: 藏蓝铜橙
+    character: 冷静、稳健、正式，适合经营复盘和董事会材料
+    colors:
+      base: "#EEF2F5"
+      primary: "#223B57"
+      accent: "#9E542E"
+    contrast:
+      primary_on_base: 10.19
+      accent_on_base: 4.96
+  graphite-cobalt:
+    display_name: 石墨钴蓝
+    character: 理性、清晰、研究感强，适合数据深潜和方法型报告
+    colors:
+      base: "#F2F3F4"
+      primary: "#292F36"
+      accent: "#315E9B"
+    contrast:
+      primary_on_base: 12.16
+      accent_on_base: 5.90
+  plum-copper:
+    display_name: 深梅紫铜
+    character: 温暖、成熟、有质感，适合消费、品牌和人文类分析
+    colors:
+      base: "#F4EFEA"
+      primary: "#4B3345"
+      accent: "#995328"
+    contrast:
+      primary_on_base: 9.89
+      accent_on_base: 5.07
+  eastern-ink:
+    display_name: 黛青朱砂
+    character: 现代东方、沉静有力，适合中文专题和年度报告
+    colors:
+      base: "#F4F1E8"
+      primary: "#1F4543"
+      accent: "#A84335"
+    contrast:
+      primary_on_base: 9.34
+      accent_on_base: 5.28
+  deep-sea:
+    display_name: 深海青绿
+    character: 冷静、技术、连续性强，适合产品和运营数据报告
+    colors:
+      base: "#EDF3F3"
+      primary: "#173B4D"
+      accent: "#0F7B6C"
+    contrast:
+      primary_on_base: 10.58
+      accent_on_base: 4.60

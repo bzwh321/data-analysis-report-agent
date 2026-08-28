@@ -1,0 +1,15 @@
+name: report-text-adversarial-reviewer
+version: "1.0"
+status: active
+description: Independent challenge of one completed report-text unit.
+execution:
+  temperature: 0.2
+  node_type: agent
+  parallel: true
+prompt_ref: SKILL.md
+io:
+  inputs:
+    - bounded_unit_packet
+    - completed_report_text_unit
+  outputs:
+    - adversarial_review

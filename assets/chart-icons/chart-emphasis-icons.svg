@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" fill="none">
+  <title>Chart Emphasis Icon Set</title>
+  <desc>Reusable vector icons for chart annotations. Icons use currentColor and are designed for small, local, non-decorative emphasis inside data reports.</desc>
+
+  <defs>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17202A;
+        --muted: #6B7280;
+        --line: #D8DDE3;
+        --panel: #F7F8FA;
+        --red: #B83A32;
+        --green: #1B7A52;
+        --yellow: #A97900;
+      }
+      text { font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif; }
+      .page { fill: #fff; }
+      .title { fill: var(--ink); font-size: 28px; font-weight: 700; }
+      .sub { fill: var(--muted); font-size: 15px; }
+      .section { fill: var(--ink); font-size: 18px; font-weight: 700; }
+      .label { fill: var(--ink); font-size: 14px; font-weight: 600; }
+      .hint { fill: var(--muted); font-size: 12px; }
+      .cell { fill: var(--panel); stroke: var(--line); stroke-width: 1; rx: 16; }
+      .icon-bg { fill: #fff; stroke: var(--line); stroke-width: 1; rx: 12; }
+      .red { color: var(--red); }
+      .green { color: var(--green); }
+      .yellow { color: var(--yellow); }
+      .muted { color: var(--muted); }
+      .icon-stroke { stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .icon-fill { fill: currentColor; }
+      .thin { stroke-width: 1.7; }
+    </style>
+
+    <!-- Signal icons: red/green/yellow semantic layer -->
+    <symbol id="icon-signal-down" viewBox="0 0 24 24">
+      <path class="icon-stroke" d="M5 7l5.8 5.8 3.4-3.4L20 15.2"/>
+      <path class="icon-stroke" d="M20 10.5v4.7h-4.7"/>
+    </symbol>
+    <symbol id="icon-signal-up" viewBox="0 0 24 24">
+      <path class="icon-stroke" d="M5 17l5.8-5.8 3.4 3.4L20 8.8"/>
+      <path class="icon-stroke" d="M20 13.5V8.8h-4.7"/>
+    </symbol>
+    <symbol id="icon-warning-triangle" viewBox="0 0 24 24">
+      <path class="icon-stroke" d="M12 4l8.2 15H3.8L12 4z"/>
+      <path class="icon-stroke" d="M12 9v4.8"/>
+      <circle class="icon-fill" cx="12" cy="17" r="1.1"/>
+    </symbol>
+    <symbol id="icon-check-circle" viewBox="0 0 24 24">
+      <circle class="icon-stroke" cx="12" cy="12" r="8"/>
+      <path class="icon-stroke" d="M8.2 12.1l2.5 2.5 5.2-5.3"/>
+    </symbol>
+
+    <!-- Evidence and reading icons -->
+    <symbol id="icon-evidence-dot" viewBox="0 0 24 24">
+      <circle class="icon-fill" cx="12" cy="12" r="4.2"/>
+      <circle class="icon-stroke thin" cx="12" cy="12" r="7.4" opacity=".35"/>
+    </symbol>
+    <symbol id="icon-pin" viewBox="0 0 24 24">
+      <path class="icon-stroke" d="M12 21s6-6.4 6-11a6 6 0 0 0-12 0c0 4.6 6 11 6 11z"/>
+      <circle class="icon-stroke thin" cx="12" cy="10" r="2.2"/>
+    </symbol>
+    <symbol id="icon-note" viewBox="0 0 24 24">
+      <path class="icon-stroke" d="M6 5h10l2 2v12H6V5z"/>
+      <path class="icon-stroke thin" d="M9 10h6M9 14h5"/>
+    </symbol>
+    <symbol id="icon-question" viewBox="0 0 24 24">
+      <circle class="icon-stroke" cx="12" cy="12" r="8"/>
+      <path class="icon-stroke" d="M9.8 9.5a2.5 2.5 0 0 1 4.8 1c0 1.8-1.8 2.2-2.4 3.4"/>
+      <circle class="icon-fill" cx="12" cy="17" r="1.1"/>
+    </symbol>
+
+    <!-- Chart-local emphasis marks -->
+    <symbol id="icon-point-ring" viewBox="0 0 24 24">
+      <circle class="icon-stroke" cx="12" cy="12" r="6"/>
+      <circle class="icon-fill" cx="12" cy="12" r="2.2"/>
+    </symbol>
+    <symbol id="icon-range-band" viewBox="0 0 24 24">
+      <path class="icon-stroke thin" d="M5 5v14M19 5v14"/>
+      <rect x="8" y="5" width="8" height="14" rx="2" class="icon-fill" opacity=".18"/>
+      <path class="icon-stroke" d="M8 12h8"/>
+    </symbol>
+    <symbol id="icon-benchmark-line" viewBox="0 0 24 24">
+      <path class="icon-stroke thin" d="M4 7h16" stroke-dasharray="3 3"/>
+      <path class="icon-stroke" d="M7 15h10"/>
+      <circle class="icon-fill" cx="17" cy="15" r="1.8"/>
+    </symbol>
+    <symbol id="icon-mini-sparkline" viewBox="0 0 24 24">
+      <path class="icon-stroke thin" d="M4 18h16"/>
+      <path class="icon-stroke" d="M5 15l4-3 3 2 3-6 4 3"/>
+      <circle class="icon-fill" cx="15" cy="8" r="1.7"/>
+    </symbol>
+    <symbol id="icon-compare-bars" viewBox="0 0 24 24">
+      <path class="icon-stroke thin" d="M5 19h14"/>
+      <rect class="icon-fill" x="6" y="9" width="4" height="8" rx="1"/>
+      <rect class="icon-fill" x="13" y="5" width="4" height="12" rx="1" opacity=".68"/>
+    </symbol>
+    <symbol id="icon-bridge" viewBox="0 0 24 24">
+      <path class="icon-stroke thin" d="M4 18h16"/>
+      <rect class="icon-fill" x="5" y="10" width="4" height="6" rx="1"/>
+      <rect class="icon-fill" x="10" y="7" width="4" height="9" rx="1" opacity=".72"/>
+      <rect class="icon-fill" x="15" y="12" width="4" height="4" rx="1" opacity=".44"/>
+    </symbol>
+
+    <!-- Layout control icons for QA and renderer hints -->
+    <symbol id="icon-no-overlap" viewBox="0 0 24 24">
+      <rect class="icon-stroke" x="5" y="5" width="7" height="7" rx="1.2"/>
+      <rect class="icon-stroke" x="12" y="12" width="7" height="7" rx="1.2"/>
+      <path class="icon-stroke" d="M6 18L18 6"/>
+    </symbol>
+    <symbol id="icon-inside-plot" viewBox="0 0 24 24">
+      <rect class="icon-stroke" x="4" y="5" width="16" height="14" rx="1.5"/>
+      <path class="icon-stroke thin" d="M8 16l3-4 3 2 3-5"/>
+      <circle class="icon-fill" cx="17" cy="9" r="1.3"/>
+    </symbol>
+    <symbol id="icon-avoid-axis" viewBox="0 0 24 24">
+      <path class="icon-stroke" d="M5 5v14h14"/>
+      <path class="icon-stroke thin" d="M9 16h6"/>
+      <path class="icon-stroke" d="M8 8l8 8"/>
+    </symbol>
+  </defs>
+
+  <rect class="page" width="1200" height="760"/>
+  <text class="title" x="64" y="64">图表强调矢量图标集 v1</text>
+  <text class="sub" x="64" y="94">用于数据报告图表内的短标注、状态提示和视觉检查提示。图标不自带固定颜色，使用 currentColor 接入全局配色。</text>
+
+  <text class="section" x="64" y="148">语义信号</text>
+  <g transform="translate(64 172)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-signal-down" class="red" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">下降 / 拖累</text>
+    <text class="hint" x="88" y="66">只标数据点或条形末端</text>
+    <text class="hint" x="88" y="86">不画装饰性下降线</text>
+  </g>
+  <g transform="translate(334 172)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-signal-up" class="green" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">上升 / 抵消</text>
+    <text class="hint" x="88" y="66">用于改善项或正向贡献</text>
+  </g>
+  <g transform="translate(604 172)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-warning-triangle" class="yellow" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">风险 / 待解释</text>
+    <text class="hint" x="88" y="66">用于证据边界或异常点</text>
+  </g>
+  <g transform="translate(874 172)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-check-circle" class="green" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">验证通过</text>
+    <text class="hint" x="88" y="66">用于数据口径或目标达成</text>
+  </g>
+
+  <text class="section" x="64" y="342">图内短标注</text>
+  <g transform="translate(64 366)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-point-ring" class="red" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">重点数据点</text>
+    <text class="hint" x="88" y="66">适合折线端点、最低点</text>
+  </g>
+  <g transform="translate(334 366)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-range-band" class="yellow" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">异常区间</text>
+    <text class="hint" x="88" y="66">只用淡色带，不压文字</text>
+  </g>
+  <g transform="translate(604 366)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-benchmark-line" class="muted" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">基准线</text>
+    <text class="hint" x="88" y="66">适合目标线、均值线</text>
+  </g>
+  <g transform="translate(874 366)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-pin" class="muted" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">局部旁注</text>
+    <text class="hint" x="88" y="66">最多短句，不写整段解释</text>
+  </g>
+
+  <text class="section" x="64" y="536">图形类型与布局检查</text>
+  <g transform="translate(64 560)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-mini-sparkline" class="muted" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">迷你趋势</text>
+    <text class="hint" x="88" y="66">用于表格内补充趋势</text>
+  </g>
+  <g transform="translate(334 560)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-bridge" class="red" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">桥接 / 贡献</text>
+    <text class="hint" x="88" y="66">适合解释缺口来源</text>
+  </g>
+  <g transform="translate(604 560)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-no-overlap" class="yellow" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">禁止重叠</text>
+    <text class="hint" x="88" y="66">视觉检查必须覆盖</text>
+  </g>
+  <g transform="translate(874 560)">
+    <rect class="cell" width="250" height="120"/>
+    <rect class="icon-bg" x="20" y="20" width="48" height="48"/>
+    <use href="#icon-inside-plot" class="green" x="28" y="28" width="32" height="32"/>
+    <text class="label" x="88" y="42">图内解释</text>
+    <text class="hint" x="88" y="66">允许放图内，但必须避让</text>
+  </g>
+</svg>

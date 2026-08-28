@@ -71,6 +71,14 @@ Do not put case-specific rules in root `experience/`.
 
 ## Add A Report Style
 
+For HTML or React, first require a validated `report_text_pack` from
+`../references/report_text_pack_contract.md`. Then read
+`../references/human_authored_html_design_system.md` as the frozen cross-style
+format contract and
+`../styles/color-system/color_system.yaml` as the separate color authority. A
+style may specialize audience, document character, and report rhythm, but may
+not rewrite approved text, weaken the format contract, or define a local palette.
+
 Create:
 
 ```text
@@ -86,7 +94,6 @@ Use `page_style.yaml` for:
 
 - audience
 - design intent
-- color palette
 - typography
 - page layout
 - component rules
@@ -94,7 +101,7 @@ Use `page_style.yaml` for:
 - responsive constraints
 - things to avoid
 
-Use `global_prompt.md` as the full-page design prompt that the report-writing or report-design agent receives.
+Use `global_prompt.md` as the full-page design prompt that the renderer receives. It may arrange approved text but may not author analytical prose.
 
 Use `sample.html` as a self-contained reference page. Do not reference external CDNs or model/runtime scripts.
 
@@ -102,9 +109,13 @@ Do not put field meanings, thresholds, or business assumptions into a style fold
 
 Style quality rules:
 
+- Map the reading path and content units to grid spans before choosing components.
+- Create an alignment ledger and reuse one column-count and gutter token across all structural blocks.
+- Treat shared rendered edges as equal only when they are within `1px`; reject accidental `2-16px` near misses.
+- Default to no card; justify every container by state, interaction, print grouping, or exception contrast.
+- Let unequal content length and importance produce unequal spans or heights.
 - Start from the document role: executive brief, board memo, analytical exhibit report, or operating tracker.
-- Use typography, rules, whitespace, and table hierarchy before adding color.
-- Keep meaningful colors to one primary accent, one exception color, and neutral structure.
+- Reference `styles/color-system/color_system.yaml`; do not add local palette values or color semantics.
 - Give every chart/table a takeaway title and unit.
 - Put ordinary data range, metric definitions, sources, and derived-metric notes in a report-end notes section; keep only decision-critical caveats next to the finding.
 - Avoid AI-template patterns: gradient hero blocks, glassmorphism, generic rounded KPI card grids, decorative badges, and icons that do not carry meaning.
@@ -112,6 +123,7 @@ Style quality rules:
 - Do not use equal-width three-card summaries as the default ending; prefer an evidence-gap table, action tracker, decision record, or validation checklist.
 - For charts with more than six marks, label only peaks, troughs, endpoints, exception windows, or values required for the conclusion.
 - Keep `sample.html` offline and auditable: inline CSS is allowed; external scripts, CDNs, provider SDKs, and hidden API calls are not.
+- Render the sample at desktop width and one narrower width before accepting the style.
 
 ## Generic Experience
 
@@ -128,6 +140,9 @@ Only edit root `experience/` when the rule applies across unrelated cases. Examp
 - [ ] Field meanings live in `semantic_layer.yaml`.
 - [ ] Case thresholds live under `cases/your-case-id/experience/`.
 - [ ] Report style lives under `styles/your-style-id/`.
+- [ ] HTML/React style follows `references/human_authored_html_design_system.md`.
+- [ ] HTML/React style references `styles/color-system/color_system.yaml` and defines no local palette.
+- [ ] Structural blocks share one page grid, and rendered anchor alignment has been checked at desktop and narrow widths.
 - [ ] Style sample has no external CDN, model call, provider SDK, or hidden runtime dependency.
 - [ ] Style prompt includes anti-template constraints and chart/source rules.
 - [ ] Generic `experience/` has no case-specific business assumptions.

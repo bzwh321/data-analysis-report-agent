@@ -1,0 +1,179 @@
+style_id: editorial-evidence-report
+display_name: 编辑式证据报告
+design_intent: 用编辑部式信息层级和高密度分析图表，把结论、证据、解释与行动编排为连续的阅读路径；以对齐、比例和留白代替卡片堆叠。
+format_contract: ../../references/human_authored_html_design_system.md
+color_system: ../color-system/color_system.yaml
+reference_pattern:
+  inspiration:
+    - human-edited annual report analysis pages
+    - editorial data journalism graphics
+    - management review exhibit sheets
+  visual_principle: 先建立阅读路径和内容尺寸，再分配容器；图表与文字共同构成论证单元。
+page:
+  format: continuous_editorial_evidence_report
+  max_width: 1200px
+  desktop_grid: 12
+  column_gap: 22px
+  density: high
+  border_radius_max: 2px
+  shadow: none
+typography:
+  font_family: "Microsoft YaHei, Microsoft YaHei UI, Arial, sans-serif"
+  font_synthesis: none
+  allowed_weights: [400, 700]
+  display: {size: 40, weight: 700, line_height: 1.18, max_lines: 2, max_chars_per_line: 26}
+  section_claim: {size: 24, weight: 700, line_height: 1.32, max_lines: 2}
+  deck: {size: 16, weight: 400, line_height: 1.7}
+  body: {size: 15, weight: 400, line_height: 1.68, max_chars_per_line: 38}
+  metric: {size: 30, weight: 700, line_height: 1.05}
+  chart_label: {size: 12, weight: 400, line_height: 1.45}
+  table: {size: 12.5, weight: 400, line_height: 1.5}
+  caption: {size: 11.5, weight: 400, line_height: 1.58}
+  minimum_desktop_size: 11
+  title_break: semantic_boundary_no_orphan
+  bold_budget:
+    per_paragraph_or_cell: 1
+    reading_anchors_per_viewport_excluding_headings: 3
+layout:
+  reading_path: [claim, scale, time_pattern, decomposition, decision, boundary]
+  header: editorial_masthead_with_report_code
+  global_alignment_contract:
+    single_page_grid: true
+    columns: 12
+    shared_gutter: 22px
+    canonical_anchors: [page_start, page_end, column_start, column_end, gutter_center]
+    same_anchor_tolerance: 1px
+    accidental_near_miss: 2_to_16px_fails
+    alignment_ledger_required: true
+    nested_grid_scope: internal_chart_table_or_compact_cluster_only
+  first_screen:
+    - answer_first_claim
+    - short_deck
+    - ruled_metric_rail
+    - full_report_summary
+  body_grid: asymmetric_twelve_column_flow
+  section_patterns:
+    - dominant_exhibit_with_interpretation_rail
+    - claim_evidence_row
+    - full_width_evidence_table
+    - ruled_action_register
+  preferred_spans:
+    metric: 2_to_3_columns
+    narrative: 4_to_5_columns
+    dominant_chart: 7_to_9_columns
+    dense_table: 12_columns
+  vertical_rhythm:
+    metric_to_summary: 32px
+    summary_to_first_section: 52px
+    section_header_to_evidence: 22px
+    section_to_section: 52px
+    prose_to_chart_gap: 32px
+components:
+  metric_rail:
+    style: inline_values_between_rules
+    max_items: 4
+    equal_cards: false
+    four_item_desktop_spans: [3, 3, 3, 3]
+    vertical_separators: none_by_default
+    item_start_anchor: declared_column_start
+    forbid_double_gutter: true
+  interpretation_rail:
+    style: numbered_reading_notes
+    align_to_chart_regions: true
+    includes: [reading_note, implication, boundary]
+  evidence_note:
+    style: left_rule_or_flat_tint
+    nested_card: false
+  highlight_block:
+    variants: [focus, exception, attention]
+    max_above_fold: 1
+    max_per_section: 1
+    style: flat_tint_plus_rule_or_marker
+  geometric_marker:
+    circle: state_or_data_point
+    triangle: direction_or_attention
+    short_bar: selected_row_or_boundary
+    max_non_chart_per_viewport: 3
+  mini_chart:
+    variants: [sparkline, compact_comparison_bar, tiny_range]
+    allowed_when: adds_trend_or_comparison_information
+    use_on_every_metric: false
+    width: 90_to_170px
+    height: 24_to_40px
+  full_report_summary:
+    placement: after_metric_rail_before_first_section
+    style: unboxed_single_prose_column
+    structure: [overall_judgement, supporting_findings, decision_and_boundary]
+    floating_side_callout: false
+    label_position: above_prose
+    label_and_prose_start: page_start
+    decorative_label_column: forbidden
+  section_header:
+    structure: [compact_sequence, claim, validation_question_below_claim]
+    number_title_gap: 8_to_12px
+    question_title_gap: 5_to_8px
+    detached_right_question: false
+  action_register:
+    style: full_width_ruled_table
+    columns: [action, reason, owner_role, time_window, next_check]
+containers:
+  default: none
+  allowed_reasons: [interaction_boundary, independent_state, print_group, exception_contrast]
+  max_separation_devices: 1
+  allow_shadow: false
+  allow_nested_cards: false
+  allow_equal_card_grid: false
+charts:
+  preferred: [annotated_line, ranked_bar, waterfall, small_multiples, slope, evidence_table]
+  title_style: full_sentence_takeaway
+  plot_grid: minimal_horizontal_only
+  label_style: focus_and_endpoints_direct
+  legend: avoid_when_direct_labels_work
+  required: [unit, time_scope, baseline_or_reference, focus_annotation, source]
+  focus_treatments: [interval_band, direct_annotation, point_halo, reference_line, faded_context, business_impact_marker]
+  max_focus_treatments_per_chart: 2
+  dominant_exhibit_span: 8
+  interpretation_rail_span: 4
+tables:
+  style: editorial_rules_no_box_grid
+  numeric_alignment: right
+  interpretation_column: required_when_decision_relevant
+  zebra_striping: long_tables_only
+  analytical_cell_structure: max_two_labeled_lines
+  labeled_line_examples: [judgement_and_next_step, evidence_and_boundary]
+  text_cell_alignment: top
+  text_cell_line_height: 1.55
+responsive:
+  stack_exhibit_and_rail_at: 900px
+  single_column_at: 760px
+  preserve_table_scroll: true
+do:
+  - Write the reading path before choosing components.
+  - Write a private alignment ledger and reuse one page-grid column and gutter token everywhere.
+  - Snap shared structural edges to the same anchor within one rendered pixel.
+  - Let content length and analytical importance determine grid span and height.
+  - Keep chart, reading notes, implication, and source in one exhibit relationship.
+  - Use asymmetry to reveal importance; reserve equal widths for equal evidence.
+  - Use Microsoft YaHei with only 400 and 700 weights.
+  - Break two-line titles at a semantic boundary and remove forced breaks on mobile.
+  - Put a general-specific-general full-report summary after the metric rail.
+  - Keep each section number, claim, and validation question in one compact header unit.
+  - Use one claim per paragraph and labeled short lines inside analytical table cells.
+  - Reuse the same section rhythm and prose-to-chart gap across comparable sections.
+  - Use circles, triangles, highlight blocks, and mini charts only with stable semantic roles.
+  - Render and review desktop plus one narrow viewport before delivery.
+avoid:
+  - Defaulting to cards for claims, metrics, findings, or actions.
+  - Shadows, gradients, glass effects, decorative icon libraries, or pill-heavy chrome.
+  - Synthetic font weights or mixed Chinese typefaces.
+  - Repeating geometric markers, highlight blocks, or mini charts as decoration.
+  - Floating a decision summary beside the title or a validation question at the far right.
+  - Empty grid columns between section numbers and claims.
+  - A full-report summary indented by a decorative label column.
+  - Local grids that almost match the page grid but use a different gutter or fractional split.
+  - Borders attached to gapped metric cells or extra sibling padding that creates a double gutter.
+  - Unsegmented prose or multi-idea paragraphs inside analytical table cells.
+  - Equal-height panels containing visibly unequal amounts of content.
+  - Low-information charts padded to fill a large container.
+  - Legends, annotations, or prose detached from the marks they explain.
+  - Repeating the same grid pattern for every section.

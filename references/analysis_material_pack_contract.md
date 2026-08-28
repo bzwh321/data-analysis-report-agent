@@ -12,10 +12,19 @@ flowchart LR
   B --> C["Value-driven exploration"]
   C --> D["Decision-ready synthesis and claim review"]
   D --> E["analysis_material_pack v0.3"]
-  E --> F["Dense HTML or React"]
-  E --> G["Deck Architect"]
-  G --> H["Human-approved outline"]
-  H --> I["Editable PPT renderer"]
+  E --> F["Locked visual data, structure, and position"]
+  F --> G["Report Text Controller<br/>bounded unit packets"]
+  G --> H["Chain of Verification"]
+  H -->|"critical gap"| C
+  H -->|"verified"| I["Manifest-configured Report Text Editor"]
+  H -->|"limited but useful"| Q["Detachable bounded module"]
+  I --> J["Independent adversarial reviewer"]
+  J --> K["Controller resolution + progressive summary"]
+  K --> L["Validated report_text_pack v0.4"]
+  L --> M["Manifest-configured dense HTML or React"]
+  E --> N["Deck Architect"]
+  N --> O["Human-approved outline"]
+  O --> P["Editable PPT renderer"]
 ```
 
 The analysis Agent decides what is worth investigating. The Deck Architect decides what is worth presenting. Do not let page count, slide templates, or renderer limitations drive analysis depth.
@@ -32,7 +41,8 @@ The analysis Agent decides what is worth investigating. The Deck Architect decid
 8. Register all usable evidence and chart candidates even when they will not enter the final report.
 9. Bind every chart candidate to the finding it proves, its decision role, visual priority, and focus target. Do not leave a central quantitative change as text when a useful comparison can show it.
 10. Keep parent scope on every child explanation. A child cannot silently become an independent explanation of the top-level movement.
-11. Do not ask the Deck Architect or renderer to calculate missing evidence, invent business meaning, or repair a weak conclusion.
+11. Do not ask the Report Text Controller, Report Text Editor, adversarial reviewer, Deck Architect, or renderer to calculate missing evidence, invent business meaning, or repair a weak conclusion. The Controller must route critical evidence gaps back to the analysis/ReAct layer.
+12. For HTML/React, lock each selected visual's data, structure, and report position before the Controller creates a bounded unit packet. The temperature-0 Editor receives one verified unit at a time; the independent reviewer receives the same bounded evidence but not the writer's hidden reasoning; the renderer receives only validated text.
 
 ## Required v0.3 Shape
 
@@ -306,7 +316,7 @@ When a driver tree is useful:
 3. Do not require a 3x3 pattern, a fixed number of main drivers, or a fixed depth.
 4. Keep weak children labeled as hypotheses or gaps.
 
-React may render these projections, but it must not reconstruct or upgrade claims from display strings.
+The Report Text Controller may select a relevant projection for a context-bounded unit when it clarifies scope, but the Editor must not reconstruct or upgrade claims from display strings. React may render only the approved text pack using the renderer Agent manifest.
 
 ## Downstream Rules
 
@@ -314,7 +324,7 @@ React may render these projections, but it must not reconstruct or upgrade claim
 2. The Deck Architect receives already reviewed, decision-ready findings. It may select, merge, drop, or sequence them, but it must not invent business meaning or rewrite an unsupported claim.
 3. A backfill request contains all decision-critical gaps in one batch. After that response, remaining gaps require a human decision; agents must not loop automatically.
 4. Deck Architect and slide agents must cite material and evidence IDs rather than recompute analysis.
-5. Renderer receives only human-approved claims, evidence, boundaries, and visual instructions.
+5. HTML/React receives a validated `report_text_pack`; its renderer may not add analytical prose. PPT renderers receive only human-approved claims, evidence, boundaries, and visual instructions.
 6. PNG is a presentation choice, never a substitute for missing quantitative evidence.
 
 ## Legacy Compatibility

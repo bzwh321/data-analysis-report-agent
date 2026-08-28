@@ -1,5 +1,5 @@
 {
-  "_comment": "业务阈值规则：低于/高于阈值时，report writer 应将该结论列为最高优先级。",
+  "_comment": "业务阈值规则：低于/高于阈值时，Report Text Editor 应将该结论列为最高优先级。",
   "profit_rate": {
     "critical_low": 10.0,
     "desc": "利润率<10% = 立即干预，禁止继续扩量",

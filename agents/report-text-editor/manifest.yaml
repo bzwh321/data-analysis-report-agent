@@ -1,0 +1,15 @@
+name: report-text-editor
+version: "1.0"
+status: active
+description: Unit-level evidence-to-conclusion writing after verification.
+execution:
+  temperature: 0.0
+  node_type: agent
+  parallel: true
+prompt_ref: SKILL.md
+io:
+  inputs:
+    - verified_unit_packet
+    - report_writing_micro_prompt
+  outputs:
+    - report_text_unit

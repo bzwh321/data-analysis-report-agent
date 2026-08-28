@@ -1,4 +1,4 @@
-# 通用报告表达规范（供 report writer 对照）
+# 通用报告表达规范（供 Report Text Editor 对照）
 
 ---
 

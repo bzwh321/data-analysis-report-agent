@@ -1,5 +1,5 @@
 {
-  "_comment": "Report writer 每次分析请求必须输出此格式；harness 会做确定性校验。",
+  "_comment": "Analysis Agent 每次分析请求必须输出此格式；harness 会做确定性校验。",
   "required_fields": [
     "round",
     "analytical_step",

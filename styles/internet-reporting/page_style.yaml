@@ -1,0 +1,136 @@
+style_id: internet-reporting
+display_name: 互联网汇报风格
+format_contract: ../../references/human_authored_html_design_system.md
+color_system: ../color-system/color_system.yaml
+purpose: 把数据分析报告写成互联网团队真实使用的在线协作文档，而不是仪表盘、咨询画册或卡片合集。
+best_for:
+  - 经营周报与月度复盘
+  - 项目分析与专题诊断
+  - 产品、运营、增长团队的异步决策材料
+document_character:
+  keywords: [在线文档, 协作感, 内容块, 克制高亮, 异步阅读, 可继续编辑]
+  feel: 像一位熟悉互联网协作方式的业务负责人整理完成的分析文档，结构清楚但没有出版物的距离感。
+  not: [在线文档产品界面截图, 编辑器工具栏仿制, SaaS仪表盘, PPT页面, 大卡片拼贴]
+reading_path: 标题与上下文 -> 数据速览 -> 全文结论 -> 分析正文 -> 决策记录 -> 数据口径
+layout:
+  page_grid_columns: 12
+  page_grid_gap: 22px
+  document_width: 1120_to_1200px
+  prose_measure: 7_to_9_columns_from_page_start
+  full_width_evidence: 12_columns
+  local_columns:
+    preferred: [4_plus_8, 5_plus_7, 6_plus_6]
+    use_only_when: both_columns_answer_the_same_section_claim_and_both_columns_have_comparable_visual_weight
+    stack_below: 860px
+    fail_when:
+      - short_prose_sits_beside_tall_chart_and_leaves_a_large_blank_column
+      - chart_notes_are_needed_to_continue_the_argument_but_are_detached_below_the_chart
+      - side_by_side_layout_makes_the_section_read_like_two_unrelated_blocks
+  continuous_flow:
+    default_order: section_title_then_claim_sentences_then_embedded_evidence_then_reading_notes
+    prose_before_chart: default_for_short_or_two_paragraph_section
+    max_blank_under_adjacent_prose: 28px
+    prefer_full_width_chart_when: chart_height_exceeds_adjacent_prose_by_more_than_1_5x
+    sentence_layout_rule:
+      one_line_when_fits: true
+      split_into_points_when_not_fit: true
+      do_not_leave_two_or_three_line_paragraphs_when_points_are_more_readable: true
+      renderer_must_return_to_writer_if_copy_needs_splitting: true
+  fixed_reference:
+    required_files: [page_style.yaml, global_prompt.md, sample.html]
+    renderer_must_consult_sample_html: true
+    sample_html_is_visual_reference_not_business_template: true
+  alignment:
+    tolerance: 1px
+    reuse_global_grid_tokens: true
+    accidental_near_miss_px: 2_to_16_fails
+page_shell:
+  surface: clean_document
+  border: optional_single_1px_rule
+  shadow: none
+  radius: 0_to_2px
+  top_whitespace: compact
+typography:
+  family: Microsoft YaHei
+  weights: [400, 700]
+  inherit_frozen_format_scale: true
+  heading_logic: fixed_semantic_levels_not_manual_font_enlargement
+  body_paragraphs: one_claim_per_paragraph
+  line_expression: one_line_if_fits_otherwise_split_into_points
+  bold_budget: one_phrase_per_paragraph_or_cell
+document_blocks:
+  metadata_line:
+    fields: [owner_or_team, updated_at, time_scope, data_status]
+    style: one_compact_muted_line
+  metric_strip:
+    style: ruled_inline_values
+    default_columns: 3_plus_3_plus_3_plus_3
+    allow_mini_chart: only_when_six_or_more_ordered_values_add_context
+  full_report_summary:
+    placement: after_metric_strip_before_navigation_or_first_section
+    alignment: page_left
+    container: none
+    sequence: overall_judgement_then_two_or_three_findings_then_decision_and_boundary
+  highlight_block:
+    use_for: [material_decision, evidence_boundary, one_key_operating_note]
+    max_per_section: 1
+    style: one_flat_tint_plus_one_short_rule_or_marker
+    padding: 12_to_16px
+    radius: 0_to_2px
+    shadow: none
+  embedded_data_block:
+    use_for: chart_or_table_that_behaves_as_one_document_evidence_object
+    chrome: compact_title_unit_scope_source_row
+    separation: one_border_or_one_surface_not_both
+    shadow: none
+    inner_padding: 14_to_18px
+  quote_or_boundary:
+    style: short_left_rule_and_label
+    maximum_lines: 4
+charts:
+  relationship_to_text: embedded_immediately_after_or_beside_the_claim_it_proves
+  preferred: [annotated_line, sorted_horizontal_bar, compact_column, small_multiples, evidence_table]
+  title: full_sentence_takeaway
+  chrome: document_embed_header_not_dashboard_card
+  gridlines: minimal_horizontal_only
+  labels: direct_focus_endpoint_and_reference
+  legend: avoid_when_direct_labels_work
+  required: [unit, time_scope, comparison_reference, focus_annotation, source]
+  signal_colors: inherit_only_from_color_system
+  density: use_comparison_reference_and_annotation_not_decorative_marks
+  chart_to_interpretation_gap: 12_to_18px
+tables:
+  default: compact_document_table
+  border_logic: subtle_shared_grid_for_exact_lookup_or_horizontal_rules_for_analysis
+  header: one_quiet_tint_or_rule
+  numeric_alignment: right
+  text_alignment: left_top
+  analytical_cell_structure: max_two_labeled_lines
+  row_highlight: only_when_decision_changes
+  zebra_striping: false
+content_rhythm:
+  section_header_to_first_block: 18_to_22px
+  block_to_block: 18_to_28px
+  section_to_section: 44_to_52px
+  source_gap: 8_to_10px
+  comparable_sections_share_rhythm: true
+human_finish:
+  - Use a fixed heading hierarchy and let the outline reveal the logic.
+  - Use short paragraphs, lists, tables, quotes, and embedded charts as document-native blocks.
+  - Use columns only when they reduce eye travel between one claim and its evidence.
+  - Use no more than two visible highlight treatments in one viewport.
+  - Prefer one useful callout over several decorative colored blocks.
+avoid:
+  - Simulating the Feishu editor toolbar, comments panel, share button, or browser chrome.
+  - Copying Feishu logos, proprietary templates, or brand illustrations.
+  - Using headings only to enlarge text without semantic hierarchy.
+  - Highlighting every conclusion, number, or paragraph.
+  - Creating a sidebar that pushes the full-report summary away from the page-left anchor.
+  - Repeating rounded cards for metrics, charts, findings, or actions.
+  - Putting prose and its chart in separate distant containers.
+  - Full-width paragraphs that exceed the declared reading measure.
+responsive:
+  desktop: document_body_with_optional_local_columns
+  below_860px: stack_columns_and_keep_chart_before_interpretation_when_claim_requires_it
+  below_720px: single_column_remove_forced_title_breaks_and_allow_table_scroll
+  print: remove_navigation_affordances_keep_document_blocks_and_sources

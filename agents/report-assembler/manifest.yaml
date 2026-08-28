@@ -1,0 +1,19 @@
+name: report-assembler
+version: "1.0"
+status: active
+description: Text-chart arbitration, route-back decision, and page assembly plan.
+execution:
+  temperature: 0.0
+  node_type: agent
+  parallel: false
+prompt_ref: SKILL.md
+io:
+  inputs:
+    - analysis_material_pack
+    - report_text_pack
+    - chart_spec_pack
+    - selected_style
+    - color_system
+  outputs:
+    - assembly_pack
+    - assembly_opinions

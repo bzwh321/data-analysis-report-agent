@@ -1,0 +1,17 @@
+name: report-text-controller
+version: "1.0"
+status: active
+description: Report-question decomposition, bounded context routing, verification backfill, and report-level resolution.
+execution:
+  temperature: 0.0
+  node_type: agent
+  parallel: false
+prompt_ref: SKILL.md
+io:
+  inputs:
+    - analysis_material_pack
+    - locked_visual_plan
+  outputs:
+    - bounded_unit_packets
+    - controller_resolution
+    - summary_chain

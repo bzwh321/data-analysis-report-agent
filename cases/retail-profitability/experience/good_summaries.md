@@ -1,4 +1,4 @@
-# 好结论范例（供 report writer 对照）
+# 好结论范例（供 Report Text Editor 对照）
 
 ---
 

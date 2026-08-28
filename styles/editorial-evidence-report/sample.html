@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>编辑式证据报告｜示例样张</title>
+  <style>
+    :root {
+      /* Candidate A preview. The active palette remains owned by color_system.yaml. */
+      --theme-base: #F3EFE6;
+      --theme-primary: #34372D;
+      --theme-accent: #9F542F;
+      --critical: #B33A32;
+      --watch: #8A6500;
+      --healthy: #19704B;
+      --canvas: color-mix(in srgb, var(--theme-base) 90%, var(--theme-primary));
+      --paper: var(--theme-base);
+      --ink: var(--theme-primary);
+      --muted: color-mix(in srgb, var(--theme-primary) 68%, var(--theme-base));
+      --rule: color-mix(in srgb, var(--theme-primary) 26%, var(--theme-base));
+      --soft-rule: color-mix(in srgb, var(--theme-primary) 14%, var(--theme-base));
+      --focus: var(--theme-accent);
+      --focus-soft: color-mix(in srgb, var(--theme-accent) 13%, var(--theme-base));
+      --exception: var(--critical);
+      --exception-soft: color-mix(in srgb, var(--critical) 12%, var(--theme-base));
+      --attention: var(--watch);
+      --attention-soft: color-mix(in srgb, var(--watch) 12%, var(--theme-base));
+      --healthy-soft: color-mix(in srgb, var(--healthy) 12%, var(--theme-base));
+      --surface: color-mix(in srgb, var(--theme-primary) 3%, var(--theme-base));
+      --series-context: color-mix(in srgb, var(--theme-primary) 62%, var(--theme-base));
+      --series-reference: color-mix(in srgb, var(--theme-primary) 48%, var(--theme-base));
+      --page-grid-columns: 12;
+      --page-grid-gap: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--canvas); }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: "Microsoft YaHei", "Microsoft YaHei UI", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
+    }
+
+    svg { font-family: inherit; }
+
+    strong, b { font-weight: 700; }
+
+    .report {
+      width: min(1200px, calc(100% - 48px));
+      margin: 28px auto 56px;
+      padding: 34px 46px 44px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+    }
+
+    .masthead,
+    .title-grid,
+    .metric-rail,
+    .report-summary,
+    .section-head,
+    .exhibit-layout,
+    .driver-layout,
+    .decision-intro,
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--page-grid-columns), minmax(0, 1fr));
+      column-gap: var(--page-grid-gap);
+    }
+
+    .masthead {
+      align-items: end;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .brand {
+      grid-column: 1 / span 5;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .report-meta {
+      grid-column: 8 / -1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .report-meta span { white-space: nowrap; }
+
+    .title-grid {
+      padding: 34px 0 28px;
+    }
+
+    .title-block { grid-column: 1 / -1; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 9px;
+      color: var(--focus);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .eyebrow::before {
+      width: 7px;
+      height: 7px;
+      content: "";
+      flex: 0 0 auto;
+      background: var(--focus);
+      border-radius: 50%;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font-size: clamp(36px, 3vw, 40px);
+      line-height: 1.18;
+      letter-spacing: -.025em;
+      font-weight: 700;
+      text-wrap: balance;
+    }
+
+    .title-line { display: block; }
+
+    .deck {
+      max-width: 860px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .metric-rail {
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .metric {
+      grid-column: span 3;
+      min-height: 142px;
+      padding: 18px 12px 15px 0;
+    }
+
+    .metric-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 30px;
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      font-weight: 700;
+    }
+
+    .metric strong.negative { color: var(--exception); }
+
+    .metric small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .shape {
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .shape-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--focus);
+    }
+
+    .shape-dot.attention { background: var(--attention); }
+    .shape-dot.neutral { background: var(--muted); }
+
+    .shape-triangle-down {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 8px solid var(--exception);
+    }
+
+    .shape-triangle-up {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 8px solid currentColor;
+    }
+
+    .shape-triangle-right {
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 8px solid var(--attention);
+    }
+
+    .mini-chart {
+      display: block;
+      width: min(158px, 100%);
+      height: 32px;
+      margin-top: 9px;
+      overflow: visible;
+    }
+
+    .mini-composition {
+      display: flex;
+      width: min(148px, 100%);
+      height: 7px;
+      margin-top: 12px;
+      background: var(--soft-rule);
+    }
+
+    .mini-composition .focus { background: var(--focus); }
+
+    .mini-composition-label {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .report-summary {
+      padding-top: 32px;
+      align-items: start;
+    }
+
+    .summary-label {
+      grid-column: 1 / span 9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 3px;
+      color: var(--focus);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .summary-label::before {
+      width: 8px;
+      height: 8px;
+      content: "";
+      background: var(--focus);
+      border-radius: 50%;
+    }
+
+    .summary-copy {
+      grid-column: 1 / span 9;
+      max-width: 780px;
+      margin-top: 10px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .summary-copy p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.72;
+    }
+
+    .summary-copy p:last-child { margin-bottom: 0; }
+
+    .summary-copy .summary-close {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--soft-rule);
+      color: var(--ink);
+    }
+
+    .report-section {
+      padding-top: 52px;
+    }
+
+    .section-head {
+      grid-template-columns: max-content minmax(0, 1fr);
+      column-gap: 10px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+
+    .section-index {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding-top: 6px;
+      color: var(--focus);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .section-index::before {
+      width: 7px;
+      height: 7px;
+      content: "";
+      background: var(--focus);
+      border-radius: 50%;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.32;
+      letter-spacing: -.012em;
+      font-weight: 700;
+      text-wrap: balance;
+    }
+
+    .section-heading-copy { min-width: 0; }
+
+    .section-question {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .exhibit-layout { align-items: stretch; }
+
+    .figure {
+      grid-column: 1 / span 8;
+      min-width: 0;
+      margin: 0;
+      padding-top: 14px;
+      border-top: 1px solid var(--ink);
+    }
+
+    .figure-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .figure-kicker {
+      color: var(--focus);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .figure-unit {
+      color: var(--muted);
+      font-size: 11.5px;
+    }
+
+    .chart-shell {
+      width: 100%;
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .chart-shell svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .figure-source {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.58;
+    }
+
+    .reading-rail {
+      grid-column: 9 / -1;
+      padding: 12px 0 0 22px;
+      border-top: 1px solid var(--ink);
+      border-left: 1px solid var(--rule);
+    }
+
+    .rail-title {
+      margin: 0 0 16px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .reading-note {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      padding: 13px 0;
+      border-top: 1px solid var(--soft-rule);
+    }
+
+    .reading-note:first-of-type { border-top: 0; }
+
+    .note-number {
+      display: inline-flex;
+      width: 22px;
+      height: 22px;
+      align-items: center;
+      justify-content: center;
+      color: var(--focus);
+      border: 1px solid var(--focus);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .reading-note b {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+
+    .reading-note p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.62;
+    }
+
+    .implication {
+      position: relative;
+      margin-top: 16px;
+      padding: 14px 14px 14px 34px;
+      background: var(--focus-soft);
+      border-left: 3px solid var(--focus);
+    }
+
+    .implication::before {
+      position: absolute;
+      top: 19px;
+      left: 14px;
+      width: 7px;
+      height: 7px;
+      content: "";
+      background: var(--focus);
+      border-radius: 50%;
+    }
+
+    .implication span,
+    .implication strong { display: block; }
+
+    .implication span {
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 11.5px;
+    }
+
+    .implication strong {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .driver-layout {
+      align-items: start;
+      padding: 23px 0 26px;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .driver-copy {
+      grid-column: 1 / span 4;
+      min-width: 0;
+      padding-right: 10px;
+    }
+
+    .driver-copy p {
+      max-width: 34em;
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+
+    .analysis-line {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+    }
+
+    .analysis-line strong {
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .analysis-line span {
+      line-height: 1.62;
+    }
+
+    .evidence-boundary {
+      position: relative;
+      padding: 13px 14px 13px 34px;
+      background: var(--attention-soft);
+      border-left: 3px solid var(--attention);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.58;
+    }
+
+    .evidence-boundary::before {
+      position: absolute;
+      top: 18px;
+      left: 14px;
+      width: 0;
+      height: 0;
+      content: "";
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 8px solid var(--attention);
+    }
+
+    .evidence-boundary b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ink);
+    }
+
+    .driver-chart {
+      grid-column: 5 / -1;
+      min-width: 0;
+    }
+
+    .driver-scale {
+      display: grid;
+      grid-template-columns: 105px 1fr 64px;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .driver-scale div:nth-child(2) {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .driver-row {
+      display: grid;
+      grid-template-columns: 105px 1fr 64px;
+      gap: 10px;
+      align-items: center;
+      min-height: 52px;
+      border-top: 1px solid var(--soft-rule);
+    }
+
+    .driver-row:first-of-type { border-top-color: var(--rule); }
+
+    .driver-name b,
+    .driver-name span { display: block; }
+
+    .driver-name b { font-size: 12px; }
+
+    .driver-name span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .bar-track {
+      position: relative;
+      height: 10px;
+      background:
+        linear-gradient(to right,
+          transparent 24.7%, var(--soft-rule) 25%, transparent 25.3%,
+          transparent 49.7%, var(--soft-rule) 50%, transparent 50.3%,
+          transparent 74.7%, var(--soft-rule) 75%, transparent 75.3%);
+      border-left: 1px solid var(--ink);
+    }
+
+    .bar-fill {
+      height: 10px;
+      background: var(--series-context);
+    }
+
+    .bar-fill.exception { background: var(--exception); }
+    .bar-fill.structural { background: rgba(182, 66, 46, .72); }
+
+    .driver-value {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .driver-summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--ink);
+      font-size: 12px;
+    }
+
+    .driver-summary strong { color: var(--exception); }
+
+    .driver-source { margin-top: 10px; }
+
+    .evidence-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      font-size: 12.5px;
+      line-height: 1.52;
+    }
+
+    .evidence-table th,
+    .evidence-table td {
+      padding: 14px 10px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--soft-rule);
+    }
+
+    .evidence-table th {
+      padding-top: 9px;
+      padding-bottom: 9px;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .evidence-table tr:last-child td { border-bottom: 0; }
+    .evidence-table .num { text-align: right; white-space: nowrap; }
+    .evidence-table .delta-adverse { color: var(--exception); font-weight: 700; }
+    .evidence-table .delta-neutral { color: var(--ink); font-weight: 700; }
+
+    .delta-with-marker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+
+    .cell-stack {
+      display: grid;
+      gap: 6px;
+    }
+
+    .cell-line {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 6px;
+      margin: 0;
+      line-height: 1.58;
+    }
+
+    .cell-key {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .row-mark {
+      display: inline-block;
+      width: 5px;
+      height: 18px;
+      margin-right: 8px;
+      vertical-align: -4px;
+      background: var(--exception);
+    }
+
+    .decision-intro {
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .decision-intro h2 {
+      grid-column: 1 / -1;
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.32;
+      font-weight: 700;
+      text-wrap: balance;
+    }
+
+    .decision-intro p {
+      grid-column: 1 / span 8;
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .action-register {
+      width: 100%;
+      border-collapse: collapse;
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      font-size: 12.5px;
+      line-height: 1.52;
+    }
+
+    .action-register th,
+    .action-register td {
+      padding: 14px 10px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .action-register th {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .action-register tr:last-child td { border-bottom: 0; }
+
+    .priority {
+      display: inline-flex;
+      min-width: 32px;
+      align-items: center;
+      gap: 5px;
+      margin-right: 7px;
+      color: var(--attention);
+      font-weight: 700;
+    }
+
+    .priority.p2 { color: var(--muted); }
+
+    .report-notes {
+      margin-top: 52px;
+      padding-top: 18px;
+      border-top: 1px solid var(--ink);
+    }
+
+    .notes-title {
+      grid-column: 1 / span 2;
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .notes-copy {
+      grid-column: 3 / span 7;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.62;
+    }
+
+    .notes-copy p { margin: 0 0 6px; }
+
+    .signoff {
+      grid-column: 11 / -1;
+      text-align: right;
+      color: var(--muted);
+      font-size: 11.5px;
+    }
+
+    @media (max-width: 900px) {
+      .report { width: calc(100% - 28px); padding: 28px 28px 36px; }
+      .title-block { grid-column: 1 / span 12; }
+      .summary-label,
+      .summary-copy { grid-column: 1 / span 10; }
+      .figure { grid-column: 1 / -1; }
+      .reading-rail {
+        grid-column: 1 / -1;
+        margin-top: 20px;
+        padding-left: 0;
+        border-left: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .report { width: 100%; margin: 0; padding: 22px 20px 34px; border: 0; }
+      .masthead,
+      .title-grid,
+      .metric-rail,
+      .report-summary,
+      .section-head,
+      .exhibit-layout,
+      .driver-layout,
+      .decision-intro,
+      .notes-grid { grid-template-columns: 1fr; column-gap: 0; }
+      .brand,
+      .report-meta,
+      .title-block,
+      .metric,
+      .summary-label,
+      .summary-copy,
+      .section-index,
+      .section-heading-copy,
+      .figure,
+      .reading-rail,
+      .driver-copy,
+      .driver-chart,
+      .decision-intro h2,
+      .decision-intro p,
+      .notes-title,
+      .notes-copy,
+      .signoff { grid-column: 1; }
+      .report-meta { justify-content: flex-start; margin-top: 8px; }
+      .title-grid { padding: 28px 0 24px; }
+      .title-line { display: inline; }
+      .metric { min-height: auto; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+      .metric:last-child { border-bottom: 0; }
+      .report-summary { padding-top: 28px; }
+      .summary-copy { margin-top: 10px; }
+      .section-head { grid-template-columns: max-content minmax(0, 1fr); column-gap: 9px; }
+      .section-head .section-index,
+      .section-head .section-heading-copy { grid-column: auto; }
+      .driver-copy { margin-bottom: 24px; }
+      .driver-layout { grid-template-columns: 1fr; column-gap: 0; }
+      .driver-row,
+      .driver-scale { grid-template-columns: 96px 1fr 58px; gap: 8px; }
+      .table-scroll { overflow-x: auto; }
+      .evidence-table,
+      .action-register { min-width: 760px; }
+      .decision-intro p { margin-top: 8px; }
+      .signoff { margin-top: 12px; text-align: left; }
+    }
+
+    @media print {
+      html, body { background: var(--paper); }
+      .report { width: 100%; margin: 0; border: 0; }
+      .figure, .driver-layout, .table-scroll { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="report">
+    <header class="masthead">
+      <div class="brand">经营证据简报 · 零售利润专题</div>
+      <div class="report-meta">
+        <span>报告编号 RA-2024-12</span>
+        <span>观察期 2024.01—12</span>
+        <span>示例样张</span>
+      </div>
+    </header>
+
+    <section class="title-grid">
+      <div class="title-block">
+        <p class="eyebrow">年度利润率诊断</p>
+        <h1><span class="title-line">利润率下滑不是全局性恶化：家具 Q3 冲击</span><span class="title-line">与技术品类结构漂移解释了主要缺口</span></h1>
+        <p class="deck">全年利润率同比下降 2.19pp，但月度和品类证据并不支持“所有业务同步变差”。管理层应把一次性事件复盘与持续性组合治理拆成两条工作线，并暂缓责任归因。</p>
+      </div>
+    </section>
+
+    <section class="metric-rail" aria-label="问题规模">
+      <div class="metric">
+        <span class="metric-label"><span class="shape shape-triangle-down" aria-hidden="true"></span>全年利润率变化</span>
+        <strong class="negative">−2.19pp</strong>
+        <svg class="mini-chart" viewBox="0 0 158 32" role="img" aria-label="月度利润率迷你趋势，三季度明显下探后在四季度恢复">
+          <rect x="82" y="1" width="39" height="29" fill="var(--exception-soft)"/>
+          <line x1="1" y1="11" x2="157" y2="11" stroke="var(--series-reference)" stroke-width="1" stroke-dasharray="3 3"/>
+          <polyline points="2,10 16,11 30,8 44,9 58,10 72,8 86,22 100,24 114,21 128,12 142,13 156,14" fill="none" stroke="var(--series-context)" stroke-width="1.8"/>
+          <polyline points="72,8 86,22 100,24 114,21" fill="none" stroke="var(--critical)" stroke-width="2.4"/>
+          <polyline points="114,21 128,12" fill="none" stroke="var(--healthy)" stroke-width="2.2"/>
+          <circle cx="156" cy="14" r="2.7" fill="var(--healthy)"/>
+        </svg>
+        <small>跌破 10% 管理阈值，需要解释。</small>
+      </div>
+      <div class="metric">
+        <span class="metric-label">两项主因的缺口贡献</span>
+        <strong>75%</strong>
+        <div class="mini-composition" role="img" aria-label="两项主因贡献百分之七十五"><span class="focus" style="width:75%"></span></div>
+        <div class="mini-composition-label">已定位 75% · 其余 25%</div>
+        <small>家具 Q3 与技术组合合计。</small>
+      </div>
+      <div class="metric">
+        <span class="metric-label">家具 Q3 月均利润率</span>
+        <strong>6.2%</strong>
+        <small>非 Q3 月均值为 12.97%。</small>
+      </div>
+      <div class="metric">
+        <span class="metric-label">当前证据边界</span>
+        <strong>3 项</strong>
+        <small>渠道、区域、促销动作尚未进入责任切片。</small>
+      </div>
+    </section>
+
+    <section class="report-summary" aria-labelledby="summary-title">
+      <h2 class="summary-label" id="summary-title">全文结论</h2>
+      <div class="summary-copy">
+        <p><strong>总体判断。</strong>全年利润率下降 2.19pp，但不是全局同步恶化。家具 Q3 冲击与技术品类结构漂移共同解释了主要缺口。</p>
+        <p><strong>短期异常。</strong>家具利润率在 Q3 集中下探，Q4 已恢复到接近常态，应先按事件窗口复盘促销、退货、采购和物流成本。</p>
+        <p><strong>持续风险。</strong>技术品类中高利润子类收缩、低利润子类扩张，属于需要进入下季度经营计划的组合问题。</p>
+        <p class="summary-close"><strong>决策与边界。</strong>建议批准技术组合修复为主线，并要求家具团队在 7 天内完成事件复盘；在渠道、区域和价格动作补齐前，不做组织责任归因。</p>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <header class="section-head">
+        <div class="section-index">01</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">家具利润率在 Q3 形成清晰异常窗口，Q4 已恢复到接近常态</h2>
+          <p class="section-question">验证问题：下降是持续趋势，还是集中在一个可复盘的时间窗口？</p>
+        </div>
+      </header>
+
+      <div class="exhibit-layout">
+        <figure class="figure">
+          <div class="figure-topline">
+            <span class="figure-kicker">图表 1 · 家具月度利润率</span>
+            <span class="figure-unit">单位：% · 2024 年</span>
+          </div>
+          <div class="chart-shell">
+            <svg viewBox="0 0 760 380" role="img" aria-label="家具月度利润率折线图，七月至九月形成显著异常窗口">
+              <rect x="0" y="0" width="760" height="380" fill="var(--surface)"/>
+              <rect x="405" y="36" width="176" height="278" fill="var(--exception-soft)"/>
+              <text x="420" y="56" fill="var(--critical)" font-size="12" font-weight="700">Q3 异常窗口</text>
+
+              <g stroke="var(--soft-rule)" stroke-width="1">
+                <line x1="62" y1="72" x2="722" y2="72"/>
+                <line x1="62" y1="132" x2="722" y2="132"/>
+                <line x1="62" y1="192" x2="722" y2="192"/>
+                <line x1="62" y1="252" x2="722" y2="252"/>
+                <line x1="62" y1="312" x2="722" y2="312"/>
+              </g>
+
+              <g fill="var(--muted)" font-size="11">
+                <text x="30" y="76">16%</text>
+                <text x="30" y="136">12%</text>
+                <text x="36" y="196">8%</text>
+                <text x="36" y="256">4%</text>
+                <text x="36" y="316">0%</text>
+              </g>
+
+              <line x1="62" y1="118" x2="722" y2="118" stroke="var(--series-reference)" stroke-dasharray="5 5"/>
+              <text x="618" y="110" fill="var(--muted)" font-size="11">非 Q3 均值 12.97%</text>
+
+              <polyline points="74,126 132,135 190,112 248,120 306,129 364,115 422,219 480,225 538,213 596,140 654,145 712,153"
+                        fill="none" stroke="var(--series-context)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+              <polyline points="364,115 422,219 480,225 538,213"
+                        fill="none" stroke="var(--critical)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+              <polyline points="538,213 596,140"
+                        fill="none" stroke="var(--healthy)" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+
+              <g fill="var(--series-context)" stroke="var(--surface)" stroke-width="2">
+                <circle cx="74" cy="126" r="5"/>
+                <circle cx="132" cy="135" r="4"/>
+                <circle cx="190" cy="112" r="5"/>
+                <circle cx="248" cy="120" r="4"/>
+                <circle cx="306" cy="129" r="4"/>
+                <circle cx="364" cy="115" r="4"/>
+                <circle cx="654" cy="145" r="4"/>
+                <circle cx="712" cy="153" r="5"/>
+              </g>
+              <g fill="var(--critical)" stroke="var(--surface)" stroke-width="2">
+                <circle cx="422" cy="219" r="6"/>
+                <circle cx="480" cy="225" r="6"/>
+                <circle cx="538" cy="213" r="6"/>
+              </g>
+              <circle cx="596" cy="140" r="5" fill="var(--healthy)" stroke="var(--surface)" stroke-width="2"/>
+
+              <g fill="var(--ink)" font-size="12" font-weight="700">
+                <text x="59" y="112">12.4%</text>
+                <text x="176" y="98">13.3%</text>
+                <text x="399" y="243" fill="var(--critical)">6.2%</text>
+                <text x="459" y="249" fill="var(--critical)">5.8%</text>
+                <text x="518" y="237" fill="var(--critical)">6.6%</text>
+                <text x="691" y="139">10.7%</text>
+              </g>
+
+              <g fill="var(--muted)" font-size="11" text-anchor="middle">
+                <text x="74" y="338">1月</text>
+                <text x="132" y="338">2月</text>
+                <text x="190" y="338">3月</text>
+                <text x="248" y="338">4月</text>
+                <text x="306" y="338">5月</text>
+                <text x="364" y="338">6月</text>
+                <text x="422" y="338">7月</text>
+                <text x="480" y="338">8月</text>
+                <text x="538" y="338">9月</text>
+                <text x="596" y="338">10月</text>
+                <text x="654" y="338">11月</text>
+                <text x="712" y="338">12月</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption class="figure-source">来源：示例零售订单聚合表；利润率按案例语义层定义。Q3 阴影用于标示异常窗口，虚线为非 Q3 月均值。</figcaption>
+        </figure>
+
+        <aside class="reading-rail" aria-label="读图结论">
+          <h3 class="rail-title">读图结论</h3>
+          <div class="reading-note">
+            <span class="note-number">1</span>
+            <div><b>异常集中，而非逐月恶化</b><p>1—6 月稳定在约 12%—13%，7 月突然下探，支持先按事件窗口复盘。</p></div>
+          </div>
+          <div class="reading-note">
+            <span class="note-number">2</span>
+            <div><b>Q3 三个月持续偏低</b><p>低位并非单月噪声；促销、退货、采购和物流成本需要按周对齐。</p></div>
+          </div>
+          <div class="reading-note">
+            <span class="note-number">3</span>
+            <div><b>Q4 恢复削弱了长期恶化判断</b><p>恢复并不证明原因，但说明不宜把家具全年表现归因于持续性经营失控。</p></div>
+          </div>
+          <div class="implication">
+            <span>管理含义</span>
+            <strong>家具进入 7 天事件复盘，不直接进入长期降本专项。</strong>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <header class="section-head">
+        <div class="section-index">02</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">家具事件与技术组合漂移共同解释 75% 的利润率缺口，但干预方式不同</h2>
+          <p class="section-question">验证问题：哪些因素值得进入管理动作，哪些只需要监控？</p>
+        </div>
+      </header>
+
+      <div class="driver-layout">
+        <div class="driver-copy">
+          <p class="analysis-line"><strong>判断</strong><span>家具 Q3 贡献最大，但具有明确时间边界。</span></p>
+          <p class="analysis-line"><strong>解释</strong><span>技术品类贡献次之，并呈现持续性结构信号。</span></p>
+          <p class="analysis-line"><strong>处理</strong><span>两者应分成事件复盘与组合治理，不合并为泛化的利润修复项目。</span></p>
+          <div class="evidence-boundary"><b>证据边界</b>当前分解能定位贡献，不能确认组织责任。渠道、区域、价格动作和客户结构尚未进入语义层。</div>
+        </div>
+
+        <div class="driver-chart" role="img" aria-label="利润率下降贡献排行，家具和技术合计贡献百分之七十五">
+          <div class="driver-scale"><span>贡献项</span><div><span>0</span><span>0.5pp</span><span>1.0pp</span></div><span style="text-align:right">缺口</span></div>
+          <div class="driver-row">
+            <div class="driver-name"><b>家具 Q3 冲击</b><span>事件性窗口</span></div>
+            <div class="bar-track"><div class="bar-fill exception" style="width:92%"></div></div>
+            <div class="driver-value">−0.92pp</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name"><b>技术组合漂移</b><span>持续性结构</span></div>
+            <div class="bar-track"><div class="bar-fill structural" style="width:73%"></div></div>
+            <div class="driver-value">−0.73pp</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name"><b>办公用品波动</b><span>监控项</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:28%"></div></div>
+            <div class="driver-value">−0.28pp</div>
+          </div>
+          <div class="driver-row">
+            <div class="driver-name"><b>其他</b><span>长尾项</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:26%"></div></div>
+            <div class="driver-value">−0.26pp</div>
+          </div>
+          <div class="driver-summary"><span>前两项合计 <strong>−1.65pp</strong></span><span>占总缺口 <strong>75%</strong></span></div>
+          <p class="figure-source driver-source">来源：示例零售订单聚合表；贡献值按统一利润率缺口口径分解。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <header class="section-head">
+        <div class="section-index">03</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">技术品类的高利润子类收缩、低利润子类扩张，构成可持续的组合风险</h2>
+          <p class="section-question">验证问题：哪些份额变化足以进入行动，哪些只需要保持监控？</p>
+        </div>
+      </header>
+
+      <div class="table-scroll">
+        <table class="evidence-table">
+          <thead>
+            <tr>
+              <th style="width:16%">子品类</th>
+              <th class="num" style="width:9%">基准份额</th>
+              <th class="num" style="width:9%">期末份额</th>
+              <th class="num" style="width:8%">变化</th>
+              <th style="width:27%">证据含义</th>
+              <th>管理判断与下一步</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="row-mark"></span><strong>复印机</strong> · 高利润</td>
+              <td class="num">28%</td>
+              <td class="num">21%</td>
+              <td class="num delta-adverse"><span class="delta-with-marker"><span class="shape shape-triangle-down" aria-hidden="true"></span>−7pp</span></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">判断</span><span>高利润子类收缩，是主要承压证据。</span></p><p class="cell-line"><span class="cell-key">边界</span><span>尚未区分需求、供给或激励。</span></p></div></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">下一步</span><span>补充分渠道价格与销量。</span></p><p class="cell-line"><span class="cell-key">用途</span><span>定位份额收缩原因。</span></p></div></td>
+            </tr>
+            <tr>
+              <td><strong>设备</strong> · 低利润</td>
+              <td class="num">38%</td>
+              <td class="num">43%</td>
+              <td class="num delta-adverse"><span class="delta-with-marker"><span class="shape shape-triangle-up" aria-hidden="true"></span>+5pp</span></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">判断</span><span>低利润子类扩张，与复印机收缩同向。</span></p><p class="cell-line"><span class="cell-key">边界</span><span>尚未拆到套餐和折扣。</span></p></div></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">下一步</span><span>检查套餐、折扣和渠道结构。</span></p><p class="cell-line"><span class="cell-key">用途</span><span>进入组合治理主线。</span></p></div></td>
+            </tr>
+            <tr>
+              <td><strong>电话</strong> · 中性</td>
+              <td class="num">34%</td>
+              <td class="num">36%</td>
+              <td class="num delta-neutral"><span class="delta-with-marker"><span class="shape shape-triangle-up" aria-hidden="true"></span>+2pp</span></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">判断</span><span>变化较小，独立解释力有限。</span></p><p class="cell-line"><span class="cell-key">边界</span><span>仅作为辅助证据。</span></p></div></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">下一步</span><span>保持常规监控。</span></p><p class="cell-line"><span class="cell-key">用途</span><span>不单独设立专项。</span></p></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="figure-source">来源：示例零售订单聚合表；份额比较采用同一品类口径。</p>
+    </section>
+
+    <section class="report-section">
+      <div class="decision-intro">
+        <h2>把一次性事件复盘与持续性结构治理拆成两条节奏不同的行动线</h2>
+        <p>动作按证据状态排序。只有能在下一次经营周期检查的事项进入登记表。</p>
+      </div>
+
+      <div class="table-scroll">
+        <table class="action-register">
+          <thead>
+            <tr>
+              <th style="width:24%">行动</th>
+              <th style="width:27%">为什么现在做</th>
+              <th style="width:15%">负责人角色</th>
+              <th style="width:12%">时间窗口</th>
+              <th>下次检查 / 通过标准</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="priority"><span class="shape shape-triangle-right" aria-hidden="true"></span>P1</span><strong>复盘家具 Q3 异常事件</strong></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">判断</span><span>先按事件窗口复盘。</span></p><p class="cell-line"><span class="cell-key">依据</span><span>异常集中且 Q4 已恢复。</span></p></div></td>
+              <td>品类经营 + 财务</td>
+              <td>7 天</td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">检查</span><span>促销、退货、采购、物流。</span></p><p class="cell-line"><span class="cell-key">通过</span><span>能解释主要周度差异。</span></p></div></td>
+            </tr>
+            <tr>
+              <td><span class="priority"><span class="shape shape-triangle-right" aria-hidden="true"></span>P1</span><strong>提交技术组合修复方案</strong></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">判断</span><span>进入持续性组合治理。</span></p><p class="cell-line"><span class="cell-key">依据</span><span>高低利润子类同向漂移。</span></p></div></td>
+              <td>品类 + 销售</td>
+              <td>下月经营会</td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">检查</span><span>SKU、渠道、定价和激励。</span></p><p class="cell-line"><span class="cell-key">通过</span><span>提交量化目标组合。</span></p></div></td>
+            </tr>
+            <tr>
+              <td><span class="priority p2"><span class="shape shape-dot neutral" aria-hidden="true"></span>P2</span><strong>补齐责任判断切片</strong></td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">判断</span><span>暂缓责任归因。</span></p><p class="cell-line"><span class="cell-key">依据</span><span>当前只定位到时间和品类。</span></p></div></td>
+              <td>数据团队</td>
+              <td>2 周</td>
+              <td><div class="cell-stack"><p class="cell-line"><span class="cell-key">检查</span><span>渠道、区域、客户、价格动作。</span></p><p class="cell-line"><span class="cell-key">通过</span><span>四类字段进入统一语义层。</span></p></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="report-notes">
+      <div class="notes-grid">
+        <h2 class="notes-title">口径与注释</h2>
+        <div class="notes-copy">
+          <p><strong>口径：</strong>利润率、品类与子品类按示例案例语义层计算；贡献值用于展示设计语言，正式报告需使用可复核分解。</p>
+          <p><strong>边界：</strong>现有数据不包含完整促销、退货、采购、物流、渠道和区域责任切片，因此不做因果或组织责任结论。</p>
+        </div>
+        <div class="signoff">编辑式证据报告<br>HTML 风格参考 v4</div>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

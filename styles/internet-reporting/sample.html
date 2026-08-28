@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="zh-CN" data-style="internet-reporting" data-palette="graphite-cobalt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>互联网汇报风格数据报告｜零售利润率复盘</title>
+  <style>
+    :root {
+      /* Preview palette is declared by color_system.yaml; this style owns no palette. */
+      --theme-base: #F2F3F4;
+      --theme-primary: #292F36;
+      --theme-accent: #315E9B;
+      --critical: #B33A32;
+      --watch: #8A6500;
+      --healthy: #19704B;
+      --canvas: color-mix(in srgb, var(--theme-primary) 8%, var(--theme-base));
+      --paper: var(--theme-base);
+      --ink: var(--theme-primary);
+      --muted: color-mix(in srgb, var(--theme-primary) 66%, var(--theme-base));
+      --line: color-mix(in srgb, var(--theme-primary) 16%, var(--theme-base));
+      --line-strong: color-mix(in srgb, var(--theme-primary) 34%, var(--theme-base));
+      --surface: color-mix(in srgb, var(--theme-primary) 3%, var(--theme-base));
+      --surface-strong: color-mix(in srgb, var(--theme-primary) 7%, var(--theme-base));
+      --accent-soft: color-mix(in srgb, var(--theme-accent) 10%, var(--theme-base));
+      --critical-soft: color-mix(in srgb, var(--critical) 11%, var(--theme-base));
+      --watch-soft: color-mix(in srgb, var(--watch) 11%, var(--theme-base));
+      --healthy-soft: color-mix(in srgb, var(--healthy) 11%, var(--theme-base));
+      --series-context: color-mix(in srgb, var(--theme-primary) 54%, var(--theme-base));
+      --series-reference: color-mix(in srgb, var(--theme-primary) 38%, var(--theme-base));
+      --page-columns: 12;
+      --page-gap: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      background: var(--canvas);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Microsoft YaHei UI", Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.68;
+      font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
+    }
+
+    svg { font-family: inherit; }
+    a { color: inherit; }
+    strong, b { font-weight: 700; }
+
+    .document {
+      width: min(1180px, calc(100% - 48px));
+      margin: 28px auto 54px;
+      padding: 40px 54px 46px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--page-columns), minmax(0, 1fr));
+      column-gap: var(--page-gap);
+    }
+
+    .doc-header {
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .doc-type {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .doc-glyph {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px;
+      border: 1px solid var(--line-strong);
+      border-radius: 2px;
+    }
+
+    .doc-glyph i {
+      width: 3px;
+      display: block;
+      background: var(--theme-accent);
+    }
+
+    .doc-glyph i:nth-child(1) { height: 6px; }
+    .doc-glyph i:nth-child(2) { height: 11px; }
+    .doc-glyph i:nth-child(3) { height: 8px; }
+
+    h1 {
+      max-width: 980px;
+      margin: 0;
+      font-size: clamp(36px, 3vw, 40px);
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -.025em;
+      text-wrap: balance;
+    }
+
+    .title-line { display: block; }
+
+    .standfirst {
+      max-width: 850px;
+      margin: 17px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.72;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 11.5px;
+    }
+
+    .doc-meta span {
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .doc-meta span + span::before {
+      position: absolute;
+      left: -13px;
+      content: "·";
+      color: var(--line-strong);
+    }
+
+    .metric-strip {
+      margin-top: 26px;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .metric {
+      grid-column: span 3;
+      min-height: 124px;
+      padding: 16px 10px 15px 0;
+    }
+
+    .metric-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .metric-value {
+      display: block;
+      margin-top: 6px;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.06;
+      letter-spacing: -.02em;
+    }
+
+    .metric-value.critical { color: var(--critical); }
+
+    .metric-note {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .shape {
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .shape-diamond {
+      width: 7px;
+      height: 7px;
+      background: var(--critical);
+      transform: rotate(45deg);
+    }
+
+    .shape-circle {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--healthy);
+    }
+
+    .shape-triangle {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 8px solid var(--watch);
+    }
+
+    .shape-accent {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--theme-accent);
+    }
+
+    .microbar {
+      width: min(154px, 100%);
+      height: 5px;
+      margin-top: 10px;
+      background: var(--line);
+    }
+
+    .microbar span {
+      display: block;
+      width: 75%;
+      height: 100%;
+      background: var(--theme-accent);
+    }
+
+    .summary {
+      margin-top: 30px;
+    }
+
+    .summary-label,
+    .notes-label {
+      grid-column: 1 / span 9;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 13px;
+      color: var(--theme-accent);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .summary-label::before,
+    .notes-label::before {
+      width: 7px;
+      height: 7px;
+      content: "";
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--theme-accent);
+    }
+
+    .summary-copy {
+      grid-column: 1 / span 9;
+      max-width: 830px;
+    }
+
+    .summary-copy p {
+      margin: 0 0 10px;
+    }
+
+    .summary-copy .summary-close {
+      margin-top: 13px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    mark {
+      padding: 1px 3px;
+      background: var(--accent-soft);
+      color: inherit;
+    }
+
+    .report-section {
+      margin-top: 48px;
+      scroll-margin-top: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .section-index {
+      flex: 0 0 auto;
+      padding-top: 5px;
+      color: var(--theme-accent);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .section-heading-copy { min-width: 0; }
+
+    .section-title {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 1.34;
+      letter-spacing: -.012em;
+    }
+
+    .section-question {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .section-intro {
+      grid-column: 1 / span 8;
+      margin-top: 18px;
+    }
+
+    .section-intro p {
+      margin: 0 0 9px;
+    }
+
+    .embed {
+      margin: 22px 0 0;
+      border: 1px solid var(--line-strong);
+      border-radius: 2px;
+    }
+
+    .embed-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .embed-title {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .embed-icon {
+      width: 14px;
+      height: 14px;
+      margin-top: 2px;
+      flex: 0 0 auto;
+      border: 1px solid var(--theme-accent);
+      position: relative;
+    }
+
+    .embed-icon::before,
+    .embed-icon::after {
+      position: absolute;
+      left: 3px;
+      content: "";
+      width: 6px;
+      border-top: 1px solid var(--theme-accent);
+    }
+
+    .embed-icon::before { top: 4px; }
+    .embed-icon::after { top: 8px; }
+
+    .embed-meta {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+
+    .chart-wrap {
+      padding: 14px 16px 10px;
+    }
+
+    .chart-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .embed-source {
+      padding: 0 16px 12px;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .post-chart {
+      margin-top: 17px;
+      align-items: start;
+    }
+
+    .reading-block {
+      grid-column: 1 / span 7;
+    }
+
+    .reading-block h3,
+    .boundary-block h3,
+    .block-note h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .reading-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reading-list li {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 7px;
+      padding: 7px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .reading-list li:first-child { border-top: 0; }
+
+    .reading-no {
+      color: var(--theme-accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .reading-text {
+      font-size: 13px;
+      line-height: 1.58;
+    }
+
+    .boundary-block {
+      grid-column: 8 / -1;
+      padding: 12px 15px;
+      border-left: 3px solid var(--watch);
+      background: var(--watch-soft);
+    }
+
+    .boundary-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--watch);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .boundary-block p,
+    .block-note p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.58;
+    }
+
+    .evidence-table-wrap {
+      margin-top: 22px;
+      overflow-x: auto;
+      border: 1px solid var(--line-strong);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .evidence-table {
+      min-width: 860px;
+      table-layout: fixed;
+    }
+
+    .evidence-table th,
+    .evidence-table td {
+      padding: 11px 12px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .evidence-table th:last-child,
+    .evidence-table td:last-child { border-right: 0; }
+
+    .evidence-table tr:last-child td { border-bottom: 0; }
+
+    .evidence-table th {
+      background: var(--surface-strong);
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .evidence-table .num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .row-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .row-mark {
+      width: 4px;
+      height: 18px;
+      margin-top: 1px;
+      flex: 0 0 auto;
+      background: var(--critical);
+    }
+
+    .cell-line {
+      display: block;
+      margin-top: 3px;
+    }
+
+    .cell-line:first-child { margin-top: 0; }
+
+    .cell-key {
+      display: inline-block;
+      min-width: 34px;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .delta-critical { color: var(--critical); font-weight: 700; }
+    .delta-watch { color: var(--watch); font-weight: 700; }
+
+    .block-note {
+      margin-top: 16px;
+      max-width: 760px;
+      padding: 13px 16px;
+      border-left: 3px solid var(--theme-accent);
+      background: var(--accent-soft);
+    }
+
+    .notes {
+      margin-top: 46px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    details {
+      grid-column: 1 / span 9;
+      border-bottom: 1px solid var(--line);
+    }
+
+    summary {
+      padding: 8px 0;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::before {
+      display: inline-block;
+      width: 18px;
+      content: "▾";
+      color: var(--theme-accent);
+    }
+
+    .notes-copy {
+      padding: 0 0 12px 18px;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.6;
+    }
+
+    .notes-copy p { margin: 5px 0; }
+
+    .doc-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 11.5px;
+    }
+
+    @media (max-width: 980px) {
+      .document {
+        width: calc(100% - 28px);
+        padding: 34px 28px 40px;
+      }
+
+      .evidence-table { min-width: 800px; }
+    }
+
+    @media (max-width: 860px) {
+      .document {
+        width: min(100% - 28px, 760px);
+        padding: 32px 28px 38px;
+      }
+
+      .metric { grid-column: span 6; }
+      .summary-label,
+      .summary-copy,
+      .section-intro,
+      details { grid-column: 1 / -1; }
+
+      .reading-block,
+      .boundary-block { grid-column: 1 / -1; }
+      .boundary-block { margin-top: 16px; }
+    }
+
+    @media (max-width: 720px) {
+      .document {
+        width: calc(100% - 20px);
+        margin: 10px auto 26px;
+        padding: 26px 20px 32px;
+      }
+
+      h1 { font-size: 30px; line-height: 1.24; }
+      .title-line { display: inline; }
+      .title-line + .title-line::before { content: " "; }
+      .metric { grid-column: 1 / -1; min-height: auto; border-top: 1px solid var(--line); }
+      .metric:first-child { border-top: 0; }
+      .section-title { font-size: 21px; }
+      .embed-head { display: block; }
+      .embed-meta { margin-top: 5px; white-space: normal; }
+      .chart-wrap { min-width: 680px; }
+      .embed { overflow-x: auto; }
+      .doc-footer { display: block; }
+    }
+
+    @media print {
+      html, body { background: var(--paper); }
+      .document { width: auto; margin: 0; border: 0; }
+      a { text-decoration: none; }
+      details { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="document">
+    <header class="doc-header">
+      <div class="doc-type">
+        <span class="doc-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>经营分析文档 · 零售利润专题</span>
+      </div>
+      <h1>
+        <span class="title-line">2024 零售利润率复盘：</span>
+        <span class="title-line">家具 Q3 异常已修复，技术品类结构仍需调整</span>
+      </h1>
+      <p class="standfirst">全年利润率同比下降 2.19pp，但证据不支持“所有业务同步变差”。短期事件与持续性品类结构问题需要拆成两条工作线处理。</p>
+      <div class="doc-meta" aria-label="文档信息">
+        <span>负责人：经营分析组</span>
+        <span>最后更新：2024-01-12</span>
+        <span>数据范围：2024 年 1—12 月</span>
+        <span>状态：示例样张</span>
+      </div>
+    </header>
+
+    <section class="metric-strip page-grid" aria-label="数据速览">
+      <div class="metric">
+        <span class="metric-label"><span class="shape shape-diamond" aria-hidden="true"></span>全年利润率变化</span>
+        <strong class="metric-value critical">−2.19pp</strong>
+        <small class="metric-note">跌破 10% 管理阈值，需要解释。</small>
+      </div>
+      <div class="metric">
+        <span class="metric-label"><span class="shape shape-accent" aria-hidden="true"></span>两项主因的缺口贡献</span>
+        <strong class="metric-value">75%</strong>
+        <div class="microbar" role="img" aria-label="已解释百分之七十五"><span></span></div>
+        <small class="metric-note">家具 Q3 与技术组合合计。</small>
+      </div>
+      <div class="metric">
+        <span class="metric-label"><span class="shape shape-circle" aria-hidden="true"></span>家具 Q4 月均利润率</span>
+        <strong class="metric-value">11.1%</strong>
+        <small class="metric-note">已回到接近非 Q3 均值区间。</small>
+      </div>
+      <div class="metric">
+        <span class="metric-label"><span class="shape shape-triangle" aria-hidden="true"></span>当前证据边界</span>
+        <strong class="metric-value">3 项</strong>
+        <small class="metric-note">渠道、区域、促销动作尚待补齐。</small>
+      </div>
+    </section>
+
+    <section class="summary page-grid" aria-labelledby="summary-title">
+      <h2 class="summary-label" id="summary-title">全文结论</h2>
+      <div class="summary-copy">
+        <p><strong>总体判断。</strong>全年利润率下降 2.19pp，但不是全局同步恶化。家具 Q3 冲击与技术品类结构漂移共同解释了主要缺口。</p>
+        <p><strong>短期异常。</strong>家具利润率在 Q3 集中下探，Q4 已恢复至接近常态，应按事件窗口复盘促销、退货、采购和物流成本。</p>
+        <p><strong>持续风险。</strong>技术品类中高利润子类收缩、低利润子类扩张，属于需要进入下季度经营计划的组合问题。</p>
+        <p class="summary-close"><strong>决策与边界。</strong>建议以技术组合修复为主线，并要求家具团队 7 天内完成事件复盘；在渠道、区域和价格动作补齐前，<mark>不做组织责任归因</mark>。</p>
+      </div>
+    </section>
+
+    <section class="report-section" id="section-1">
+      <header class="section-head">
+        <div class="section-index">01</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">家具利润率的下探集中在 Q3，Q4 已出现可验证恢复</h2>
+          <p class="section-question">验证问题：这是持续趋势，还是集中在一个可复盘的事件窗口？</p>
+        </div>
+      </header>
+
+      <div class="page-grid">
+        <div class="section-intro">
+          <p><strong>先看时间，而不是先找责任。</strong>1—6 月基本围绕 12%—13% 波动，7—9 月形成清晰断点；10 月开始恢复，说明家具问题更像阶段事件而非全年能力失效。</p>
+          <p>当前最有价值的下一步，是把异常窗口与促销、退货、采购价及履约成本按周对齐。</p>
+        </div>
+      </div>
+
+      <figure class="embed">
+        <figcaption class="embed-head">
+          <div class="embed-title"><span class="embed-icon" aria-hidden="true"></span><span>家具月度利润率：Q3 形成异常窗口，Q4 回到接近常态</span></div>
+          <div class="embed-meta">单位：% · 2024 年</div>
+        </figcaption>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 980 360" role="img" aria-label="家具月度利润率折线图，七月至九月为异常窗口，十月开始恢复">
+            <g stroke="var(--line)" stroke-width="1">
+              <line x1="74" y1="58" x2="930" y2="58"/>
+              <line x1="74" y1="118" x2="930" y2="118"/>
+              <line x1="74" y1="178" x2="930" y2="178"/>
+              <line x1="74" y1="238" x2="930" y2="238"/>
+              <line x1="74" y1="298" x2="930" y2="298"/>
+            </g>
+            <rect x="496" y="34" width="221" height="264" fill="var(--critical-soft)"/>
+            <text x="512" y="54" fill="var(--critical)" font-size="12" font-weight="700">Q3 异常窗口</text>
+            <g fill="var(--muted)" font-size="11.5">
+              <text x="35" y="62">16%</text>
+              <text x="35" y="122">12%</text>
+              <text x="41" y="182">8%</text>
+              <text x="41" y="242">4%</text>
+              <text x="41" y="302">0%</text>
+            </g>
+            <line x1="74" y1="105" x2="930" y2="105" stroke="var(--series-reference)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <text x="770" y="96" fill="var(--muted)" font-size="11.5">非 Q3 均值 12.97%</text>
+            <polyline points="92,112 166,123 240,96 314,106 388,118 462,101 536,214 610,222 684,209 758,127 832,134 906,145"
+                      fill="none" stroke="var(--series-context)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="462,101 536,214 610,222 684,209"
+                      fill="none" stroke="var(--critical)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+            <polyline points="684,209 758,127"
+                      fill="none" stroke="var(--healthy)" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+            <g fill="var(--series-context)" stroke="var(--paper)" stroke-width="2">
+              <circle cx="92" cy="112" r="5"/><circle cx="166" cy="123" r="4"/><circle cx="240" cy="96" r="5"/>
+              <circle cx="314" cy="106" r="4"/><circle cx="388" cy="118" r="4"/><circle cx="462" cy="101" r="4"/>
+              <circle cx="832" cy="134" r="4"/><circle cx="906" cy="145" r="5"/>
+            </g>
+            <g fill="var(--critical)" stroke="var(--paper)" stroke-width="2">
+              <rect x="530" y="208" width="12" height="12" transform="rotate(45 536 214)"/>
+              <rect x="604" y="216" width="12" height="12" transform="rotate(45 610 222)"/>
+              <rect x="678" y="203" width="12" height="12" transform="rotate(45 684 209)"/>
+            </g>
+            <circle cx="758" cy="127" r="6" fill="var(--healthy)" stroke="var(--paper)" stroke-width="2"/>
+            <g fill="var(--ink)" font-size="12" font-weight="700">
+              <text x="74" y="97">12.4%</text>
+              <text x="222" y="82">13.3%</text>
+              <text x="517" y="239" fill="var(--critical)">6.2%</text>
+              <text x="591" y="247" fill="var(--critical)">5.8%</text>
+              <text x="665" y="234" fill="var(--critical)">6.6%</text>
+              <text x="739" y="112" fill="var(--healthy)">11.4%</text>
+              <text x="887" y="132">10.7%</text>
+            </g>
+            <g fill="var(--muted)" font-size="11.5" text-anchor="middle">
+              <text x="92" y="326">1月</text><text x="166" y="326">2月</text><text x="240" y="326">3月</text>
+              <text x="314" y="326">4月</text><text x="388" y="326">5月</text><text x="462" y="326">6月</text>
+              <text x="536" y="326">7月</text><text x="610" y="326">8月</text><text x="684" y="326">9月</text>
+              <text x="758" y="326">10月</text><text x="832" y="326">11月</text><text x="906" y="326">12月</text>
+            </g>
+          </svg>
+        </div>
+        <div class="embed-source">来源：示例零售订单聚合表；虚线为非 Q3 月均值。红色菱形表示异常月份，绿色圆点表示已确认恢复节点。</div>
+      </figure>
+
+      <div class="post-chart page-grid">
+        <div class="reading-block">
+          <h3>图后解读</h3>
+          <ol class="reading-list">
+            <li><span class="reading-no">1</span><span class="reading-text"><strong>异常集中。</strong>7—9 月稳定落在 5.8%—6.6%，与上半年形成明显断点。</span></li>
+            <li><span class="reading-no">2</span><span class="reading-text"><strong>恢复可验证。</strong>10 月升至 11.4%，后续两个月保持在接近常态区间。</span></li>
+            <li><span class="reading-no">3</span><span class="reading-text"><strong>管理动作。</strong>按 Q3 事件窗口复盘，不直接进入长期降本专项。</span></li>
+          </ol>
+        </div>
+        <aside class="boundary-block">
+          <div class="boundary-label"><span class="shape shape-triangle" aria-hidden="true"></span>证据边界</div>
+          <p>当前分解能定位时间窗口，不能确认具体促销、渠道、区域或价格动作。需先补齐事件日志与周粒度数据。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="report-section" id="section-2">
+      <header class="section-head">
+        <div class="section-index">02</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">家具事件与技术组合漂移共同解释 75% 的利润率缺口，但干预方式不同</h2>
+          <p class="section-question">验证问题：哪些因素贡献最大，哪些只是背景波动？</p>
+        </div>
+      </header>
+
+      <div class="page-grid">
+        <div class="section-intro">
+          <p><strong>缺口不是平均分布。</strong>家具 Q3 冲击贡献 −0.92pp，技术组合漂移贡献 −0.73pp；两者合计 −1.65pp，占全年缺口的 75%。</p>
+          <p>前者应做事件复盘，后者需要进入品类经营计划。把两者合并成一个“统一降本项目”会掩盖干预差异。</p>
+        </div>
+      </div>
+
+      <figure class="embed">
+        <figcaption class="embed-head">
+          <div class="embed-title"><span class="embed-icon" aria-hidden="true"></span><span>两项主因贡献 −1.65pp，其余因素不足以改写优先级</span></div>
+          <div class="embed-meta">单位：pp · 全年同比缺口</div>
+        </figcaption>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 980 350" role="img" aria-label="利润率缺口贡献横向条形图，家具Q3和技术组合是主要因素">
+            <g fill="var(--muted)" font-size="11.5">
+              <text x="220" y="33">0</text><text x="446" y="33">0.5pp</text><text x="672" y="33">1.0pp</text><text x="898" y="33">缺口</text>
+            </g>
+            <g stroke="var(--line)" stroke-width="1">
+              <line x1="224" y1="45" x2="224" y2="290"/>
+              <line x1="450" y1="45" x2="450" y2="290"/>
+              <line x1="676" y1="45" x2="676" y2="290"/>
+              <line x1="902" y1="45" x2="902" y2="290"/>
+            </g>
+            <g fill="var(--ink)" font-size="12.5" font-weight="700">
+              <text x="18" y="82">家具 Q3 冲击</text><text x="18" y="145">技术组合漂移</text>
+              <text x="18" y="208">办公用品波动</text><text x="18" y="271">其他因素</text>
+            </g>
+            <g fill="var(--muted)" font-size="11.5">
+              <text x="18" y="100">事件性窗口</text><text x="18" y="163">持续性结构</text>
+              <text x="18" y="226">经营波动</text><text x="18" y="289">长尾项</text>
+            </g>
+            <rect x="224" y="67" width="416" height="18" fill="var(--critical)"/>
+            <rect x="224" y="130" width="330" height="18" fill="color-mix(in srgb, var(--critical) 68%, var(--theme-base))"/>
+            <rect x="224" y="193" width="127" height="18" fill="var(--series-context)"/>
+            <rect x="224" y="256" width="118" height="18" fill="var(--series-context)"/>
+            <g fill="var(--ink)" font-size="12" font-weight="700" text-anchor="end">
+              <text x="914" y="82">−0.92pp</text><text x="914" y="145">−0.73pp</text>
+              <text x="914" y="208">−0.28pp</text><text x="914" y="271">−0.26pp</text>
+            </g>
+            <line x1="18" y1="314" x2="930" y2="314" stroke="var(--line-strong)"/>
+            <text x="18" y="338" fill="var(--muted)" font-size="11.5">前两项合计</text>
+            <text x="110" y="338" fill="var(--critical)" font-size="12" font-weight="700">−1.65pp</text>
+            <text x="806" y="338" fill="var(--muted)" font-size="11.5">占总缺口</text>
+            <text x="914" y="338" fill="var(--theme-accent)" font-size="12" font-weight="700" text-anchor="end">75%</text>
+          </svg>
+        </div>
+        <div class="embed-source">来源：示例零售订单聚合表；贡献值按统一利润率缺口口径分解。红色表示材料性不利因素，普通灰阶为背景贡献。</div>
+      </figure>
+    </section>
+
+    <section class="report-section" id="section-3">
+      <header class="section-head">
+        <div class="section-index">03</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">技术品类的高利润子类收缩、低利润子类扩张，构成持续性组合风险</h2>
+          <p class="section-question">验证问题：哪些份额变化足以进入行动，哪些只需要保持监控？</p>
+        </div>
+      </header>
+
+      <div class="evidence-table-wrap">
+        <table class="evidence-table" aria-label="技术品类组合变化表">
+          <colgroup>
+            <col style="width:19%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:24%"><col style="width:27%">
+          </colgroup>
+          <thead>
+            <tr><th>子品类</th><th class="num">基准份额</th><th class="num">期末份额</th><th class="num">变化</th><th>证据含义</th><th>管理判断与下一步</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="row-label"><span class="row-mark" aria-hidden="true"></span>复印机 · 高利润</span></td>
+              <td class="num">28%</td><td class="num">21%</td><td class="num delta-critical">◆ −7pp</td>
+              <td><span class="cell-line"><span class="cell-key">判断</span>高利润子类收缩，是主要结构证据。</span><span class="cell-line"><span class="cell-key">边界</span>尚未区分需求与供给原因。</span></td>
+              <td><span class="cell-line"><span class="cell-key">下一步</span>补充分渠道价格与销量。</span><span class="cell-line"><span class="cell-key">用途</span>定位份额恢复抓手。</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-label"><span class="shape shape-triangle" aria-hidden="true"></span>设备 · 低利润</span></td>
+              <td class="num">38%</td><td class="num">43%</td><td class="num delta-watch">▲ +5pp</td>
+              <td><span class="cell-line"><span class="cell-key">判断</span>低利润子类扩张，与复印机收缩同向。</span><span class="cell-line"><span class="cell-key">边界</span>增长质量尚未验证。</span></td>
+              <td><span class="cell-line"><span class="cell-key">下一步</span>检查套装、折扣与渠道结构。</span><span class="cell-line"><span class="cell-key">用途</span>进入组合治理主线。</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-label">电话 · 中性</span></td>
+              <td class="num">34%</td><td class="num">36%</td><td class="num">+2pp</td>
+              <td><span class="cell-line"><span class="cell-key">判断</span>变化较小，独立解释力有限。</span><span class="cell-line"><span class="cell-key">边界</span>仅作为辅助证据。</span></td>
+              <td><span class="cell-line"><span class="cell-key">下一步</span>保持常规监控。</span><span class="cell-line"><span class="cell-key">用途</span>不单独设专项。</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="block-note">
+        <h3>为什么这不是“一次性异常”</h3>
+        <p>技术组合变化跨越多个期间，且高、低利润子类朝不利方向同步移动。当前证据足以把它列为经营优先级，但仍不足以把原因归结为某个团队或单一价格动作。</p>
+      </div>
+    </section>
+
+    <section class="report-section" id="section-4">
+      <header class="section-head">
+        <div class="section-index">04</div>
+        <div class="section-heading-copy">
+          <h2 class="section-title">将一次性事件复盘与持续性结构治理拆成两条节奏不同的行动线</h2>
+          <p class="section-question">决策问题：谁在什么时间内补齐哪项证据，下一次用什么标准复核？</p>
+        </div>
+      </header>
+
+      <div class="evidence-table-wrap">
+        <table class="evidence-table" aria-label="行动安排表">
+          <colgroup>
+            <col style="width:23%"><col style="width:24%"><col style="width:15%"><col style="width:12%"><col style="width:26%">
+          </colgroup>
+          <thead>
+            <tr><th>行动</th><th>为什么现在做</th><th>负责角色</th><th>时间窗口</th><th>下一次检查</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>复盘家具 Q3 异常事件</strong></td><td>解释 Q4 已恢复但全年仍有缺口。</td><td>品类经营、财务</td><td>7 天</td><td>促销、退货、采购、物流周粒度对齐。</td></tr>
+            <tr><td><strong>提交技术品类组合修复方案</strong></td><td>高利润子类收缩需进入经营计划。</td><td>品类经营、销售</td><td>下月经营会</td><td>SKU、渠道、定价和激励对利润组合的影响。</td></tr>
+            <tr><td><strong>补齐责任判断所需切片</strong></td><td>当前证据不支持组织责任归因。</td><td>数据团队</td><td>2 周</td><td>渠道、区域、客户、价格动作与履约负责人。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="notes page-grid" aria-labelledby="notes-title">
+      <h2 class="notes-label" id="notes-title">数据口径与说明</h2>
+      <details open>
+        <summary>口径、来源与证据边界</summary>
+        <div class="notes-copy">
+          <p><strong>口径：</strong>利润率、品类与子品类按示例数据语义层计算；同比与百分点变化使用统一基准。</p>
+          <p><strong>来源：</strong>示例零售订单聚合表与品类份额表；图表为离线 HTML 内嵌 SVG。</p>
+          <p>当前数据不包含完整促销、退货原因、渠道、区域、价格、物流与负责人字段，因此不做因果和组织责任判断。</p>
+        </div>
+      </details>
+    </section>
+
+    <footer class="doc-footer">
+      <span>经营分析组 · 内部异步阅读样张</span>
+      <span>互联网汇报风格 HTML 报告 · v1</span>
+    </footer>
+  </main>
+</body>
+</html>
